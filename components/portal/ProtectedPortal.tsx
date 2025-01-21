@@ -1,6 +1,14 @@
+"use client";
+
 import { useAuth } from "@/contexts/AuthContext";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+
+interface ProtectedPortalProps {
+  children: React.ReactNode;
+  requireAdmin?: boolean;
+  requireSuperAdmin?: boolean;
+}
 
 export default function ProtectedPortal({ 
   children, 
