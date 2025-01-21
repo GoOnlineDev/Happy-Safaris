@@ -3,6 +3,7 @@ import type { Metadata } from 'next';
 import { Playfair_Display, Lora } from 'next/font/google';
 import { AuthContextProvider } from "@/contexts/AuthContext";
 import Navigation from '@/components/Navigation';
+import { Toaster } from 'sonner';
 
 const playfair = Playfair_Display({
   subsets: ['latin'],
@@ -71,6 +72,7 @@ export default function RootLayout({
               </div>
             </div>
           </footer>
+          <Toaster />
         </AuthContextProvider>
       </body>
     </html>
