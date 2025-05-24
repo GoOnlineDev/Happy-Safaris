@@ -2,9 +2,12 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { useAuth } from "@/contexts/AuthContext";
+import Image from "next/image";
+import { useAuth } from "@/hooks/useClerkAuth";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
+import { useQuery } from "convex/react";
+import { api } from "@/convex/_generated/api";
 import {
   Menu,
   X,
@@ -23,7 +26,16 @@ export default function Navigation() {
   const [isOpen, setIsOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
   const { user, logout } = useAuth();
+  
+  // Fetch the current user's profile from Convex
+  const convexUser = useQuery(api.users.getCurrentUser);
+
+  // Set isMounted to true on client side
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   // Handle scroll effect
   useEffect(() => {
@@ -43,6 +55,9 @@ export default function Navigation() {
     }
   };
 
+  // Get the profile image URL from Convex if available
+  const profileImageUrl = convexUser?.imageUrl || user?.imageUrl;
+
   const menuItems = [
     { href: "/destinations", label: "Destinations", icon: Compass },
     { href: "/tours", label: "Tours", icon: Map },
@@ -51,98 +66,117 @@ export default function Navigation() {
     { href: "/terms", label: "Terms & Conditions", icon: FileText },
   ];
 
+  // Initial class name for server rendering to prevent hydration mismatch
+  const navClassName = `fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[95vw] max-w-6xl px-2 transition-all duration-300
+    ${isMounted && (isScrolled || isOpen) ? 'bg-[#1a2421]/70' : 'bg-[#1a2421]/50'}
+    rounded-full shadow-xl backdrop-blur-lg flex items-center justify-between`;
+
   return (
-    <nav className={`fixed w-full z-50 transition-all duration-300 ${
-      isScrolled || isOpen ? 'bg-[#1a2421]' : 'bg-[#1a2421]/80 backdrop-blur-sm'
-    } border-b border-[#3a4441]`}>
-      <div className="container mx-auto px-4">
-        <div className="flex justify-between items-center h-16">
-          {/* Logo */}
-          <Link href="/" className="flex items-center space-x-2 z-50">
-            <span className="text-xl md:text-2xl font-bold text-[#e3b261]">Happy Safaris</span>
-          </Link>
+    <nav className={navClassName} style={{ minHeight: 72 }}>
+      <div className="flex justify-between items-center w-full h-16 px-4">
+        {/* Logo */}
+        <Link href="/" className="flex items-center space-x-2 z-50 ml-0 sm:ml-2">
+          <div className="relative h-10 w-36 sm:w-40">
+            <Image
+              src="/logo.png"
+              alt="Happy African Safaris"
+              fill
+              className="object-contain"
+              priority
+            />
+          </div>
+        </Link>
 
-          {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center space-x-8">
-            {menuItems.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className="text-gray-300 hover:text-[#e3b261] transition-colors flex items-center space-x-1"
-              >
-                <item.icon className="h-4 w-4" />
-                <span>{item.label}</span>
-              </Link>
-            ))}
+        {/* Desktop Navigation */}
+        <div className="hidden lg:flex items-center space-x-8">
+          {menuItems.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              className="text-gray-300 hover:text-[#e3b261] transition-colors flex items-center space-x-1"
+            >
+              <item.icon className="h-4 w-4" />
+              <span>{item.label}</span>
+            </Link>
+          ))}
 
-            {/* Auth Buttons */}
-            <div className="flex items-center space-x-4">
-              {user ? (
-                <div className="relative">
-                  <Button
-                    variant="ghost"
-                    className="text-gray-300 hover:text-[#e3b261] flex items-center space-x-2"
-                    onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                  >
-                    <User className="h-4 w-4" />
-                    <span>Account</span>
-                    <ChevronDown className="h-4 w-4" />
-                  </Button>
-                  
-                  <AnimatePresence>
-                    {isDropdownOpen && (
-                      <motion.div
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: 10 }}
-                        className="absolute right-0 mt-2 w-48 bg-[#1a2421] border border-[#3a4441] rounded-md shadow-lg overflow-hidden"
-                      >
-                        <Link href="/portal">
-                          <Button
-                            variant="ghost"
-                            className="w-full text-left text-gray-300 hover:text-[#e3b261] hover:bg-[#2a3431] flex items-center space-x-2 px-4 py-2"
-                          >
-                            <LayoutDashboard className="h-4 w-4" />
-                            <span>Dashboard</span>
-                          </Button>
-                        </Link>
+          {/* Auth Buttons */}
+          <div className="flex items-center space-x-4">
+            {user ? (
+              <div className="relative">
+                <Button
+                  variant="ghost"
+                  className="text-gray-300 hover:text-[#e3b261] flex items-center space-x-2"
+                  onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                >
+                  {profileImageUrl ? (
+                    <img 
+                      src={profileImageUrl} 
+                      alt="Profile" 
+                      className="h-8 w-8 rounded-full object-cover border border-[#e3b261]"
+                    />
+                  ) : (
+                    <div className="h-8 w-8 rounded-full bg-[#3a4441] flex items-center justify-center text-[#e3b261]">
+                      {user.firstName?.[0] || user.lastName?.[0] || <User className="h-4 w-4" />}
+                    </div>
+                  )}
+                  <span>Account</span>
+                  <ChevronDown className="h-4 w-4" />
+                </Button>
+                
+                <AnimatePresence>
+                  {isDropdownOpen && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: 10 }}
+                      className="absolute right-0 mt-2 w-48 bg-[#1a2421] border border-[#3a4441] rounded-md shadow-lg overflow-hidden"
+                    >
+                      <Link href="/portal">
                         <Button
                           variant="ghost"
                           className="w-full text-left text-gray-300 hover:text-[#e3b261] hover:bg-[#2a3431] flex items-center space-x-2 px-4 py-2"
-                          onClick={handleLogout}
                         >
-                          <LogOut className="h-4 w-4" />
-                          <span>Logout</span>
+                          <LayoutDashboard className="h-4 w-4" />
+                          <span>Portal</span>
                         </Button>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </div>
-              ) : (
-                <>
-                  <Link href="/login">
-                    <Button variant="ghost" className="text-gray-300 hover:text-[#e3b261]">
-                      Sign In
-                    </Button>
-                  </Link>
-                  <Link href="/signup">
-                    <Button className="bg-[#e3b261] hover:bg-[#c49a51] text-[#1a2421]">
-                      Sign Up
-                    </Button>
-                  </Link>
-                </>
-              )}
-            </div>
+                      </Link>
+                      <Button
+                        variant="ghost"
+                        className="w-full text-left text-gray-300 hover:text-[#e3b261] hover:bg-[#2a3431] flex items-center space-x-2 px-4 py-2"
+                        onClick={handleLogout}
+                      >
+                        <LogOut className="h-4 w-4" />
+                        <span>Logout</span>
+                      </Button>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            ) : (
+              <>
+                <Link href="/login">
+                  <Button variant="ghost" className="text-gray-300 hover:text-[#e3b261]">
+                    Sign In
+                  </Button>
+                </Link>
+                <Link href="/signup">
+                  <Button className="bg-[#e3b261] hover:bg-[#c49a51] text-[#1a2421]">
+                    Sign Up
+                  </Button>
+                </Link>
+              </>
+            )}
           </div>
-
-          {/* Mobile Menu Button */}
-          <button
-            className="lg:hidden text-gray-300 hover:text-[#e3b261] z-50"
-            onClick={() => setIsOpen(!isOpen)}
-          >
-            {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-          </button>
         </div>
+
+        {/* Mobile Menu Button */}
+        <button
+          className="lg:hidden text-gray-300 hover:text-[#e3b261] z-50"
+          onClick={() => setIsOpen(!isOpen)}
+        >
+          {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+        </button>
       </div>
 
       {/* Mobile Menu */}
@@ -176,8 +210,18 @@ export default function Navigation() {
                           variant="ghost"
                           className="w-full text-left text-gray-300 hover:text-[#e3b261] flex items-center space-x-2 text-lg"
                         >
-                          <LayoutDashboard className="h-5 w-5" />
-                          <span>Dashboard</span>
+                          {profileImageUrl ? (
+                            <img 
+                              src={profileImageUrl} 
+                              alt="Profile" 
+                              className="h-8 w-8 rounded-full object-cover border border-[#e3b261] mr-2"
+                            />
+                          ) : (
+                            <div className="h-8 w-8 rounded-full bg-[#3a4441] flex items-center justify-center text-[#e3b261] mr-2">
+                              {user.firstName?.[0] || user.lastName?.[0] || <LayoutDashboard className="h-5 w-5" />}
+                            </div>
+                          )}
+                          <span>Portal</span>
                         </Button>
                       </Link>
                       <Button

@@ -1,12 +1,13 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: 'export',
+  // Temporarily disable static export to allow Clerk auth to work properly
+  // output: 'export',
   eslint: {
     ignoreDuringBuilds: true,
   },
   images: {
-    unoptimized: true,
-    domains: ['images.unsplash.com'],
+    // unoptimized: true, // Not needed when not using static export
+    domains: ['images.unsplash.com', 'img.clerk.com', 'utfs.io'],
   },
   webpack: (config, { isServer }) => {
     if (!isServer) {

@@ -1,0 +1,41 @@
+export interface Country {
+  code: string;
+  name: string;
+}
+
+export const countries: Country[] = [
+  { code: "KE", name: "Kenya" },
+  { code: "TZ", name: "Tanzania" },
+  { code: "UG", name: "Uganda" },
+  { code: "RW", name: "Rwanda" },
+  { code: "BI", name: "Burundi" },
+  { code: "ET", name: "Ethiopia" },
+  { code: "ZA", name: "South Africa" },
+  { code: "NA", name: "Namibia" },
+  { code: "BW", name: "Botswana" },
+  { code: "ZM", name: "Zambia" },
+  { code: "ZW", name: "Zimbabwe" },
+  { code: "MZ", name: "Mozambique" },
+  { code: "MG", name: "Madagascar" },
+  { code: "SC", name: "Seychelles" },
+  { code: "MU", name: "Mauritius" },
+  { code: "CD", name: "Democratic Republic of the Congo" },
+  { code: "CG", name: "Republic of the Congo" },
+  { code: "GH", name: "Ghana" },
+  { code: "NG", name: "Nigeria" },
+  { code: "SN", name: "Senegal" },
+  { code: "MA", name: "Morocco" },
+  { code: "EG", name: "Egypt" },
+  { code: "US", name: "United States" },
+  { code: "GB", name: "United Kingdom" },
+  { code: "CA", name: "Canada" },
+  { code: "AU", name: "Australia" },
+  { code: "DE", name: "Germany" },
+  { code: "FR", name: "France" },
+  { code: "CN", name: "China" },
+  { code: "JP", name: "Japan" },
+  { code: "IN", name: "India" },
+  { code: "BR", name: "Brazil" },
+  { code: "AE", name: "United Arab Emirates" },
+  { code: "SA", name: "Saudi Arabia" },
+]; 

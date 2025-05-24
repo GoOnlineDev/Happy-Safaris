@@ -1,8 +1,8 @@
 "use client";
 
-import { useAuth } from "@/contexts/AuthContext";
+import { useAuth } from "@/hooks/useClerkAuth";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 interface ProtectedPortalProps {
   children: React.ReactNode;
@@ -15,22 +15,22 @@ export default function ProtectedPortal({
   requireAdmin = false,
   requireSuperAdmin = false,
 }: ProtectedPortalProps) {
-  const { user, loading, isAdmin, isSuperAdmin } = useAuth();
+  const { user, isAuthenticated } = useAuth();
+  const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
 
   useEffect(() => {
-    if (!loading) {
-      if (!user) {
+    if (isAuthenticated !== undefined) {
+      setIsLoading(false);
+      
+      if (!isAuthenticated) {
         router.push("/login");
-      } else if (requireSuperAdmin && !isSuperAdmin) {
-        router.push("/portal");
-      } else if (requireAdmin && !isAdmin) {
-        router.push("/portal");
       }
     }
-  }, [user, loading, router, requireAdmin, requireSuperAdmin, isAdmin, isSuperAdmin]);
+  }, [isAuthenticated, router]);
 
-  if (loading) {
+  // Show loading state
+  if (isLoading) {
     return (
       <div className="min-h-screen bg-[#1a2421] flex items-center justify-center">
         <div className="text-[#e3b261] text-lg">Loading...</div>
@@ -38,15 +38,8 @@ export default function ProtectedPortal({
     );
   }
 
-  if (!user) {
-    return null;
-  }
-
-  if (requireSuperAdmin && !isSuperAdmin) {
-    return null;
-  }
-
-  if (requireAdmin && !isAdmin) {
+  // Not authenticated
+  if (!isAuthenticated || !user) {
     return null;
   }
 

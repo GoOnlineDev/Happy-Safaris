@@ -2,110 +2,184 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useAuth } from "@/contexts/AuthContext";
-import { motion, AnimatePresence } from "framer-motion";
+import { useUser } from "@/hooks/useUser";
+import { cn } from "@/lib/utils";
 import {
-  Home,
-  Users,
-  Calendar,
-  Settings,
-  FileText,
-  BarChart,
-  Shield,
-  X,
+  LayoutDashboard,
+  BookOpen,
   MessageSquare,
+  Settings,
+  Users,
+  CalendarDays,
+  Map,
+  X,
+  BarChart2,
   CreditCard,
+  UserCircle,
+  Globe,
+  Info,
+  Mail,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
 
-interface PortalSidebarProps {
+const adminRoutes = [
+  {
+    label: "Dashboard",
+    icon: LayoutDashboard,
+    href: "/portal",
+    color: "text-sky-500",
+  },
+  {
+    label: "Hero Section",
+    icon: LayoutDashboard,
+    href: "/portal/hero",
+    color: "text-yellow-400",
+  },
+  {
+    label: "About Page",
+    icon: Info,
+    href: "/portal/about",
+    color: "text-green-400",
+  },
+  {
+    label: "Bookings",
+    icon: BookOpen,
+    href: "/portal/bookings",
+    color: "text-violet-500",
+  },
+  {
+    label: "Tours",
+    icon: Map,
+    href: "/portal/tours",
+    color: "text-pink-700",
+  },
+  {
+    label: "Destinations",
+    icon: Globe,
+    href: "/portal/destinations",
+    color: "text-blue-500",
+  },
+  {
+    label: "Users",
+    icon: Users,
+    color: "text-orange-700",
+    href: "/portal/users",
+  },
+  {
+    label: "Analytics",
+    icon: BarChart2,
+    href: "/portal/analytics",
+    color: "text-green-500",
+  },
+  {
+    label: "Payments",
+    icon: CreditCard,
+    href: "/portal/payments",
+    color: "text-yellow-500",
+  },
+  {
+    label: "Messages",
+    icon: MessageSquare,
+    href: "/portal/inbox",
+    color: "text-emerald-500",
+  },
+  {
+    label: "Contact",
+    icon: Mail,
+    href: "/portal/contact",
+    color: "text-indigo-500",
+  },
+  {
+    label: "Settings",
+    icon: Settings,
+    href: "/portal/settings",
+  },
+];
+
+const touristRoutes = [
+  {
+    label: "Dashboard",
+    icon: LayoutDashboard,
+    href: "/portal",
+    color: "text-sky-500",
+  },
+  {
+    label: "My Bookings",
+    icon: CalendarDays,
+    href: "/portal/my-bookings",
+    color: "text-violet-500",
+  },
+  {
+    label: "Profile",
+    icon: UserCircle,
+    href: "/portal/profile",
+    color: "text-blue-500",
+  },
+  {
+    label: "Messages",
+    icon: MessageSquare,
+    href: "/portal/inbox",
+    color: "text-emerald-500",
+  },
+  {
+    label: "Settings",
+    icon: Settings,
+    href: "/portal/settings",
+  },
+];
+
+interface SidebarProps {
   isOpen: boolean;
   onClose: () => void;
+  isMobile: boolean;
+  className?: string;
 }
 
-export function PortalSidebar({ isOpen, onClose }: PortalSidebarProps) {
+export function Sidebar({ isOpen, onClose, isMobile, className }: SidebarProps) {
   const pathname = usePathname();
-  const { isAdmin, isSuperAdmin } = useAuth();
-
-  const menuItems = [
-    { href: "/portal", label: "Dashboard", icon: Home },
-    { href: "/portal/bookings", label: "My Bookings", icon: Calendar },
-    { href: "/portal/payments", label: "Payments", icon: CreditCard },
-    { href: "/portal/inbox", label: "Inbox", icon: MessageSquare },
-    { href: "/portal/profile", label: "Profile", icon: FileText },
-    ...(isAdmin ? [
-      { href: "/portal/users", label: "Users", icon: Users },
-      { href: "/portal/analytics", label: "Analytics", icon: BarChart },
-    ] : []),
-    ...(isSuperAdmin ? [
-      { href: "/portal/settings", label: "Settings", icon: Settings },
-      { href: "/portal/roles", label: "Role Management", icon: Shield },
-    ] : []),
-  ];
-
-  const sidebarContent = (
-    <nav className="space-y-2">
-      <div className="flex justify-end p-4 md:hidden">
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={onClose}
-          className="text-gray-400 hover:text-[#e3b261]"
-        >
-          <X className="h-5 w-5" />
-        </Button>
-      </div>
-      {menuItems.map((item) => {
-        const isActive = pathname === item.href;
-        return (
-          <Link
-            key={item.href}
-            href={item.href}
-            onClick={() => onClose()}
-            className={`flex items-center space-x-2 px-4 py-3 rounded-lg transition-colors ${
-              isActive 
-                ? "bg-[#e3b261] text-[#1a2421]" 
-                : "text-gray-300 hover:text-[#e3b261]"
-            }`}
-          >
-            <item.icon className="h-5 w-5" />
-            <span>{item.label}</span>
-          </Link>
-        );
-      })}
-    </nav>
-  );
+  const { user } = useUser();
+  
+  const isAdmin = user?.role === "admin" || user?.role === "super_admin";
+  const routes = isAdmin ? adminRoutes : touristRoutes;
 
   return (
-    <>
-      {/* Desktop Sidebar */}
-      <aside className="hidden md:block fixed left-0 top-16 w-64 h-[calc(100vh-4rem)] bg-[#1a2421] border-r border-[#3a4441] p-6">
-        {sidebarContent}
-      </aside>
-
-      {/* Mobile Sidebar */}
-      <AnimatePresence>
-        {isOpen && (
-          <>
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-black/50 md:hidden z-40"
-              onClick={onClose}
-            />
-            <motion.aside
-              initial={{ x: "-100%" }}
-              animate={{ x: 0 }}
-              exit={{ x: "-100%" }}
-              transition={{ type: "spring", bounce: 0, duration: 0.4 }}
-              className="fixed left-0 top-0 w-64 h-full bg-[#1a2421] border-r border-[#3a4441] p-6 z-50 md:hidden"
-            >
-              {sidebarContent}
-            </motion.aside>
-          </>
+    <div className={cn(
+      isMobile
+        ? isOpen
+          ? "fixed inset-y-0 left-0 z-50 w-64 bg-[#1a2421] transform transition-transform duration-300 ease-in-out"
+          : "hidden"
+        : "fixed top-16 left-0 w-64 h-[calc(100vh-4rem)] z-30 border-r border-[#232b27] shadow-sm bg-[#1a2421] overflow-y-auto",
+      className
+    )}>
+      <div className="space-y-4 py-4 flex flex-col h-full text-white">
+        {isMobile && (
+          <button
+            onClick={onClose}
+            className="absolute top-4 right-4 text-gray-400 hover:text-white"
+          >
+            <X className="h-6 w-6" />
+          </button>
         )}
-      </AnimatePresence>
-    </>
+        <div className="px-3 py-2 flex-1">
+          <div className="space-y-1">
+            {routes.map((route) => (
+              <Link
+                key={route.href}
+                href={route.href}
+                onClick={isMobile ? onClose : undefined}
+                className={cn(
+                  "text-sm group flex p-3 w-full justify-start font-medium cursor-pointer hover:text-[#e3b261] hover:bg-[#2a3431] rounded-lg transition",
+                  pathname === route.href ? "text-[#e3b261] bg-[#2a3431]" : "text-zinc-400",
+                )}
+              >
+                <div className="flex items-center flex-1">
+                  <route.icon className={cn("h-5 w-5 mr-3", route.color)} />
+                  {route.label}
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
   );
 } 
