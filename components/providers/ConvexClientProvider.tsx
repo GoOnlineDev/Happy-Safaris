@@ -1,35 +1,35 @@
-"use client";
+'use client'
 
-import { ClerkProvider, useAuth } from "@clerk/nextjs";
-import { ConvexProviderWithClerk } from "convex/react-clerk";
-import { ConvexReactClient } from "convex/react";
-import { useEffect, useState } from "react";
+import { ReactNode, useEffect } from 'react'
+import { ConvexReactClient, useMutation } from 'convex/react'
+import { ConvexProviderWithClerk } from 'convex/react-clerk'
+import { useAuth, useUser } from '@clerk/nextjs'
+import { api } from '@/convex/_generated/api'
 
-// Initialize the Convex client
-const convex = new ConvexReactClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
+if (!process.env.NEXT_PUBLIC_CONVEX_URL) {
+  throw new Error('Missing NEXT_PUBLIC_CONVEX_URL in your .env file')
+}
 
-export function ConvexClientProvider({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  const [mounted, setMounted] = useState(false);
+const convex = new ConvexReactClient(process.env.NEXT_PUBLIC_CONVEX_URL)
+
+function UserInitializer() {
+  const createOrGetUser = useMutation(api.users.createOrGetUser);
+  const { isSignedIn } = useUser();
 
   useEffect(() => {
-    setMounted(true);
-  }, []);
+    if (isSignedIn) {
+      createOrGetUser().catch(error => console.error("Failed to create or get user:", error));
+    }
+  }, [isSignedIn, createOrGetUser]);
 
-  if (!mounted) {
-    return (
-      <div className="h-screen w-screen flex items-center justify-center bg-[#1a2421]">
-        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-[#e3b261]" />
-      </div>
-    );
-  }
+  return null;
+}
 
+export default function ConvexClientProvider({ children }: { children: ReactNode }) {
   return (
     <ConvexProviderWithClerk client={convex} useAuth={useAuth}>
+      <UserInitializer />
       {children}
     </ConvexProviderWithClerk>
-  );
-} 
+  )
+}

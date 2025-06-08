@@ -12,27 +12,16 @@ export default function LoginPage() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="w-full max-w-md"
+        className="w-full max-w-md px-4 sm:px-0"
       >
-        <div className="text-center mb-8">
-          <Link href="/" className="inline-block mb-8 transform hover:scale-105 transition-transform">
-            <div className="relative h-16 w-64 mx-auto ml-0">
-              <Image
-                src="/logo.png"
-                alt="Happy African Safaris"
-                fill
-                className="object-contain"
-                priority
-              />
-            </div>
-          </Link>
+        <div className="text-center mb-6 sm:mb-8 mt-12 sm:mt-20">
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2, duration: 0.5 }}
           >
-            <h1 className="text-4xl font-bold text-[#e3b261] mb-3">Welcome Back</h1>
-            <p className="text-gray-400 text-lg">Sign in to your account to continue your adventure</p>
+            <h1 className="text-3xl sm:text-4xl font-bold text-[#e3b261] mb-2 sm:mb-3">Welcome Back</h1>
+            <p className="text-gray-400 text-base sm:text-lg">Sign in to your account to continue your adventure</p>
           </motion.div>
         </div>
         
@@ -40,7 +29,7 @@ export default function LoginPage() {
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.3, duration: 0.5 }}
-          className="bg-[#2a3431]/90 backdrop-blur-sm rounded-xl shadow-2xl p-8 border border-[#3a4441]"
+          className="bg-[#2a3431]/90 backdrop-blur-sm rounded-xl shadow-2xl p-4 sm:p-8 border border-[#3a4441]"
         >
           <SignIn
             appearance={{
@@ -64,7 +53,7 @@ export default function LoginPage() {
                 form: "bg-transparent"
               },
               layout: {
-                socialButtonsPlacement: "bottom",
+                socialButtonsPlacement: "top",
                 showOptionalFields: false
               },
             }}
@@ -77,9 +66,9 @@ export default function LoginPage() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.5, duration: 0.5 }}
-          className="text-center mt-8"
+          className="text-center mt-6 sm:mt-8"
         >
-          <p className="text-gray-400 text-lg">
+          <p className="text-gray-400 text-base sm:text-lg">
             Don't have an account?{" "}
             <Link href="/signup" className="text-[#e3b261] hover:text-[#c49a51] font-medium transition-colors">
               Sign up

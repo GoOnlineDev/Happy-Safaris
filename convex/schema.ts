@@ -5,7 +5,7 @@ export default defineSchema({
   // Users table to store user profiles
   users: defineTable({
     // User information from Clerk
-    clerkId: v.string(),
+    tokenIdentifier: v.string(),
     email: v.string(),
     firstName: v.optional(v.string()),
     lastName: v.optional(v.string()),
@@ -27,7 +27,7 @@ export default defineSchema({
     // Timestamps
     createdAt: v.number(),
     updatedAt: v.number(),
-  }).index("by_clerk_id", ["clerkId"]),
+  }).index("by_token_identifier", ["tokenIdentifier"]),
   
   // Conversations table for chat threads
   conversations: defineTable({
