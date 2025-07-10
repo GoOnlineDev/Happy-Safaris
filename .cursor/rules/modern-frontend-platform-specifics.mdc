@@ -1,0 +1,35 @@
+---
+alwaysApply: false
+---
+# Platform-Specific Design Guidelines
+
+When building cross-platform applications, be aware of each platform's design language to make your UI feel more native. You can either blend conventions or adapt the UI for each platform.
+
+## Material Design (Google)
+- **Used On**: Android, Web (Google services).
+- **Key Concepts**:
+  - **Grid**: 8dp grid for spacing and layout.
+  - **Theming**: "Material You" theming engine adapts colors from the user's wallpaper.
+  - **Typography**: Roboto is the standard font family.
+  - **Elevation**: Uses shadows to indicate layers and depth.
+  - **Interaction**: Components have prescribed interactions, like the ripple effect on buttons.
+- **React Library**: **MUI** (formerly Material-UI).
+
+## Fluent Design (Microsoft)
+- **Used On**: Windows, Microsoft 365, Teams.
+- **Key Concepts**:
+  - **Materials**: Uses effects like Acrylic (blur) and Mica to create a sense of depth.
+  - **Light & Shadow**: Emphasizes lighting effects.
+  - **Typography**: Segoe UI is the standard font family.
+  - **Motion**: Distinct and fluid animations for sliding, fading, and revealing content.
+- **React Library**: **Fluent UI React**.
+
+## Apple Human Interface Guidelines (HIG)
+- **Used On**: iOS, macOS, iPadOS.
+- **Key Concepts**:
+  - **Clarity, Deference, Depth**: Core principles. The UI should be clear and defer to the content.
+  - **Typography**: San Francisco (SF) is the standard font family.
+  - **Tap Targets**: Requires larger minimum tap targets (at least 44x44 points).
+  - **Controls**: Uses standard system controls like segmented controls and bottom tab bars.
+  - **Navigation**: Often uses a navigation stack or tab-based navigation.
+- **Note**: There is no official Apple-sanctioned React component library, so developers often build custom components that mimic the HIG.

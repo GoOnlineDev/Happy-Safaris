@@ -65,8 +65,8 @@ export default function AdminDestinationsPage() {
 
   if (isLoading || destinations === undefined || analytics === undefined) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-[#1a2421]">
-        <Loader2 className="h-8 w-8 text-[#e3b261] animate-spin" />
+      <div className="flex items-center justify-center min-h-screen bg-secondary">
+        <Loader2 className="h-8 w-8 text-primary animate-spin" />
       </div>
     );
   }
@@ -84,9 +84,9 @@ export default function AdminDestinationsPage() {
     <ProtectedPortal>
       <div className="max-w-6xl mx-auto p-4 md:p-8">
         <div className="flex justify-between items-center mb-6">
-          <h1 className="text-3xl font-bold text-[#e3b261]">Destinations Admin</h1>
+          <h1 className="text-3xl font-bold text-primary">Destinations Admin</h1>
           <Button 
-            className="bg-[#e3b261] hover:bg-[#c49a51] text-[#1a2421]"
+            className="bg-primary hover:bg-primary/90 text-secondary"
             onClick={() => setIsCreateModalOpen(true)}
           >
               <PlusCircle className="mr-2 h-5 w-5" /> Create New Destination
@@ -94,7 +94,7 @@ export default function AdminDestinationsPage() {
         </div>
 
         {/* Analytics */} {/* This section can be further expanded */}
-        <Card className="bg-[#1a2421] border-[#3a4441] p-4 mb-6">
+        <Card className="bg-secondary border-accent p-4 mb-6">
           <h2 className="text-xl font-semibold text-white mb-3">Statistics</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-gray-300">
             <div>Total Destinations: <span className="font-bold text-white">{destinations.length}</span></div>
@@ -104,12 +104,12 @@ export default function AdminDestinationsPage() {
         </Card>
 
         {/* Destinations List */}
-        <Card className="bg-[#1a2421] border-[#3a4441] p-6">
+        <Card className="bg-secondary border-accent p-6">
           <h2 className="text-xl font-semibold text-white mb-4">All Destinations</h2>
           <div className="overflow-x-auto">
             <Table>
               <TableHeader>
-                <TableRow className="bg-[#2a3431] text-gray-300">
+                <TableRow className="bg-background-light text-gray-300">
                   <TableHead>Name</TableHead>
                   <TableHead>Country</TableHead>
                   <TableHead>Featured</TableHead>
@@ -119,7 +119,7 @@ export default function AdminDestinationsPage() {
               </TableHeader>
               <TableBody>
                 {destinations.map((dest) => (
-                  <TableRow key={dest._id} className="border-b border-[#3a4441] text-white hover:bg-[#232c29]">
+                  <TableRow key={dest._id} className="border-b border-accent text-white hover:bg-background-light">
                     <TableCell className="font-medium">{dest.name}</TableCell>
                     <TableCell>{dest.country}</TableCell>
                     <TableCell>{dest.featured ? "Yes" : "No"}</TableCell>
@@ -128,7 +128,7 @@ export default function AdminDestinationsPage() {
                       <Button 
                         variant="outline" 
                         size="sm" 
-                        className="border-[#3a4441] text-[#e3b261] hover:bg-[#2a3431] hover:text-[#e3b261]"
+                        className="border-accent text-primary hover:bg-background-light hover:text-primary"
                         onClick={() => handleEditClick(dest._id)}
                       >
                           <Edit className="h-4 w-4" />

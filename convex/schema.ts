@@ -4,8 +4,7 @@ import { v } from "convex/values";
 export default defineSchema({
   // Users table to store user profiles
   users: defineTable({
-    // User information from Clerk
-    tokenIdentifier: v.string(),
+    clerkId: v.string(),
     email: v.string(),
     firstName: v.optional(v.string()),
     lastName: v.optional(v.string()),
@@ -27,7 +26,7 @@ export default defineSchema({
     // Timestamps
     createdAt: v.number(),
     updatedAt: v.number(),
-  }).index("by_token_identifier", ["tokenIdentifier"]),
+  }).index("by_clerk_id", ["clerkId"]),
   
   // Conversations table for chat threads
   conversations: defineTable({
@@ -159,6 +158,8 @@ export default defineSchema({
     mainHeading: v.string(),
     highlightedText: v.optional(v.string()),
     subheading: v.string(),
+    ctaText: v.optional(v.string()),
+    ctaLink: v.optional(v.string()),
     updatedAt: v.number(),
   }),
 

@@ -1,0 +1,57 @@
+---
+alwaysApply: false
+---
+# Modern Accessibility (a11y) Principles
+
+## Core Guidelines (WCAG 2.2)
+- **Semantic HTML**: Use HTML elements for their intended purpose (`<nav>`, `<button>`, `<header>`). This is the foundation of an accessible site. Provide meaningful `alt` text for images; use `alt=""` for decorative ones.
+- **ARIA**: Use ARIA roles (`role`, `aria-label`) to add semantics to custom components or icons, but always prefer native HTML elements when possible.
+- **Color & Contrast**: Do not convey information with color alone. Ensure text contrast is at least **4.5:1** (AA).
+
+## Keyboard Navigation & Focus
+- **Keyboard Operable**: All interactive elements must be reachable and usable with only a keyboard. The tab order must be logical.
+- **Visible Focus**: Focus indicators (e.g., an outline) must be clearly visible. WCAG 2.2 has stricter rules for ensuring focus indicators are not obscured.
+- **Focus Traps**: When a modal or dialog is open, keyboard focus must be "trapped" inside it. The user should not be able to tab to elements behind the modal. Focus should be returned to the triggering element when the modal is closed.
+- **Target Size**: Interactive elements like buttons and links should have a target size of at least **24x24 CSS pixels** to be easily clickable/tappable (new in WCAG 2.2 AA).
+
+## Reduced Motion
+- **Respect User Preferences**: Use the `prefers-reduced-motion` media query to disable or simplify non-essential animations for users who are sensitive to motion.
+  ```css
+  @media (prefers-reduced-motion: reduce) {
+    /* Turn off or simplify animations */
+  }
+  ```
+
+## Testing
+- **Automated**: Use tools like Axe, WAVE, or `eslint-plugin-jsx-a11y` to catch common issues.
+- **Manual**:
+  - Navigate the entire site using only the keyboard.
+  - Test with screen readers (NVDA on Windows, VoiceOver on macOS).
+- **User Testing**: Involve users with disabilities for the most valuable feedback.
+# Modern Accessibility (a11y) Principles
+
+## Core Guidelines (WCAG 2.2)
+- **Semantic HTML**: Use HTML elements for their intended purpose (`<nav>`, `<button>`, `<header>`). This is the foundation of an accessible site. Provide meaningful `alt` text for images; use `alt=""` for decorative ones.
+- **ARIA**: Use ARIA roles (`role`, `aria-label`) to add semantics to custom components or icons, but always prefer native HTML elements when possible.
+- **Color & Contrast**: Do not convey information with color alone. Ensure text contrast is at least **4.5:1** (AA).
+
+## Keyboard Navigation & Focus
+- **Keyboard Operable**: All interactive elements must be reachable and usable with only a keyboard. The tab order must be logical.
+- **Visible Focus**: Focus indicators (e.g., an outline) must be clearly visible. WCAG 2.2 has stricter rules for ensuring focus indicators are not obscured.
+- **Focus Traps**: When a modal or dialog is open, keyboard focus must be "trapped" inside it. The user should not be able to tab to elements behind the modal. Focus should be returned to the triggering element when the modal is closed.
+- **Target Size**: Interactive elements like buttons and links should have a target size of at least **24x24 CSS pixels** to be easily clickable/tappable (new in WCAG 2.2 AA).
+
+## Reduced Motion
+- **Respect User Preferences**: Use the `prefers-reduced-motion` media query to disable or simplify non-essential animations for users who are sensitive to motion.
+  ```css
+  @media (prefers-reduced-motion: reduce) {
+    /* Turn off or simplify animations */
+  }
+  ```
+
+## Testing
+- **Automated**: Use tools like Axe, WAVE, or `eslint-plugin-jsx-a11y` to catch common issues.
+- **Manual**:
+  - Navigate the entire site using only the keyboard.
+  - Test with screen readers (NVDA on Windows, VoiceOver on macOS).
+- **User Testing**: Involve users with disabilities for the most valuable feedback.

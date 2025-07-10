@@ -1,0 +1,63 @@
+---
+alwaysApply: false
+---
+# Modern Animation & Microinteraction Principles
+
+## Purposeful Animation
+Use animation sparingly and with purpose. It should enhance the user experience, not distract from it. Good animation can:
+- Explain state changes (e.g., a menu sliding in).
+- Provide feedback for interactions (e.g., a button press).
+- Guide the user's attention.
+
+## Timing & Easing
+- **Subtlety & Speed**: Keep animations smooth and quick.
+  - **Microinteractions** (hovers, toggles): **100–300ms**.
+  - **Content Transitions** (menus, page loads): **300–500ms**.
+- **Easing**: Use easing curves (e.g., `ease-in-out`, `cubic-bezier`) to make motion feel natural and physical, rather than stiffly linear.
+
+## Performance & Accessibility
+- **Performance**: Animate `transform` (`translate`, `scale`, `rotate`) and `opacity` instead of layout-triggering properties like `width`, `height`, or `margin`. This prevents "jank" and keeps animations smooth.
+- **Accessibility**: Always respect the user's motion preferences. Use the `prefers-reduced-motion` media query to simplify or disable non-essential animations.
+
+## Animation in React
+- **Libraries**: For complex animations in React, use a dedicated library like **Framer Motion**. It provides a declarative API for handling animations, gestures, and page transitions while managing performance and accessibility concerns.
+  - Example props: `initial`, `animate`, `exit`, `transition`.
+- **Microinteractions**: For simple state changes like hover, CSS transitions are often sufficient and highly performant.
+  ```css
+  .button {
+    transition: transform 0.2s ease-in-out;
+  }
+  .button:hover {
+    transform: scale(1.05);
+  }
+  ```
+# Modern Animation & Microinteraction Principles
+
+## Purposeful Animation
+Use animation sparingly and with purpose. It should enhance the user experience, not distract from it. Good animation can:
+- Explain state changes (e.g., a menu sliding in).
+- Provide feedback for interactions (e.g., a button press).
+- Guide the user's attention.
+
+## Timing & Easing
+- **Subtlety & Speed**: Keep animations smooth and quick.
+  - **Microinteractions** (hovers, toggles): **100–300ms**.
+  - **Content Transitions** (menus, page loads): **300–500ms**.
+- **Easing**: Use easing curves (e.g., `ease-in-out`, `cubic-bezier`) to make motion feel natural and physical, rather than stiffly linear.
+
+## Performance & Accessibility
+- **Performance**: Animate `transform` (`translate`, `scale`, `rotate`) and `opacity` instead of layout-triggering properties like `width`, `height`, or `margin`. This prevents "jank" and keeps animations smooth.
+- **Accessibility**: Always respect the user's motion preferences. Use the `prefers-reduced-motion` media query to simplify or disable non-essential animations.
+
+## Animation in React
+- **Libraries**: For complex animations in React, use a dedicated library like **Framer Motion**. It provides a declarative API for handling animations, gestures, and page transitions while managing performance and accessibility concerns.
+  - Example props: `initial`, `animate`, `exit`, `transition`.
+- **Microinteractions**: For simple state changes like hover, CSS transitions are often sufficient and highly performant.
+  ```css
+  .button {
+    transition: transform 0.2s ease-in-out;
+  }
+  .button:hover {
+    transform: scale(1.05);
+  }
+  ```

@@ -138,10 +138,10 @@ export default function AboutAdminPage() {
 
   return (
     <div className="max-w-4xl mx-auto p-4 md:p-8">
-      <h1 className="text-3xl font-bold mb-6 text-[#e3b261]">Edit About Page</h1>
+      <h1 className="text-3xl font-bold mb-6 text-primary">Edit About Page</h1>
       <form onSubmit={handleSubmit} className="space-y-10">
         {/* Hero Section */}
-        <Card className="p-6 space-y-4">
+        <Card className="p-6 space-y-4 bg-secondary border-accent">
           <h2 className="text-xl font-semibold mb-2">Hero Section</h2>
           <div className="flex flex-col md:flex-row gap-6 items-center">
             <div className="w-full md:w-1/2">
@@ -155,19 +155,20 @@ export default function AboutAdminPage() {
                   if (res && res[0]?.url) handleImageUpload("heroImageUrl", res[0].url);
                 }}
                 onUploadError={(err) => { toast.error(err.message); }}
+                className="ut-upload-dropzone ut-label:text-white ut-button:bg-primary ut-button:text-secondary ut-button:hover:bg-primary/90 ut-allowed-content:text-gray-400 ut-upload-icon:text-primary"
               />
             </div>
             <div className="w-full md:w-1/2 space-y-2">
               <label className="block text-gray-300">Heading</label>
-              <Input value={form.heroHeading} onChange={e => handleChange("heroHeading", e.target.value)} />
+              <Input value={form.heroHeading} onChange={e => handleChange("heroHeading", e.target.value)} className="bg-background-light border-accent" />
               <label className="block text-gray-300">Subheading</label>
-              <Textarea value={form.heroSubheading} onChange={e => handleChange("heroSubheading", e.target.value)} />
+              <Textarea value={form.heroSubheading} onChange={e => handleChange("heroSubheading", e.target.value)} className="bg-background-light border-accent" />
             </div>
           </div>
         </Card>
 
         {/* Story Section */}
-        <Card className="p-6 space-y-4">
+        <Card className="p-6 space-y-4 bg-secondary border-accent">
           <h2 className="text-xl font-semibold mb-2">Our Story</h2>
           <div className="flex flex-col md:flex-row gap-6 items-center">
             <div className="w-full md:w-1/2">
@@ -181,26 +182,27 @@ export default function AboutAdminPage() {
                   if (res && res[0]?.url) handleImageUpload("storyImageUrl", res[0].url);
                 }}
                 onUploadError={(err) => { toast.error(err.message); }}
+                className="ut-upload-dropzone ut-label:text-white ut-button:bg-primary ut-button:text-secondary ut-button:hover:bg-primary/90 ut-allowed-content:text-gray-400 ut-upload-icon:text-primary"
               />
             </div>
             <div className="w-full md:w-1/2 space-y-2">
               <label className="block text-gray-300">Story Heading</label>
-              <Input value={form.storyHeading} onChange={e => handleChange("storyHeading", e.target.value)} />
+              <Input value={form.storyHeading} onChange={e => handleChange("storyHeading", e.target.value)} className="bg-background-light border-accent" />
               <label className="block text-gray-300">Story Content</label>
-              <Textarea value={form.storyContent} onChange={e => handleChange("storyContent", e.target.value)} />
+              <Textarea value={form.storyContent} onChange={e => handleChange("storyContent", e.target.value)} className="bg-background-light border-accent" />
             </div>
           </div>
         </Card>
 
         {/* Advantages Section */}
-        <Card className="p-6 space-y-4">
+        <Card className="p-6 space-y-4 bg-secondary border-accent">
           <h2 className="text-xl font-semibold mb-2">Advantages</h2>
           {form.advantages.map((adv: any, idx: number) => (
-            <div key={idx} className="flex flex-col md:flex-row gap-4 items-center mb-4 bg-[#232c29] rounded-lg p-4">
+            <div key={idx} className="flex flex-col md:flex-row gap-4 items-center mb-4 bg-background-light rounded-lg p-4">
               <div className="w-full md:w-1/4">
                 <label className="block text-gray-300">Icon</label>
                 <select
-                  className="w-full bg-[#1a2421] border border-[#3a4441] text-white rounded-md p-2"
+                  className="w-full bg-secondary border border-accent text-white rounded-md p-2"
                   value={adv.icon}
                   onChange={e => handleAdvantageChange(idx, "icon", e.target.value)}
                 >
@@ -211,11 +213,11 @@ export default function AboutAdminPage() {
               </div>
               <div className="w-full md:w-1/3">
                 <label className="block text-gray-300">Title</label>
-                <Input value={adv.title} onChange={e => handleAdvantageChange(idx, "title", e.target.value)} />
+                <Input value={adv.title} onChange={e => handleAdvantageChange(idx, "title", e.target.value)} className="bg-secondary border-accent" />
               </div>
               <div className="w-full md:w-1/2">
                 <label className="block text-gray-300">Description</label>
-                <Textarea value={adv.description} onChange={e => handleAdvantageChange(idx, "description", e.target.value)} />
+                <Textarea value={adv.description} onChange={e => handleAdvantageChange(idx, "description", e.target.value)} className="bg-secondary border-accent" />
               </div>
               <Button type="button" variant="destructive" className="mt-2 md:mt-6" onClick={() => removeAdvantage(idx)}>Remove</Button>
             </div>
@@ -224,17 +226,17 @@ export default function AboutAdminPage() {
         </Card>
 
         {/* Values Section */}
-        <Card className="p-6 space-y-4">
+        <Card className="p-6 space-y-4 bg-secondary border-accent">
           <h2 className="text-xl font-semibold mb-2">Values</h2>
           {form.values.map((val: any, idx: number) => (
-            <div key={idx} className="flex flex-col md:flex-row gap-4 items-center mb-4 bg-[#232c29] rounded-lg p-4">
+            <div key={idx} className="flex flex-col md:flex-row gap-4 items-center mb-4 bg-background-light rounded-lg p-4">
               <div className="w-full md:w-1/3">
                 <label className="block text-gray-300">Title</label>
-                <Input value={val.title} onChange={e => handleValueChange(idx, "title", e.target.value)} />
+                <Input value={val.title} onChange={e => handleValueChange(idx, "title", e.target.value)} className="bg-secondary border-accent" />
               </div>
               <div className="w-full md:w-2/3">
                 <label className="block text-gray-300">Description</label>
-                <Textarea value={val.description} onChange={e => handleValueChange(idx, "description", e.target.value)} />
+                <Textarea value={val.description} onChange={e => handleValueChange(idx, "description", e.target.value)} className="bg-secondary border-accent" />
               </div>
               <Button type="button" variant="destructive" className="mt-2 md:mt-6" onClick={() => removeValue(idx)}>Remove</Button>
             </div>
@@ -242,7 +244,7 @@ export default function AboutAdminPage() {
           <Button type="button" onClick={addValue} className="mt-2">Add Value</Button>
         </Card>
 
-        <Button type="submit" className="w-full bg-[#e3b261] hover:bg-[#c49a51] text-[#1a2421] text-lg py-4" disabled={saving}>
+        <Button type="submit" className="w-full bg-primary hover:bg-primary/90 text-secondary text-lg py-4" disabled={saving}>
           {saving ? "Saving..." : about ? "Save Changes" : "Create About Page"}
         </Button>
       </form>

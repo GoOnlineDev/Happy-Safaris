@@ -38,6 +38,10 @@ import {
 import { Loader2, Upload, User, X } from "lucide-react";
 import { countries, Country } from "@/lib/countries";
 import { currencies, Currency } from "@/lib/currencies";
+import { Label } from "@/components/ui/label";
+import { SignOutButton } from "@clerk/nextjs";
+import { motion } from "framer-motion";
+import { UploadButton } from "@/utils/uploadthing";
 
 // Interface for Convex user data
 interface ConvexUser {
@@ -173,289 +177,97 @@ export default function ProfilePage() {
     }
   };
 
-  if (isLoading) {
+  if (!isLoaded) {
     return (
-      <div className="min-h-screen bg-[#1a2421] flex items-center justify-center">
-        <Loader2 className="h-8 w-8 text-[#e3b261] animate-spin" />
+      <div className="flex items-center justify-center min-h-screen">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#1a2421] text-gray-300 p-8">
-      <div className="max-w-4xl mx-auto">
-        <h1 className="text-3xl font-bold text-[#e3b261] mb-8">Your Profile</h1>
-        
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Profile Picture Card */}
-          <Card className="col-span-1 bg-[#2a3431] border-[#3a4441] shadow-xl">
-            <CardHeader>
-              <CardTitle className="text-[#e3b261]">Profile Picture</CardTitle>
-              <CardDescription className="text-gray-400">
-                Upload a new profile picture
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex flex-col items-center justify-center">
-                <div className="relative h-40 w-40 mb-4">
-                  {imageUrl ? (
-                    <Image
-                      src={imageUrl}
-                      alt="Profile"
-                      fill
-                      className="rounded-full object-cover border-2 border-[#3a4441]"
-                    />
-                  ) : (
-                    <div className="h-40 w-40 rounded-full bg-[#3a4441] flex items-center justify-center">
-                      <User className="h-20 w-20 text-[#e3b261]" />
-                    </div>
-                  )}
-                  
-                  {isUploading && (
-                    <div className="absolute inset-0 rounded-full bg-black/50 flex items-center justify-center">
-                      <Loader2 className="h-10 w-10 text-white animate-spin" />
-                    </div>
-                  )}
+    <div className="max-w-4xl mx-auto p-4 md:p-8">
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
+        <h1 className="text-3xl font-bold text-primary mb-8">My Profile</h1>
+      </motion.div>
+      
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        {/* Left Side: Profile Picture and Actions */}
+        <motion.div
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+          className="md:col-span-1 space-y-6"
+        >
+          <Card className="bg-secondary border-accent p-6 text-center">
+            <div className="relative w-32 h-32 mx-auto mb-4">
+              <img
+                src={user?.imageUrl}
+                alt="Profile"
+                fill
+                className="rounded-full object-cover border-4 border-primary"
+              />
+              <UploadButton
+                endpoint="profilePicture"
+                onClientUploadComplete={(res) => {
+                  console.log("Files: ", res);
+                  toast.success("Profile picture updated!");
+                }}
+                onUploadError={(error: Error) => {
+                  toast.error(`ERROR! ${error.message}`);
+                }}
+                className="absolute bottom-0 right-0 ut-button:bg-primary ut-button:text-secondary ut-button:w-8 ut-button:h-8 ut-button:rounded-full ut-button:shadow-lg ut-button:hover:bg-primary/90 ut-upload-icon:h-4 ut-upload-icon:w-4"
+              />
+            </div>
+            <h2 className="text-xl font-semibold text-white">{user?.fullName}</h2>
+            <p className="text-gray-400">{user?.primaryEmailAddress?.emailAddress}</p>
+          </Card>
+          <Card className="bg-secondary border-accent p-6">
+            <h3 className="text-lg font-semibold text-white mb-4">Account Actions</h3>
+            <div className="space-y-2">
+              <Button variant="outline" className="w-full border-accent text-primary hover:bg-background-light">Change Password</Button>
+              <Button variant="outline" className="w-full border-accent text-primary hover:bg-background-light">Manage 2FA</Button>
+              <SignOutButton>
+                <Button variant="destructive" className="w-full">Sign Out</Button>
+              </SignOutButton>
+            </div>
+          </Card>
+        </motion.div>
+
+        {/* Right Side: User Details Form */}
+        <motion.div
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.5, delay: 0.4 }}
+          className="md:col-span-2"
+        >
+          <Card className="bg-secondary border-accent p-6">
+            <h3 className="text-lg font-semibold text-white mb-6">Personal Information</h3>
+            <form className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <Label htmlFor="firstName" className="text-gray-300">First Name</Label>
+                  <Input id="firstName" defaultValue={user?.firstName || ''} className="bg-background-light border-accent text-white" />
                 </div>
-                
-                <div className="flex space-x-2">
-                  <Button 
-                    variant="outline" 
-                    size="sm"
-                    className="bg-[#3a4441] border-[#4a5451] hover:bg-[#4a5451] hover:border-[#5a6451] text-white relative"
-                    disabled={isUploading}
-                  >
-                    <Upload className="h-4 w-4 mr-2" />
-                    Upload
-                    <input
-                      type="file"
-                      className="absolute inset-0 opacity-0 cursor-pointer"
-                      accept="image/*"
-                      onChange={handleImageUpload}
-                      disabled={isUploading}
-                    />
-                  </Button>
-                  
-                  {imageUrl && (
-                    <Button 
-                      variant="destructive" 
-                      size="sm"
-                      onClick={handleRemoveImage}
-                      disabled={isUploading}
-                    >
-                      <X className="h-4 w-4 mr-2" />
-                      Remove
-                    </Button>
-                  )}
+                <div className="space-y-2">
+                  <Label htmlFor="lastName" className="text-gray-300">Last Name</Label>
+                  <Input id="lastName" defaultValue={user?.lastName || ''} className="bg-background-light border-accent text-white" />
                 </div>
               </div>
-            </CardContent>
+              <div className="space-y-2">
+                <Label htmlFor="email" className="text-gray-300">Email Address</Label>
+                <Input id="email" type="email" defaultValue={user?.primaryEmailAddress?.emailAddress || ''} disabled className="bg-background-light border-accent text-white disabled:opacity-50" />
+              </div>
+              <div className="pt-4 flex justify-end">
+                <Button className="bg-primary hover:bg-primary/90 text-secondary">Save Changes</Button>
+              </div>
+            </form>
           </Card>
-          
-          {/* Profile Details Form */}
-          <Card className="col-span-1 lg:col-span-2 bg-[#2a3431] border-[#3a4441] shadow-xl">
-            <CardHeader>
-              <CardTitle className="text-[#e3b261]">Personal Information</CardTitle>
-              <CardDescription className="text-gray-400">
-                Update your personal details
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <FormField
-                      control={form.control}
-                      name="firstName"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="text-gray-300">First Name</FormLabel>
-                          <FormControl>
-                            <Input
-                              {...field}
-                              className="bg-[#3a4441] border-[#4a5451] text-white focus:border-[#e3b261]"
-                            />
-                          </FormControl>
-                          <FormMessage className="text-red-400" />
-                        </FormItem>
-                      )}
-                    />
-                    
-                    <FormField
-                      control={form.control}
-                      name="lastName"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="text-gray-300">Last Name</FormLabel>
-                          <FormControl>
-                            <Input
-                              {...field}
-                              className="bg-[#3a4441] border-[#4a5451] text-white focus:border-[#e3b261]"
-                            />
-                          </FormControl>
-                          <FormMessage className="text-red-400" />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  
-                  <FormField
-                    control={form.control}
-                    name="phone"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-gray-300">Phone Number</FormLabel>
-                        <FormControl>
-                          <Input
-                            {...field}
-                            className="bg-[#3a4441] border-[#4a5451] text-white focus:border-[#e3b261]"
-                          />
-                        </FormControl>
-                        <FormMessage className="text-red-400" />
-                      </FormItem>
-                    )}
-                  />
-                  
-                  <FormField
-                    control={form.control}
-                    name="country"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-gray-300">Country</FormLabel>
-                        <Select
-                          onValueChange={field.onChange}
-                          defaultValue={field.value}
-                        >
-                          <FormControl>
-                            <SelectTrigger className="bg-[#3a4441] border-[#4a5451] text-white focus:border-[#e3b261]">
-                              <SelectValue placeholder="Select your country" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent className="bg-[#2a3431] border-[#3a4441] text-white">
-                            {countries.map((country: Country) => (
-                              <SelectItem key={country.code} value={country.code}>
-                                {country.name}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                        <FormMessage className="text-red-400" />
-                      </FormItem>
-                    )}
-                  />
-                  
-                  <FormField
-                    control={form.control}
-                    name="address"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-gray-300">Address</FormLabel>
-                        <FormControl>
-                          <Textarea
-                            {...field}
-                            className="bg-[#3a4441] border-[#4a5451] text-white focus:border-[#e3b261]"
-                          />
-                        </FormControl>
-                        <FormMessage className="text-red-400" />
-                      </FormItem>
-                    )}
-                  />
-                  
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <FormField
-                      control={form.control}
-                      name="preferredCurrency"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="text-gray-300">Preferred Currency</FormLabel>
-                          <Select
-                            onValueChange={field.onChange}
-                            defaultValue={field.value}
-                          >
-                            <FormControl>
-                              <SelectTrigger className="bg-[#3a4441] border-[#4a5451] text-white focus:border-[#e3b261]">
-                                <SelectValue placeholder="Select currency" />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent className="bg-[#2a3431] border-[#3a4441] text-white">
-                              {currencies.map((currency: Currency) => (
-                                <SelectItem key={currency.code} value={currency.code}>
-                                  {currency.code} - {currency.name}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                          <FormMessage className="text-red-400" />
-                        </FormItem>
-                      )}
-                    />
-                    
-                    <FormField
-                      control={form.control}
-                      name="preferredLanguage"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="text-gray-300">Preferred Language</FormLabel>
-                          <Select
-                            onValueChange={field.onChange}
-                            defaultValue={field.value}
-                          >
-                            <FormControl>
-                              <SelectTrigger className="bg-[#3a4441] border-[#4a5451] text-white focus:border-[#e3b261]">
-                                <SelectValue placeholder="Select language" />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent className="bg-[#2a3431] border-[#3a4441] text-white">
-                              <SelectItem value="English">English</SelectItem>
-                              <SelectItem value="French">French</SelectItem>
-                              <SelectItem value="German">German</SelectItem>
-                              <SelectItem value="Spanish">Spanish</SelectItem>
-                              <SelectItem value="Chinese">Chinese</SelectItem>
-                              <SelectItem value="Japanese">Japanese</SelectItem>
-                              <SelectItem value="Arabic">Arabic</SelectItem>
-                              <SelectItem value="Swahili">Swahili</SelectItem>
-                            </SelectContent>
-                          </Select>
-                          <FormMessage className="text-red-400" />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  
-                  <FormField
-                    control={form.control}
-                    name="bio"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-gray-300">Bio</FormLabel>
-                        <FormControl>
-                          <Textarea
-                            {...field}
-                            className="bg-[#3a4441] border-[#4a5451] text-white focus:border-[#e3b261]"
-                            placeholder="Tell us about yourself"
-                            rows={4}
-                          />
-                        </FormControl>
-                        <FormMessage className="text-red-400" />
-                      </FormItem>
-                    )}
-                  />
-                  
-                  <Button 
-                    type="submit" 
-                    className="bg-[#e3b261] hover:bg-[#c49a51] text-[#1a2421] font-semibold"
-                    disabled={form.formState.isSubmitting}
-                  >
-                    {form.formState.isSubmitting && (
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    )}
-                    Save Changes
-                  </Button>
-                </form>
-              </Form>
-            </CardContent>
-          </Card>
-        </div>
+        </motion.div>
       </div>
     </div>
   );

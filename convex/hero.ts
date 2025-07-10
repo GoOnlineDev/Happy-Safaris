@@ -20,6 +20,8 @@ export const updateHeroContent = mutation({
     mainHeading: v.string(),
     highlightedText: v.optional(v.string()),
     subheading: v.string(),
+    ctaText: v.optional(v.string()),
+    ctaLink: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
     // Only allow admins

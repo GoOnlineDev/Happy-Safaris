@@ -15,7 +15,7 @@ type Role = typeof ROLES[keyof typeof ROLES];
 // Create a new user in the database after Clerk signup
 export const createUser = mutation({
   args: {
-    tokenIdentifier: v.string(),
+    clerkId: v.string(),
     email: v.string(),
     firstName: v.string(),
     lastName: v.string(),
@@ -25,7 +25,7 @@ export const createUser = mutation({
     // Check if user already exists
     const existingUser = await ctx.db
       .query("users")
-      .filter((q) => q.eq(q.field("tokenIdentifier"), args.tokenIdentifier))
+      .filter((q) => q.eq(q.field("clerkId"), args.clerkId))
       .first();
 
     if (existingUser) {
@@ -34,7 +34,7 @@ export const createUser = mutation({
 
     // Create new user
     const userId = await ctx.db.insert("users", {
-      tokenIdentifier: args.tokenIdentifier,
+      clerkId: args.clerkId,
       email: args.email,
       firstName: args.firstName,
       lastName: args.lastName,
@@ -50,11 +50,11 @@ export const createUser = mutation({
 
 // Get user by Clerk ID
 export const getUserByClerkId = query({
-  args: { tokenIdentifier: v.string() },
+  args: { clerkId: v.string() },
   handler: async (ctx, args) => {
     const user = await ctx.db
       .query("users")
-      .filter((q) => q.eq(q.field("tokenIdentifier"), args.tokenIdentifier))
+      .filter((q) => q.eq(q.field("clerkId"), args.clerkId))
       .first();
     
     return user;
@@ -72,8 +72,8 @@ export const createOrGetUser = mutation({
     // Check if the user already exists
     const user = await ctx.db
       .query("users")
-      .withIndex("by_token_identifier", (q) =>
-        q.eq("tokenIdentifier", identity.tokenIdentifier)
+      .withIndex("by_clerk_id", (q) =>
+        q.eq("clerkId", identity.subject)
       )
       .unique();
 
@@ -84,7 +84,10 @@ export const createOrGetUser = mutation({
 
     // If the user doesn't exist, create a new one
     const userId = await ctx.db.insert("users", {
-      tokenIdentifier: identity.tokenIdentifier,
+      clerkId: identity.subject,
+      firstName: identity.firstName as string,
+      lastName: identity.lastName as string,
+      imageUrl: identity.imageUrl as string,
       email: identity.email!,
       role: ROLES.TOURIST, // Default role for new users
       createdAt: Date.now(),
@@ -97,7 +100,7 @@ export const createOrGetUser = mutation({
 // Update user profile
 export const updateUserProfile = mutation({
   args: {
-    tokenIdentifier: v.string(),
+    clerkId: v.string(),
     firstName: v.optional(v.string()),
     lastName: v.optional(v.string()),
     imageUrl: v.optional(v.string()),
@@ -108,12 +111,12 @@ export const updateUserProfile = mutation({
     preferredLanguage: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
-    const { tokenIdentifier, ...updates } = args;
+    const { clerkId, ...updates } = args;
 
     // Get the user first
     const user = await ctx.db
       .query("users")
-      .filter((q) => q.eq(q.field("tokenIdentifier"), tokenIdentifier))
+      .filter((q) => q.eq(q.field("clerkId"), clerkId))
       .first();
 
     if (!user) {
@@ -150,13 +153,13 @@ export const getUsers = query({
 // Set user role (admin only)
 export const setUserRole = mutation({
   args: {
-    tokenIdentifier: v.string(),
+    clerkId: v.string(),
     role: v.string(),
   },
   handler: async (ctx, args) => {
     const user = await ctx.db
       .query("users")
-      .filter((q) => q.eq(q.field("tokenIdentifier"), args.tokenIdentifier))
+      .filter((q) => q.eq(q.field("clerkId"), args.clerkId))
       .first();
 
     if (!user) {
@@ -184,7 +187,7 @@ export const getCurrentUser = query({
     // Find user by clerk ID
     const user = await ctx.db
       .query("users")
-      .withIndex("by_token_identifier", (q) => q.eq("tokenIdentifier", identity.tokenIdentifier))
+      .withIndex("by_clerk_id", (q) => q.eq("clerkId", identity.subject))
       .first();
 
     return user;
@@ -194,7 +197,7 @@ export const getCurrentUser = query({
 // Public mutation for syncing user data from Clerk
 export const syncUser = internalMutation({
   args: {
-      tokenIdentifier: v.string(),
+    clerkId: v.string(),
     email: v.string(),
     firstName: v.optional(v.string()),
     lastName: v.optional(v.string()),
@@ -203,7 +206,7 @@ export const syncUser = internalMutation({
   handler: async (ctx, args) => {
     const existingUser = await ctx.db
       .query("users")
-      .withIndex("by_token_identifier", (q) => q.eq("tokenIdentifier", args.tokenIdentifier))
+      .withIndex("by_clerk_id", (q) => q.eq("clerkId", args.clerkId))
       .first();
 
     if (existingUser) {
@@ -218,7 +221,7 @@ export const syncUser = internalMutation({
     } else {
       // Create new user
       await ctx.db.insert("users", {
-        tokenIdentifier: args.tokenIdentifier,
+        clerkId: args.clerkId,
         email: args.email,
         firstName: args.firstName ?? "",
         lastName: args.lastName ?? "",
@@ -254,7 +257,7 @@ export const updateProfile = mutation({
 
     const user = await ctx.db
       .query("users")
-      .withIndex("by_token_identifier", (q) => q.eq("tokenIdentifier", identity.tokenIdentifier))
+      .withIndex("by_clerk_id", (q) => q.eq("clerkId", identity.subject))
       .first();
 
     if (!user) {
@@ -286,7 +289,7 @@ export const updateUserRole = mutation({
     // Check if the current user is an admin
     const currentUser = await ctx.db
       .query("users")
-      .filter((q) => q.eq(q.field("tokenIdentifier"), identity.tokenIdentifier))
+      .filter((q) => q.eq(q.field("clerkId"), identity.subject))
       .first();
 
     if (!currentUser || currentUser.role !== ROLES.ADMIN) {
@@ -304,7 +307,7 @@ export const updateUserRole = mutation({
 // Public mutation to trigger user sync from client (calls internal sync)
 export const syncUserPublic = mutation({
   args: {
-    tokenIdentifier: v.string(),
+    clerkId: v.string(),
     email: v.string(),
     firstName: v.optional(v.string()),
     lastName: v.optional(v.string()),
@@ -313,7 +316,7 @@ export const syncUserPublic = mutation({
   handler: async (ctx, args) => {
     // Call the internal sync mutation
     await ctx.runMutation(internal.users.syncUser, {
-      tokenIdentifier: args.tokenIdentifier,
+      clerkId: args.clerkId,
       email: args.email,
       firstName: args.firstName,
       lastName: args.lastName,
@@ -334,7 +337,7 @@ export const listUsers = query({
     // Check if the current user is an admin
     const currentUser = await ctx.db
       .query("users")
-      .filter((q) => q.eq(q.field("tokenIdentifier"), identity.tokenIdentifier))
+      .filter((q) => q.eq(q.field("clerkId"), identity.subject))
       .first();
 
     if (!currentUser || currentUser.role !== ROLES.ADMIN) {
@@ -359,7 +362,7 @@ export const deleteUser = mutation({
     // Check if the current user is an admin
     const currentUser = await ctx.db
       .query("users")
-      .filter((q) => q.eq(q.field("tokenIdentifier"), identity.tokenIdentifier))
+      .filter((q) => q.eq(q.field("clerkId"), identity.subject))
       .first();
 
     if (!currentUser || currentUser.role !== ROLES.ADMIN) {

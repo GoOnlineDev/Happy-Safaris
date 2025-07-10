@@ -1,0 +1,44 @@
+---
+alwaysApply: false
+---
+
+---
+# Modern Typography Principles
+
+## Legibility & Readability
+- **Base Size**: Use a base font size of at least **16px** for body text.
+- **Line Height**: Set line-height between **1.4 and 1.6** for body text for comfortable reading.
+- **Line Length**: Aim for **45–75 characters** per line to avoid eye strain. Left-align text (ragged-right) for the best readability.
+- **Font Choice**: Choose fonts with a tall x-height and clear distinctions between similar characters (e.g., "I", "l", "1").
+
+## Hierarchy & Pairing
+- **Typographic Scale**: Establish a clear hierarchy using a scale for font sizes, weights, and colors (e.g., 16px body, 24px heading). Use semantic `<h1>`-`<h6>` tags.
+- **Font Pairing**: A common and effective strategy is to pair a clean sans-serif font for body text with a complementary serif or a contrasting sans-serif for headings.
+- **Contrast**: Ensure text has a contrast ratio of at least **4.5:1** against its background.
+
+## Web Fonts & Performance
+- **Loading**: Use modern loading strategies to avoid layout shifts and invisible text.
+  - `font-display: swap;` in your `@font-face` rule ensures text is visible while the font loads.
+  - Preload critical fonts to prioritize their download.
+- **Variable Fonts**: When possible, use variable fonts. They provide a wide range of styles in a single, performant file.
+- **System Fonts**: Consider using system fonts for performance-critical applications.
+---
+# Modern Typography Principles
+
+## Legibility & Readability
+- **Base Size**: Use a base font size of at least **16px** for body text.
+- **Line Height**: Set line-height between **1.4 and 1.6** for body text for comfortable reading.
+- **Line Length**: Aim for **45–75 characters** per line to avoid eye strain. Left-align text (ragged-right) for the best readability.
+- **Font Choice**: Choose fonts with a tall x-height and clear distinctions between similar characters (e.g., "I", "l", "1").
+
+## Hierarchy & Pairing
+- **Typographic Scale**: Establish a clear hierarchy using a scale for font sizes, weights, and colors (e.g., 16px body, 24px heading). Use semantic `<h1>`-`<h6>` tags.
+- **Font Pairing**: A common and effective strategy is to pair a clean sans-serif font for body text with a complementary serif or a contrasting sans-serif for headings.
+- **Contrast**: Ensure text has a contrast ratio of at least **4.5:1** against its background.
+
+## Web Fonts & Performance
+- **Loading**: Use modern loading strategies to avoid layout shifts and invisible text.
+  - `font-display: swap;` in your `@font-face` rule ensures text is visible while the font loads.
+  - Preload critical fonts to prioritize their download.
+- **Variable Fonts**: When possible, use variable fonts. They provide a wide range of styles in a single, performant file.
+- **System Fonts**: Consider using system fonts for performance-critical applications.

@@ -57,4 +57,10 @@ export const emailTemplates = {
     <p><strong>Message:</strong></p>
     <p>${data.message}</p>
   `,
+
+  newSubscriber: (data: { email: string }) => `
+    <h2>New Newsletter Subscription</h2>
+    <p>A new user has subscribed to the newsletter.</p>
+    <p><strong>Email:</strong> ${data.email}</p>
+  `,
 }; 

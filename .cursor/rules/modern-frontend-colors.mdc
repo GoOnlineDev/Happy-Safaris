@@ -1,0 +1,43 @@
+---
+alwaysApply: false
+---
+# Modern Color Principles
+
+## Color Systems & Palettes
+- **60-30-10 Rule**: A balanced approach to color distribution.
+  - **60%** Dominant/Primary color (often a neutral).
+  - **30%** Secondary color.
+  - **10%** Accent color (for CTAs and highlights).
+- **Color Schemes**: Use the color wheel to create harmonious palettes.
+  - **Complementary** (opposite colors): Maximizes contrast, good for drawing attention.
+  - **Analogous** (adjacent colors): Creates a harmonious, cohesive look.
+- **Color Scale**: Define light and dark variants for each hue in your palette (e.g., using HSL modifications or a predefined scale like `blue-100`, `blue-200`...). Limit the total number of distinct hues to avoid visual clutter.
+
+## Best Practices
+- **Contrast Ratios**: Ensure text is readable. The WCAG minimum is **4.5:1** for normal text and **3:1** for large text. Use tools like the WebAIM Contrast Checker to verify. This benefits all users, including the ~8% with color vision deficiencies.
+- **Design Tokens**: Define all colors as design tokens (CSS variables or theme variables in a framework). This ensures consistency and makes theming (e.g., dark mode) trivial to implement.
+  ```css
+  :root { --color-primary: #0065A9; }
+  ```
+- **Backgrounds & Accents**: Use neutral colors for backgrounds. Avoid pure white text on dark backgrounds to reduce glare; use a light gray instead. Use your accent colors purposefully for interactive elements.
+- **Meaning & Culture**: Be mindful that colors have functional and cultural meanings (e.g., red for urgency/error, blue for trust).
+# Modern Color Principles
+
+## Color Systems & Palettes
+- **60-30-10 Rule**: A balanced approach to color distribution.
+  - **60%** Dominant/Primary color (often a neutral).
+  - **30%** Secondary color.
+  - **10%** Accent color (for CTAs and highlights).
+- **Color Schemes**: Use the color wheel to create harmonious palettes.
+  - **Complementary** (opposite colors): Maximizes contrast, good for drawing attention.
+  - **Analogous** (adjacent colors): Creates a harmonious, cohesive look.
+- **Color Scale**: Define light and dark variants for each hue in your palette (e.g., using HSL modifications or a predefined scale like `blue-100`, `blue-200`...). Limit the total number of distinct hues to avoid visual clutter.
+
+## Best Practices
+- **Contrast Ratios**: Ensure text is readable. The WCAG minimum is **4.5:1** for normal text and **3:1** for large text. Use tools like the WebAIM Contrast Checker to verify. This benefits all users, including the ~8% with color vision deficiencies.
+- **Design Tokens**: Define all colors as design tokens (CSS variables or theme variables in a framework). This ensures consistency and makes theming (e.g., dark mode) trivial to implement.
+  ```css
+  :root { --color-primary: #0065A9; }
+  ```
+- **Backgrounds & Accents**: Use neutral colors for backgrounds. Avoid pure white text on dark backgrounds to reduce glare; use a light gray instead. Use your accent colors purposefully for interactive elements.
+- **Meaning & Culture**: Be mindful that colors have functional and cultural meanings (e.g., red for urgency/error, blue for trust).

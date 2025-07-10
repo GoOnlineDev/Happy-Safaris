@@ -1,0 +1,60 @@
+---
+alwaysApply: false
+---
+
+
+# Modern Responsive & Adaptive Design Principles
+
+## Core Concepts
+- **Fluid Grids**: Use relative units (e.g., percentages, `vw`) for layouts, allowing them to stretch or shrink with the screen size.
+- **Flexible Images**: Use CSS to ensure images and media scale proportionally within their containers, preventing overflow. A common technique is `max-width: 100%;`.
+- **Media Queries**: Apply different CSS styles based on device characteristics like screen width, allowing the layout to change at specific **breakpoints**.
+
+## Mobile-First Approach
+- **Strategy**: Design for the smallest screen first, then progressively enhance for larger screens.
+- **Benefits**: Prioritizes core content, encourages performance optimization, and leads to a cleaner, more adaptable design.
+
+## Responsive vs. Adaptive
+- **Responsive**: A single, fluid layout that continuously adjusts to any screen size. This is the most common and flexible approach.
+- **Adaptive**: Uses a set of predefined, fixed layouts for specific screen sizes. The design "snaps" to the best-fitting layout at certain breakpoints.
+
+## Standard Breakpoints
+Use these as a starting point, but always let your content determine the final breakpoints.
+- **Extra Small Mobile**: 320px - 480px
+- **Small Mobile (Landscape)**: 481px - 600px
+- **Small Tablets**: 601px - 768px
+- **Large Tablets**: 769px - 1024px
+- **Small Desktops**: 1025px - 1280px
+- **Large Desktops**: 1281px - 1440px
+- **Extra Large**: 1441px+
+
+## Progressive Enhancement
+- **Strategy**: Start with a baseline of content and functionality accessible to all users (using semantic HTML), then layer on more advanced presentation (CSS) and functionality (JavaScript) for capable browsers.
+
+# Modern Responsive & Adaptive Design Principles
+
+## Core Concepts
+- **Fluid Grids**: Use relative units (e.g., percentages, `vw`) for layouts, allowing them to stretch or shrink with the screen size.
+- **Flexible Images**: Use CSS to ensure images and media scale proportionally within their containers, preventing overflow. A common technique is `max-width: 100%;`.
+- **Media Queries**: Apply different CSS styles based on device characteristics like screen width, allowing the layout to change at specific **breakpoints**.
+
+## Mobile-First Approach
+- **Strategy**: Design for the smallest screen first, then progressively enhance for larger screens.
+- **Benefits**: Prioritizes core content, encourages performance optimization, and leads to a cleaner, more adaptable design.
+
+## Responsive vs. Adaptive
+- **Responsive**: A single, fluid layout that continuously adjusts to any screen size. This is the most common and flexible approach.
+- **Adaptive**: Uses a set of predefined, fixed layouts for specific screen sizes. The design "snaps" to the best-fitting layout at certain breakpoints.
+
+## Standard Breakpoints
+Use these as a starting point, but always let your content determine the final breakpoints.
+- **Extra Small Mobile**: 320px - 480px
+- **Small Mobile (Landscape)**: 481px - 600px
+- **Small Tablets**: 601px - 768px
+- **Large Tablets**: 769px - 1024px
+- **Small Desktops**: 1025px - 1280px
+- **Large Desktops**: 1281px - 1440px
+- **Extra Large**: 1441px+
+
+## Progressive Enhancement
+- **Strategy**: Start with a baseline of content and functionality accessible to all users (using semantic HTML), then layer on more advanced presentation (CSS) and functionality (JavaScript) for capable browsers.

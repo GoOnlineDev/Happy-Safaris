@@ -11,7 +11,7 @@ export default function MainLayout({
   return (
     <>
       <Navigation />
-      <main className="min-h-screen bg-background antialiased">
+      <main className="min-h-screen bg-secondary antialiased">
         {children}
       </main>
       <Footer />

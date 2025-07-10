@@ -137,9 +137,9 @@ const BarChart = ({
               <span className="text-gray-400">{item.label}</span>
               <span className="text-white font-medium">{item.value}</span>
             </div>
-            <div className="h-2 bg-[#2a3431] rounded-full overflow-hidden">
+            <div className="h-2 bg-background-light rounded-full overflow-hidden">
               <div 
-                className="h-full bg-[#e3b261] rounded-full" 
+                className="h-full bg-primary rounded-full" 
                 style={{ width: `${(item.value / maxValue) * 100}%` }} 
               />
             </div>
@@ -156,7 +156,7 @@ const StatCard = ({
   value, 
   icon: Icon, 
   trend, 
-  color = "text-[#e3b261]" 
+  color = "text-primary" 
 }: { 
   title: string; 
   value: number | string; 
@@ -165,7 +165,7 @@ const StatCard = ({
   color?: string 
 }) => {
   return (
-    <Card className="bg-[#1a2421] border-[#3a4441] p-6">
+    <Card className="bg-secondary border-accent p-6">
       <div className="flex justify-between items-start">
         <div>
           <p className="text-gray-400 text-sm">{title}</p>
@@ -252,8 +252,8 @@ export default function AnalyticsPage() {
   // Loading state
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-[#1a2421]">
-        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-[#e3b261]"></div>
+      <div className="flex items-center justify-center min-h-screen bg-secondary">
+        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-primary"></div>
       </div>
     );
   }
@@ -261,11 +261,11 @@ export default function AnalyticsPage() {
   // Access control - only admins can access
   if (!isAdmin) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen bg-[#1a2421] p-4">
-        <h1 className="text-2xl font-bold text-[#e3b261] mb-4">Access Denied</h1>
+      <div className="flex flex-col items-center justify-center min-h-screen bg-secondary p-4">
+        <h1 className="text-2xl font-bold text-primary mb-4">Access Denied</h1>
         <p className="text-white mb-6">You don't have permission to access this page.</p>
         <Link href="/portal">
-          <Button className="bg-[#e3b261] hover:bg-[#c49a51] text-[#1a2421]">
+          <Button className="bg-primary hover:bg-primary/90 text-secondary">
             Back to Portal
           </Button>
         </Link>
@@ -282,16 +282,16 @@ export default function AnalyticsPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <h1 className="text-3xl font-bold text-[#e3b261] mb-2">Analytics Dashboard</h1>
+            <h1 className="text-3xl font-bold text-primary mb-2">Analytics Dashboard</h1>
             <p className="text-gray-400">Monitor website performance and user engagement</p>
           </motion.div>
           
           <div className="flex items-center">
             <Select value={timeframe} onValueChange={setTimeframe}>
-              <SelectTrigger className="w-[180px] bg-[#2a3431] border-[#3a4441] text-white">
+              <SelectTrigger className="w-[180px] bg-background-light border-accent text-white">
                 <SelectValue placeholder="Select timeframe" />
               </SelectTrigger>
-              <SelectContent className="bg-[#2a3431] border-[#3a4441] text-white">
+              <SelectContent className="bg-background-light border-accent text-white">
                 <SelectItem value="day">Last 24 Hours</SelectItem>
                 <SelectItem value="week">Last 7 Days</SelectItem>
                 <SelectItem value="month">Last 30 Days</SelectItem>
@@ -334,21 +334,21 @@ export default function AnalyticsPage() {
 
         {/* Tabs for different analytics */}
         <Tabs defaultValue="overview" className="space-y-6">
-          <TabsList className="bg-[#2a3431] border-[#3a4441]">
-            <TabsTrigger className="data-[state=active]:bg-[#e3b261] data-[state=active]:text-[#1a2421]" value="overview">Overview</TabsTrigger>
-            <TabsTrigger className="data-[state=active]:bg-[#e3b261] data-[state=active]:text-[#1a2421]" value="destinations">Destinations</TabsTrigger>
-            <TabsTrigger className="data-[state=active]:bg-[#e3b261] data-[state=active]:text-[#1a2421]" value="users">Users</TabsTrigger>
-            <TabsTrigger className="data-[state=active]:bg-[#e3b261] data-[state=active]:text-[#1a2421]" value="bookings">Bookings</TabsTrigger>
+          <TabsList className="bg-background-light border-accent">
+            <TabsTrigger className="data-[state=active]:bg-primary data-[state=active]:text-secondary" value="overview">Overview</TabsTrigger>
+            <TabsTrigger className="data-[state=active]:bg-primary data-[state=active]:text-secondary" value="destinations">Destinations</TabsTrigger>
+            <TabsTrigger className="data-[state=active]:bg-primary data-[state=active]:text-secondary" value="users">Users</TabsTrigger>
+            <TabsTrigger className="data-[state=active]:bg-primary data-[state=active]:text-secondary" value="bookings">Bookings</TabsTrigger>
           </TabsList>
           
           {/* Overview Tab */}
           <TabsContent value="overview">
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               {/* Top Destinations */}
-              <Card className="bg-[#1a2421] border-[#3a4441] p-6 lg:col-span-2">
+              <Card className="bg-secondary border-accent p-6 lg:col-span-2">
                 <div className="flex justify-between items-center mb-6">
                   <h2 className="text-xl font-semibold text-white">Top Destinations</h2>
-                  <Link href="/portal/destinations" className="text-[#e3b261] text-sm hover:underline flex items-center">
+                  <Link href="/portal/destinations" className="text-primary text-sm hover:underline flex items-center">
                     View All <ArrowRight className="ml-1 h-3 w-3" />
                   </Link>
                 </div>
@@ -360,11 +360,11 @@ export default function AnalyticsPage() {
               </Card>
               
               {/* Recent Activity */}
-              <Card className="bg-[#1a2421] border-[#3a4441] p-6">
+              <Card className="bg-secondary border-accent p-6">
                 <h2 className="text-xl font-semibold text-white mb-6">Recent Activity</h2>
                 <div className="space-y-4">
                   {recentActivity.map((activity, index) => (
-                    <div key={index} className="flex items-start space-x-3 pb-3 border-b border-[#3a4441]">
+                    <div key={index} className="flex items-start space-x-3 pb-3 border-b border-accent">
                       <div className={`p-2 rounded-full flex-shrink-0 ${
                         activity.type === 'booking' ? 'bg-green-500/20' : 
                         activity.type === 'user' ? 'bg-blue-500/20' : 
@@ -389,7 +389,7 @@ export default function AnalyticsPage() {
             
             {/* Bottom Row - User Demographics */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
-              <Card className="bg-[#1a2421] border-[#3a4441] p-6">
+              <Card className="bg-secondary border-accent p-6">
                 <h2 className="text-xl font-semibold text-white mb-6">User Demographics</h2>
                 <div className="flex space-x-4">
                   <div className="flex-1">
@@ -411,11 +411,11 @@ export default function AnalyticsPage() {
                 </div>
               </Card>
               
-              <Card className="bg-[#1a2421] border-[#3a4441] p-6">
+              <Card className="bg-secondary border-accent p-6">
                 <div className="flex justify-between items-center mb-6">
                   <h2 className="text-xl font-semibold text-white">Top User Countries</h2>
-                  <div className="p-2 rounded-full bg-[#2a3431]">
-                    <Globe className="h-5 w-5 text-[#e3b261]" />
+                  <div className="p-2 rounded-full bg-background-light">
+                    <Globe className="h-5 w-5 text-primary" />
                   </div>
                 </div>
                 <BarChart 
@@ -430,15 +430,15 @@ export default function AnalyticsPage() {
           {/* Destinations Tab */}
           <TabsContent value="destinations">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <Card className="bg-[#1a2421] border-[#3a4441] p-6">
+              <Card className="bg-secondary border-accent p-6">
                 <h2 className="text-xl font-semibold text-white mb-4">Destination Analytics</h2>
                 <div className="space-y-6">
                   <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-                    <div className="bg-[#2a3431] rounded-lg p-4 flex-1">
+                    <div className="bg-background-light rounded-lg p-4 flex-1">
                       <p className="text-gray-400 text-sm">Total Destinations</p>
                       <p className="text-2xl font-bold text-white">{totalDestinations}</p>
                     </div>
-                    <div className="bg-[#2a3431] rounded-lg p-4 flex-1">
+                    <div className="bg-background-light rounded-lg p-4 flex-1">
                       <p className="text-gray-400 text-sm">Total Views</p>
                       <p className="text-2xl font-bold text-white">{totalDestinationViews}</p>
                     </div>
@@ -446,16 +446,16 @@ export default function AnalyticsPage() {
                   
                   <div>
                     <h3 className="text-lg font-medium text-white mb-3">Destination Engagement</h3>
-                    <div className="bg-[#2a3431] rounded-lg p-4">
+                    <div className="bg-background-light rounded-lg p-4">
                       <div className="flex justify-between mb-2">
                         <span className="text-gray-400">Average Views per Destination</span>
                         <span className="text-white font-medium">
                           {totalDestinations > 0 ? Math.round(totalDestinationViews / totalDestinations) : 0}
                         </span>
                       </div>
-                      <div className="h-2 bg-[#1a2421] rounded-full overflow-hidden">
+                      <div className="h-2 bg-secondary rounded-full overflow-hidden">
                         <div 
-                          className="h-full bg-[#e3b261] rounded-full" 
+                          className="h-full bg-primary rounded-full" 
                           style={{ width: `${Math.min(100, (totalDestinationViews / (totalDestinations * 100)) * 100)}%` }} 
                         />
                       </div>
@@ -464,14 +464,14 @@ export default function AnalyticsPage() {
                 </div>
               </Card>
               
-              <Card className="bg-[#1a2421] border-[#3a4441] p-6">
+              <Card className="bg-secondary border-accent p-6">
                 <h2 className="text-xl font-semibold text-white mb-4">Top Destinations</h2>
                 <div className="space-y-4">
                   {topDestinations.length > 0 ? (
                     topDestinations.map((destination, index) => (
-                      <div key={index} className="flex items-center justify-between pb-2 border-b border-[#3a4441]">
+                      <div key={index} className="flex items-center justify-between pb-2 border-b border-accent">
                         <div className="flex items-center space-x-3">
-                          <div className="flex items-center justify-center h-8 w-8 rounded-full bg-[#2a3431] text-[#e3b261] font-bold">
+                          <div className="flex items-center justify-center h-8 w-8 rounded-full bg-background-light text-primary font-bold">
                             {index + 1}
                           </div>
                           <span className="text-white">{destination.label}</span>
@@ -487,7 +487,7 @@ export default function AnalyticsPage() {
                 </div>
                 <div className="mt-4">
                   <Link href="/portal/destinations">
-                    <Button className="w-full bg-[#e3b261] hover:bg-[#c49a51] text-[#1a2421]">
+                    <Button className="w-full bg-primary hover:bg-primary/90 text-secondary">
                       Manage Destinations
                     </Button>
                   </Link>
@@ -499,15 +499,15 @@ export default function AnalyticsPage() {
           {/* Users Tab */}
           <TabsContent value="users">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <Card className="bg-[#1a2421] border-[#3a4441] p-6">
+              <Card className="bg-secondary border-accent p-6">
                 <h2 className="text-xl font-semibold text-white mb-4">User Statistics</h2>
                 <div className="space-y-6">
                   <div className="grid grid-cols-2 gap-4">
-                    <div className="bg-[#2a3431] rounded-lg p-4">
+                    <div className="bg-background-light rounded-lg p-4">
                       <p className="text-gray-400 text-sm">Total Users</p>
                       <p className="text-2xl font-bold text-white">{totalUsers}</p>
                     </div>
-                    <div className="bg-[#2a3431] rounded-lg p-4">
+                    <div className="bg-background-light rounded-lg p-4">
                       <p className="text-gray-400 text-sm">New Users (30d)</p>
                       <p className="text-2xl font-bold text-white">{Math.floor(totalUsers * 0.15)}</p>
                     </div>
@@ -521,7 +521,7 @@ export default function AnalyticsPage() {
                           <span className="text-gray-400">Tourists</span>
                           <span className="text-white font-medium">{tourists}</span>
                         </div>
-                        <div className="h-2 bg-[#2a3431] rounded-full overflow-hidden">
+                        <div className="h-2 bg-background-light rounded-full overflow-hidden">
                           <div 
                             className="h-full bg-green-500 rounded-full" 
                             style={{ width: `${(tourists / totalUsers) * 100}%` }} 
@@ -533,7 +533,7 @@ export default function AnalyticsPage() {
                           <span className="text-gray-400">Admins</span>
                           <span className="text-white font-medium">{admins}</span>
                         </div>
-                        <div className="h-2 bg-[#2a3431] rounded-full overflow-hidden">
+                        <div className="h-2 bg-background-light rounded-full overflow-hidden">
                           <div 
                             className="h-full bg-blue-500 rounded-full" 
                             style={{ width: `${(admins / totalUsers) * 100}%` }} 
@@ -543,7 +543,7 @@ export default function AnalyticsPage() {
                     </div>
                   </div>
                   
-                  <div className="pt-4 border-t border-[#3a4441]">
+                  <div className="pt-4 border-t border-accent">
                     <h3 className="text-lg font-medium text-white mb-3">Top User Countries</h3>
                     <BarChart 
                       data={userCountries.slice(0, 3)} 
@@ -554,11 +554,11 @@ export default function AnalyticsPage() {
                 </div>
               </Card>
               
-              <Card className="bg-[#1a2421] border-[#3a4441] p-6">
+              <Card className="bg-secondary border-accent p-6">
                 <h2 className="text-xl font-semibold text-white mb-4">User Management</h2>
                 
                 <div className="space-y-4">
-                  <div className="bg-[#2a3431] rounded-lg p-4">
+                  <div className="bg-background-light rounded-lg p-4">
                     <div className="flex justify-between items-center">
                       <div>
                         <h3 className="text-white font-medium">User Accounts</h3>
@@ -566,18 +566,18 @@ export default function AnalyticsPage() {
                           Manage user details, permissions, and more
                         </p>
                       </div>
-                      <Users className="h-6 w-6 text-[#e3b261]" />
+                      <Users className="h-6 w-6 text-primary" />
                     </div>
                     <div className="mt-4">
                       <Link href="/portal/users">
-                        <Button className="w-full bg-[#e3b261] hover:bg-[#c49a51] text-[#1a2421]">
+                        <Button className="w-full bg-primary hover:bg-primary/90 text-secondary">
                           Manage Users
                         </Button>
                       </Link>
                     </div>
                   </div>
                   
-                  <div className="bg-[#2a3431] rounded-lg p-4">
+                  <div className="bg-background-light rounded-lg p-4">
                     <h3 className="text-white font-medium">Recent Users</h3>
                     <p className="text-gray-400 text-sm mt-1 mb-4">
                       Recently joined users on the platform
@@ -587,7 +587,7 @@ export default function AnalyticsPage() {
                       {users.slice(0, 3).map((user: UserType, index: number) => (
                         <div key={index} className="flex items-center justify-between">
                           <div className="flex items-center space-x-3">
-                            <div className="h-8 w-8 rounded-full bg-[#1a2421] flex items-center justify-center overflow-hidden">
+                            <div className="h-8 w-8 rounded-full bg-secondary flex items-center justify-center overflow-hidden">
                               {user.imageUrl ? (
                                 <img 
                                   src={user.imageUrl} 
@@ -595,7 +595,7 @@ export default function AnalyticsPage() {
                                   className="h-8 w-8 object-cover" 
                                 />
                               ) : (
-                                <span className="text-[#e3b261]">
+                                <span className="text-primary">
                                   {user.firstName?.[0] || user.lastName?.[0] || "U"}
                                 </span>
                               )}
@@ -628,15 +628,15 @@ export default function AnalyticsPage() {
           {/* Bookings Tab */}
           <TabsContent value="bookings">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <Card className="bg-[#1a2421] border-[#3a4441] p-6">
+              <Card className="bg-secondary border-accent p-6">
                 <h2 className="text-xl font-semibold text-white mb-4">Booking Statistics</h2>
                 <div className="space-y-6">
                   <div className="grid grid-cols-2 gap-4">
-                    <div className="bg-[#2a3431] rounded-lg p-4">
+                    <div className="bg-background-light rounded-lg p-4">
                       <p className="text-gray-400 text-sm">Total Bookings</p>
                       <p className="text-2xl font-bold text-white">{totalBookings}</p>
                     </div>
-                    <div className="bg-[#2a3431] rounded-lg p-4">
+                    <div className="bg-background-light rounded-lg p-4">
                       <p className="text-gray-400 text-sm">Conversion Rate</p>
                       <p className="text-2xl font-bold text-white">
                         {totalUsers > 0 ? `${Math.round((totalBookings / totalUsers) * 100)}%` : '0%'}
@@ -652,7 +652,7 @@ export default function AnalyticsPage() {
                           <span className="text-gray-400">Confirmed</span>
                           <span className="text-white font-medium">{confirmedBookings}</span>
                         </div>
-                        <div className="h-2 bg-[#2a3431] rounded-full overflow-hidden">
+                        <div className="h-2 bg-background-light rounded-full overflow-hidden">
                           <div 
                             className="h-full bg-green-500 rounded-full" 
                             style={{ width: `${totalBookings > 0 ? (confirmedBookings / totalBookings) * 100 : 0}%` }} 
@@ -664,7 +664,7 @@ export default function AnalyticsPage() {
                           <span className="text-gray-400">Pending</span>
                           <span className="text-white font-medium">{pendingBookings}</span>
                         </div>
-                        <div className="h-2 bg-[#2a3431] rounded-full overflow-hidden">
+                        <div className="h-2 bg-background-light rounded-full overflow-hidden">
                           <div 
                             className="h-full bg-yellow-500 rounded-full" 
                             style={{ width: `${totalBookings > 0 ? (pendingBookings / totalBookings) * 100 : 0}%` }} 
@@ -678,7 +678,7 @@ export default function AnalyticsPage() {
                             {totalBookings - confirmedBookings - pendingBookings}
                           </span>
                         </div>
-                        <div className="h-2 bg-[#2a3431] rounded-full overflow-hidden">
+                        <div className="h-2 bg-background-light rounded-full overflow-hidden">
                           <div 
                             className="h-full bg-blue-500 rounded-full" 
                             style={{ width: `${totalBookings > 0 ? ((totalBookings - confirmedBookings - pendingBookings) / totalBookings) * 100 : 0}%` }} 
@@ -690,18 +690,18 @@ export default function AnalyticsPage() {
                 </div>
               </Card>
               
-              <Card className="bg-[#1a2421] border-[#3a4441] p-6">
+              <Card className="bg-secondary border-accent p-6">
                 <h2 className="text-xl font-semibold text-white mb-4">Financial Overview</h2>
                 <div className="space-y-6">
                   <div className="grid grid-cols-2 gap-4">
-                    <div className="bg-[#2a3431] rounded-lg p-4">
+                    <div className="bg-background-light rounded-lg p-4">
                       <div className="flex items-center">
                         <DollarSign className="h-5 w-5 text-green-500 mr-2" />
                         <p className="text-gray-400 text-sm">Total Revenue</p>
                       </div>
                       <p className="text-2xl font-bold text-white mt-1">$12,450</p>
                     </div>
-                    <div className="bg-[#2a3431] rounded-lg p-4">
+                    <div className="bg-background-light rounded-lg p-4">
                       <div className="flex items-center">
                         <Percent className="h-5 w-5 text-purple-500 mr-2" />
                         <p className="text-gray-400 text-sm">Growth</p>
@@ -710,7 +710,7 @@ export default function AnalyticsPage() {
                     </div>
                   </div>
                   
-                  <div className="pt-4 border-t border-[#3a4441]">
+                  <div className="pt-4 border-t border-accent">
                     <h3 className="text-lg font-medium text-white mb-3">Booking Trends</h3>
                     <div className="flex space-x-2 overflow-x-auto py-2">
                       {[
@@ -723,7 +723,7 @@ export default function AnalyticsPage() {
                       ].map((item, index) => (
                         <div key={index} className="flex flex-col items-center space-y-2">
                           <div 
-                            className="w-8 bg-[#e3b261] rounded-t-sm" 
+                            className="w-8 bg-primary rounded-t-sm" 
                             style={{ height: `${item.value * 4}px` }}
                           />
                           <span className="text-xs text-gray-400">{item.month}</span>
@@ -734,7 +734,7 @@ export default function AnalyticsPage() {
                   
                   <div className="mt-4">
                     <Link href="/portal/bookings">
-                      <Button className="w-full bg-[#e3b261] hover:bg-[#c49a51] text-[#1a2421]">
+                      <Button className="w-full bg-primary hover:bg-primary/90 text-secondary">
                         View All Bookings
                       </Button>
                     </Link>

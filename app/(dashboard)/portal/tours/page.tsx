@@ -18,7 +18,8 @@ import {
   Clock,
   Users,
   Calendar,
-  DollarSign
+  DollarSign,
+  Trash
 } from "lucide-react";
 import Link from "next/link";
 import { motion } from "framer-motion";
@@ -107,10 +108,10 @@ export default function ToursPage() {
     // No explicit refresh needed unless you have specific caching issues
   };
 
-  if (isLoading) {
+  if (isLoading || tours === undefined) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-[#1a2421]">
-        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-[#e3b261]"></div>
+      <div className="flex items-center justify-center min-h-screen bg-secondary">
+        <Loader2 className="h-8 w-8 text-primary animate-spin" />
       </div>
     );
   }
@@ -131,15 +132,16 @@ export default function ToursPage() {
 
   return (
     <ProtectedPortal>
-      <div className="space-y-8">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-        >
-          <h1 className="text-3xl font-bold text-[#e3b261] mb-2">Tours Management</h1>
-          <p className="text-gray-400">Create and manage safari tours for Happy Safaris</p>
-        </motion.div>
+      <div className="max-w-6xl mx-auto p-4 md:p-8">
+        <div className="flex justify-between items-center mb-6">
+          <h1 className="text-3xl font-bold text-primary">Tours Admin</h1>
+          <Button 
+            className="bg-primary hover:bg-primary/90 text-secondary"
+            onClick={() => setIsCreateModalOpen(true)}
+          >
+            <PlusCircle className="mr-2 h-5 w-5" /> Create New Tour
+          </Button>
+        </div>
 
         {/* Analytics Summary */}
         {analytics && (
@@ -252,22 +254,22 @@ export default function ToursPage() {
         </div>
 
         {/* Tours List */}
-        <Card className="bg-[#1a2421] border-[#3a4441] p-6">
+        <Card className="bg-secondary border-accent p-6">
           <h2 className="text-xl font-semibold text-white mb-4">All Tours</h2>
           <div className="overflow-x-auto">
             <Table>
               <TableHeader>
-                <TableRow className="bg-[#2a3431] text-gray-300">
-                  <TableHead>Title</TableHead>
-                  <TableHead>Location</TableHead>
-                  <TableHead>Country</TableHead>
-                  <TableHead>Featured</TableHead>
+                <TableRow className="bg-background-light text-gray-300">
+                  <TableHead>Name</TableHead>
+                  <TableHead>Destination</TableHead>
+                  <TableHead>Price</TableHead>
+                  <TableHead>Duration</TableHead>
                   <TableHead className="text-right">Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {filteredTours.map((tour) => (
-                  <TableRow key={tour._id} className="border-b border-[#3a4441] text-white hover:bg-[#232c29]">
+                  <TableRow key={tour._id} className="border-b border-accent text-white hover:bg-background-light">
                     <TableCell className="font-medium">{tour.title}</TableCell>
                     <TableCell>{tour.location}</TableCell>
                     <TableCell>{tour.country}</TableCell>
@@ -276,7 +278,7 @@ export default function ToursPage() {
                       <Button 
                         variant="outline" 
                         size="sm" 
-                        className="border-[#3a4441] text-[#e3b261] hover:bg-[#2a3431] hover:text-[#e3b261]"
+                        className="border-accent text-primary hover:bg-background-light hover:text-primary"
                         onClick={() => handleEditClick(tour._id)}
                       >
                         <Edit className="h-4 w-4" />

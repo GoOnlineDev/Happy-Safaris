@@ -23,7 +23,7 @@ export default function PortalPage() {
   if (!isClient || isLoading) {
     return (
       <div className="flex items-center justify-center h-full">
-        <div className="text-[#e3b261] text-2xl">Loading...</div>
+        <div className="text-primary text-2xl">Loading...</div>
       </div>
     );
   }
@@ -81,21 +81,21 @@ export default function PortalPage() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-3xl font-bold text-[#e3b261] mb-2">Welcome, {user?.firstName || "Explorer"}!</h1>
+        <h1 className="text-3xl font-bold text-primary mb-2">Welcome, {user?.firstName || "Explorer"}!</h1>
         <p className="text-gray-400">Manage your safaris and explore new adventures</p>
       </div>
       
       {/* User welcome card */}
-      <div className="bg-[#2a3431] p-6 rounded-xl shadow-lg flex items-center gap-6">
+      <div className="bg-background-light p-6 rounded-xl shadow-lg flex items-center gap-6">
         <div className="flex-shrink-0">
           {user?.imageUrl ? (
             <img 
               src={user.imageUrl} 
               alt="Profile" 
-              className="h-20 w-20 rounded-full object-cover border-2 border-[#e3b261]"
+              className="h-20 w-20 rounded-full object-cover border-2 border-primary"
             />
           ) : (
-            <div className="h-20 w-20 rounded-full bg-[#3a4441] flex items-center justify-center text-[#e3b261]">
+            <div className="h-20 w-20 rounded-full bg-accent flex items-center justify-center text-primary">
               <User className="h-10 w-10" />
             </div>
           )}
@@ -107,7 +107,7 @@ export default function PortalPage() {
           <p className="text-gray-400">{user?.primaryEmailAddress?.emailAddress}</p>
           <div className="mt-3">
             <Link href="/portal/profile">
-              <span className="text-[#e3b261] hover:text-[#c49a51] transition flex items-center gap-1">
+              <span className="text-primary hover:text-primary/90 transition flex items-center gap-1">
                 <User className="h-4 w-4" />
                 <span>Edit Profile</span>
               </span>
@@ -117,13 +117,13 @@ export default function PortalPage() {
       </div>
       
       {/* Quick actions grid */}
-      <h2 className="text-2xl font-semibold text-[#e3b261] mb-4">Quick Actions</h2>
+      <h2 className="text-2xl font-semibold text-primary mb-4">Quick Actions</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {quickActions.map((action) => (
           <Link 
             key={action.title} 
             href={action.href}
-            className="bg-[#2a3431] rounded-xl shadow-lg p-6 border border-[#3a4441] hover:border-[#e3b261] transition-colors"
+            className="bg-background-light rounded-xl shadow-lg p-6 border border-accent hover:border-primary transition-colors"
           >
             <div className="flex items-start gap-4">
               <div className={`p-3 rounded-md ${action.color}`}>

@@ -1,0 +1,56 @@
+---
+alwaysApply: false
+---
+
+
+# Modern Spacing & Layout Principles
+
+## The 8-Point Grid & Spacing Scale
+- **Foundation**: Use a consistent spacing scale based on a **4pt or 8pt grid**. All margins, padding, and gaps should use increments from this scale (e.g., 4px, 8px, 16px, 24px, 32px). This creates visual rhythm and simplifies design decisions.
+- **Margin vs. Padding**:
+  - **Padding**: Space *inside* an element's border.
+  - **Margin**: Space *outside* an element's border.
+- **CSS `gap`**: For Flexbox and Grid containers, prefer the `gap` property (`gap: 16px;`) to create consistent spacing between items. This avoids margin-collapsing issues.
+
+## Alignment
+- **Flexbox/Grid**: Use `display: flex` or `display: grid` with alignment properties (`align-items`, `justify-content`) to control layout.
+- **Text Alignment**: Left-align text for best readability (ragged-right). Avoid justified text, which can create awkward "rivers" of space.
+
+## Responsive Layouts
+- **Flexbox & Grid**: Use **Flexbox** for one-dimensional layouts (e.g., a navbar) and **CSS Grid** for two-dimensional layouts (e.g., a photo gallery). A fluid grid can be created with `grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));`.
+- **Breakpoints**: Use content-driven breakpoints where the layout starts to break. Common `min-width` breakpoints are **480px, 768px, 1024px, and 1280px**. Define them as CSS variables for consistency.
+- **Container Queries**: Use CSS container queries for components that need to adapt to their container's width, not just the viewport's. This allows for truly modular and responsive components.
+  ```css
+  .card-container {
+    container-type: inline-size;
+  }
+  @container (min-width: 400px) {
+    /* Styles for the component inside .card-container */
+  }
+  ```
+
+# Modern Spacing & Layout Principles
+
+## The 8-Point Grid & Spacing Scale
+- **Foundation**: Use a consistent spacing scale based on a **4pt or 8pt grid**. All margins, padding, and gaps should use increments from this scale (e.g., 4px, 8px, 16px, 24px, 32px). This creates visual rhythm and simplifies design decisions.
+- **Margin vs. Padding**:
+  - **Padding**: Space *inside* an element's border.
+  - **Margin**: Space *outside* an element's border.
+- **CSS `gap`**: For Flexbox and Grid containers, prefer the `gap` property (`gap: 16px;`) to create consistent spacing between items. This avoids margin-collapsing issues.
+
+## Alignment
+- **Flexbox/Grid**: Use `display: flex` or `display: grid` with alignment properties (`align-items`, `justify-content`) to control layout.
+- **Text Alignment**: Left-align text for best readability (ragged-right). Avoid justified text, which can create awkward "rivers" of space.
+
+## Responsive Layouts
+- **Flexbox & Grid**: Use **Flexbox** for one-dimensional layouts (e.g., a navbar) and **CSS Grid** for two-dimensional layouts (e.g., a photo gallery). A fluid grid can be created with `grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));`.
+- **Breakpoints**: Use content-driven breakpoints where the layout starts to break. Common `min-width` breakpoints are **480px, 768px, 1024px, and 1280px**. Define them as CSS variables for consistency.
+- **Container Queries**: Use CSS container queries for components that need to adapt to their container's width, not just the viewport's. This allows for truly modular and responsive components.
+  ```css
+  .card-container {
+    container-type: inline-size;
+  }
+  @container (min-width: 400px) {
+    /* Styles for the component inside .card-container */
+  }
+  ```

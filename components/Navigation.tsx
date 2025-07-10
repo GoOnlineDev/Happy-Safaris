@@ -3,11 +3,19 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 import { useAuth } from "@/hooks/useClerkAuth";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+  DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu";
 import {
   Menu,
   X,
@@ -21,23 +29,21 @@ import {
   FileText,
   LayoutDashboard,
 } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 export default function Navigation() {
   const [isOpen, setIsOpen] = useState(false);
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
   const { user, logout } = useAuth();
+  const pathname = usePathname();
   
-  // Fetch the current user's profile from Convex
   const convexUser = useQuery(api.users.getCurrentUser);
 
-  // Set isMounted to true on client side
   useEffect(() => {
     setIsMounted(true);
   }, []);
 
-  // Handle scroll effect
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
@@ -55,7 +61,6 @@ export default function Navigation() {
     }
   };
 
-  // Get the profile image URL from Convex if available
   const profileImageUrl = convexUser?.imageUrl || user?.imageUrl;
 
   const menuItems = [
@@ -66,15 +71,13 @@ export default function Navigation() {
     { href: "/terms", label: "Terms & Conditions", icon: FileText },
   ];
 
-  // Initial class name for server rendering to prevent hydration mismatch
   const navClassName = `fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[95vw] max-w-6xl px-2 transition-all duration-300
-    ${isMounted && (isScrolled || isOpen) ? 'bg-[#1a2421]/70' : 'bg-[#1a2421]/50'}
+    ${isMounted && (isScrolled || isOpen) ? 'bg-secondary/70' : 'bg-secondary/50'}
     rounded-full shadow-xl backdrop-blur-lg flex items-center justify-between`;
 
   return (
     <nav className={navClassName} style={{ minHeight: 72 }}>
       <div className="flex justify-between items-center w-full h-16 px-4">
-        {/* Logo */}
         <Link href="/" className="flex items-center space-x-2 z-50 ml-0 sm:ml-2">
           <div className="relative h-10 w-36 sm:w-40">
             <Image
@@ -82,86 +85,75 @@ export default function Navigation() {
               alt="Happy African Safaris"
               fill
               className="object-contain"
+              sizes="160px"
               priority
             />
           </div>
         </Link>
 
-        {/* Desktop Navigation */}
         <div className="hidden lg:flex items-center space-x-8">
           {menuItems.map((item) => (
             <Link
               key={item.href}
               href={item.href}
-              className="text-gray-300 hover:text-[#e3b261] transition-colors flex items-center space-x-1"
+              className={cn(
+                "text-gray-300 hover:text-primary transition-colors flex items-center space-x-1",
+                pathname === item.href && "text-primary"
+              )}
             >
               <item.icon className="h-4 w-4" />
               <span>{item.label}</span>
             </Link>
           ))}
 
-          {/* Auth Buttons */}
           <div className="flex items-center space-x-4">
             {user ? (
-              <div className="relative">
-                <Button
-                  variant="ghost"
-                  className="text-gray-300 hover:text-[#e3b261] flex items-center space-x-2"
-                  onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                >
-                  {profileImageUrl ? (
-                    <img 
-                      src={profileImageUrl} 
-                      alt="Profile" 
-                      className="h-8 w-8 rounded-full object-cover border border-[#e3b261]"
-                    />
-                  ) : (
-                    <div className="h-8 w-8 rounded-full bg-[#3a4441] flex items-center justify-center text-[#e3b261]">
-                      {user.firstName?.[0] || user.lastName?.[0] || <User className="h-4 w-4" />}
-                    </div>
-                  )}
-                  <span>Account</span>
-                  <ChevronDown className="h-4 w-4" />
-                </Button>
-                
-                <AnimatePresence>
-                  {isDropdownOpen && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: 10 }}
-                      className="absolute right-0 mt-2 w-48 bg-[#1a2421] border border-[#3a4441] rounded-md shadow-lg overflow-hidden"
-                    >
-                      <Link href="/portal">
-                        <Button
-                          variant="ghost"
-                          className="w-full text-left text-gray-300 hover:text-[#e3b261] hover:bg-[#2a3431] flex items-center space-x-2 px-4 py-2"
-                        >
-                          <LayoutDashboard className="h-4 w-4" />
-                          <span>Portal</span>
-                        </Button>
-                      </Link>
-                      <Button
-                        variant="ghost"
-                        className="w-full text-left text-gray-300 hover:text-[#e3b261] hover:bg-[#2a3431] flex items-center space-x-2 px-4 py-2"
-                        onClick={handleLogout}
-                      >
-                        <LogOut className="h-4 w-4" />
-                        <span>Logout</span>
-                      </Button>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    className="text-gray-300 hover:text-primary flex items-center space-x-2"
+                  >
+                    {profileImageUrl ? (
+                      <Image 
+                        src={profileImageUrl} 
+                        alt="Profile" 
+                        width={32}
+                        height={32}
+                        className="h-8 w-8 rounded-full object-cover border border-primary"
+                      />
+                    ) : (
+                      <div className="h-8 w-8 rounded-full bg-accent flex items-center justify-center text-primary">
+                        {user.firstName?.[0] || user.lastName?.[0] || <User className="h-4 w-4" />}
+                      </div>
+                    )}
+                    <span>Account</span>
+                    <ChevronDown className="h-4 w-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-48 bg-secondary border-accent text-gray-300">
+                  <DropdownMenuItem asChild>
+                    <Link href="/portal" className="cursor-pointer hover:text-primary">
+                      <LayoutDashboard className="mr-2 h-4 w-4" />
+                      <span>Portal</span>
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator className="bg-accent" />
+                  <DropdownMenuItem onClick={handleLogout} className="cursor-pointer hover:text-primary">
+                    <LogOut className="mr-2 h-4 w-4" />
+                    <span>Logout</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             ) : (
               <>
                 <Link href="/login">
-                  <Button variant="ghost" className="text-gray-300 hover:text-[#e3b261]">
+                  <Button variant="ghost" className="text-gray-300 hover:text-primary">
                     Sign In
                   </Button>
                 </Link>
                 <Link href="/signup">
-                  <Button className="bg-[#e3b261] hover:bg-[#c49a51] text-[#1a2421]">
+                  <Button className="bg-primary hover:bg-primary/90 text-secondary">
                     Sign Up
                   </Button>
                 </Link>
@@ -170,23 +162,21 @@ export default function Navigation() {
           </div>
         </div>
 
-        {/* Mobile Menu Button */}
         <button
-          className="lg:hidden text-gray-300 hover:text-[#e3b261] z-50"
+          className="lg:hidden text-gray-300 hover:text-primary z-50"
           onClick={() => setIsOpen(!isOpen)}
         >
           {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
         </button>
       </div>
 
-      {/* Mobile Menu */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "100vh" }}
             exit={{ opacity: 0, height: 0 }}
-            className="fixed inset-0 bg-[#1a2421] lg:hidden pt-20"
+            className="fixed inset-0 bg-secondary lg:hidden pt-20"
           >
             <div className="container mx-auto px-4 py-4 h-full overflow-y-auto">
               <div className="flex flex-col space-y-6">
@@ -194,7 +184,10 @@ export default function Navigation() {
                   <Link
                     key={item.href}
                     href={item.href}
-                    className="text-gray-300 hover:text-[#e3b261] transition-colors py-2 flex items-center space-x-2 text-lg"
+                    className={cn(
+                      "text-gray-300 hover:text-primary transition-colors py-2 flex items-center space-x-2 text-lg",
+                      pathname === item.href && "text-primary"
+                    )}
                     onClick={() => setIsOpen(false)}
                   >
                     <item.icon className="h-5 w-5" />
@@ -202,22 +195,24 @@ export default function Navigation() {
                   </Link>
                 ))}
                 
-                <div className="pt-6 border-t border-[#3a4441] space-y-4">
+                <div className="pt-6 border-t border-accent space-y-4">
                   {user ? (
                     <>
                       <Link href="/portal" onClick={() => setIsOpen(false)}>
                         <Button
                           variant="ghost"
-                          className="w-full text-left text-gray-300 hover:text-[#e3b261] flex items-center space-x-2 text-lg"
+                          className="w-full text-left text-gray-300 hover:text-primary flex items-center space-x-2 text-lg"
                         >
                           {profileImageUrl ? (
-                            <img 
+                            <Image 
                               src={profileImageUrl} 
                               alt="Profile" 
-                              className="h-8 w-8 rounded-full object-cover border border-[#e3b261] mr-2"
+                              width={32}
+                              height={32}
+                              className="h-8 w-8 rounded-full object-cover border border-primary mr-2"
                             />
                           ) : (
-                            <div className="h-8 w-8 rounded-full bg-[#3a4441] flex items-center justify-center text-[#e3b261] mr-2">
+                            <div className="h-8 w-8 rounded-full bg-accent flex items-center justify-center text-primary mr-2">
                               {user.firstName?.[0] || user.lastName?.[0] || <LayoutDashboard className="h-5 w-5" />}
                             </div>
                           )}
@@ -226,7 +221,7 @@ export default function Navigation() {
                       </Link>
                       <Button
                         variant="ghost"
-                        className="w-full text-left text-gray-300 hover:text-[#e3b261] flex items-center space-x-2 text-lg"
+                        className="w-full text-left text-gray-300 hover:text-primary flex items-center space-x-2 text-lg"
                         onClick={handleLogout}
                       >
                         <LogOut className="h-5 w-5" />
@@ -236,12 +231,12 @@ export default function Navigation() {
                   ) : (
                     <div className="space-y-4">
                       <Link href="/login" onClick={() => setIsOpen(false)}>
-                        <Button variant="ghost" className="w-full text-gray-300 hover:text-[#e3b261] text-lg">
+                        <Button variant="ghost" className="w-full text-gray-300 hover:text-primary text-lg">
                           Sign In
                         </Button>
                       </Link>
                       <Link href="/signup" onClick={() => setIsOpen(false)}>
-                        <Button className="w-full bg-[#e3b261] hover:bg-[#c49a51] text-[#1a2421] text-lg">
+                        <Button className="w-full bg-primary hover:bg-primary/90 text-secondary text-lg">
                           Sign Up
                         </Button>
                       </Link>

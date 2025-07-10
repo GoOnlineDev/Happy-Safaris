@@ -111,16 +111,16 @@ export default function PaymentsPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
-          <h1 className="text-3xl font-bold text-[#e3b261] mb-2">Payments</h1>
+          <h1 className="text-3xl font-bold text-primary mb-2">Payments</h1>
           <p className="text-gray-400">Manage your payments and transactions</p>
         </motion.div>
 
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <Card className="p-6 bg-[#1a2421] border-[#3a4441] hover:border-[#e3b261] transition-colors">
+          <Card className="p-6 bg-secondary border-accent hover:border-primary transition-colors">
             <div className="flex items-center space-x-4">
-              <div className="p-3 bg-[#e3b261]/10 rounded-lg">
-                <DollarSign className="h-6 w-6 text-[#e3b261]" />
+              <div className="p-3 bg-primary/10 rounded-lg">
+                <DollarSign className="h-6 w-6 text-primary" />
               </div>
               <div>
                 <p className="text-sm text-gray-400">Total Paid</p>
@@ -129,10 +129,10 @@ export default function PaymentsPage() {
             </div>
           </Card>
 
-          <Card className="p-6 bg-[#1a2421] border-[#3a4441] hover:border-[#e3b261] transition-colors">
+          <Card className="p-6 bg-secondary border-accent hover:border-primary transition-colors">
             <div className="flex items-center space-x-4">
-              <div className="p-3 bg-[#e3b261]/10 rounded-lg">
-                <Clock className="h-6 w-6 text-[#e3b261]" />
+              <div className="p-3 bg-primary/10 rounded-lg">
+                <Clock className="h-6 w-6 text-primary" />
               </div>
               <div>
                 <p className="text-sm text-gray-400">Pending Payments</p>
@@ -141,10 +141,10 @@ export default function PaymentsPage() {
             </div>
           </Card>
 
-          <Card className="p-6 bg-[#1a2421] border-[#3a4441] hover:border-[#e3b261] transition-colors">
+          <Card className="p-6 bg-secondary border-accent hover:border-primary transition-colors">
             <div className="flex items-center space-x-4">
-              <div className="p-3 bg-[#e3b261]/10 rounded-lg">
-                <CreditCard className="h-6 w-6 text-[#e3b261]" />
+              <div className="p-3 bg-primary/10 rounded-lg">
+                <CreditCard className="h-6 w-6 text-primary" />
               </div>
               <div>
                 <p className="text-sm text-gray-400">Payment Methods</p>
@@ -162,13 +162,13 @@ export default function PaymentsPage() {
               placeholder="Search payments..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 bg-transparent border-[#3a4441] text-white focus:border-[#e3b261]"
+              className="pl-10 bg-background-light border-accent text-white focus:border-primary"
             />
           </div>
           <div className="relative">
             <Filter className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
             <Select value={statusFilter} onValueChange={setStatusFilter}>
-              <SelectTrigger className="pl-10 bg-transparent border-[#3a4441] text-white focus:border-[#e3b261]">
+              <SelectTrigger className="pl-10 bg-background-light border-accent text-white focus:border-primary">
                 <SelectValue placeholder="Filter by status" />
               </SelectTrigger>
               <SelectContent>
@@ -181,7 +181,7 @@ export default function PaymentsPage() {
           </div>
           <Button
             variant="outline"
-            className="border-[#3a4441] text-gray-400 hover:text-white hover:border-[#e3b261]"
+            className="border-accent text-gray-400 hover:text-white hover:border-primary"
           >
             <Download className="h-4 w-4 mr-2" />
             Export
@@ -189,22 +189,22 @@ export default function PaymentsPage() {
         </div>
 
         {/* Payments Table */}
-        <Card className="bg-[#1a2421] border-[#3a4441]">
+        <Card className="bg-secondary border-accent">
           <Table>
             <TableHeader>
-              <TableRow className="border-[#3a4441] hover:bg-[#2a3431]">
-                <TableHead className="text-[#e3b261]">Reference</TableHead>
-                <TableHead className="text-[#e3b261]">Tour</TableHead>
-                <TableHead className="text-[#e3b261]">Amount</TableHead>
-                <TableHead className="text-[#e3b261]">Date</TableHead>
-                <TableHead className="text-[#e3b261]">Method</TableHead>
-                <TableHead className="text-[#e3b261]">Status</TableHead>
-                <TableHead className="text-[#e3b261]">Actions</TableHead>
+              <TableRow className="border-accent hover:bg-background-light">
+                <TableHead className="text-primary">Reference</TableHead>
+                <TableHead className="text-primary">Tour</TableHead>
+                <TableHead className="text-primary">Amount</TableHead>
+                <TableHead className="text-primary">Date</TableHead>
+                <TableHead className="text-primary">Method</TableHead>
+                <TableHead className="text-primary">Status</TableHead>
+                <TableHead className="text-primary">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {filteredPayments.map((payment) => (
-                <TableRow key={payment.id} className="border-[#3a4441] hover:bg-[#2a3431]">
+                <TableRow key={payment.id} className="border-accent hover:bg-background-light">
                   <TableCell className="text-gray-400">{payment.reference}</TableCell>
                   <TableCell className="text-white">{payment.tourName}</TableCell>
                   <TableCell className="text-white">${payment.amount}</TableCell>
@@ -224,7 +224,7 @@ export default function PaymentsPage() {
                     <Button
                       variant="ghost"
                       size="sm"
-                      className="text-[#e3b261] hover:text-[#c49a51]"
+                      className="text-primary hover:text-primary/90"
                       onClick={() => window.print()} // Replace with actual receipt download
                     >
                       <Download className="h-4 w-4" />

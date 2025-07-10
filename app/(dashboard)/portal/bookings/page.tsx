@@ -42,7 +42,7 @@ export default function BookingsPage() {
   if (userLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <Loader2 className="h-8 w-8 animate-spin text-[#e3b261]" />
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
       </div>
     );
   }
@@ -50,10 +50,10 @@ export default function BookingsPage() {
   if (!isAdmin) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen p-4">
-        <h1 className="text-2xl font-bold text-[#e3b261] mb-4">Access Denied</h1>
+        <h1 className="text-2xl font-bold text-primary mb-4">Access Denied</h1>
         <p className="text-white mb-6">You don't have permission to access this page.</p>
         <Link href="/portal">
-          <Button className="bg-[#e3b261] hover:bg-[#c49a51] text-[#1a2421]">
+          <Button className="bg-primary hover:bg-primary/90 text-secondary">
             Back to Portal
           </Button>
         </Link>
@@ -82,7 +82,7 @@ export default function BookingsPage() {
   return (
     <div className="space-y-6 p-4 md:p-6">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-        <h1 className="text-2xl md:text-3xl font-bold text-[#e3b261]">Bookings</h1>
+        <h1 className="text-2xl md:text-3xl font-bold text-primary">Bookings</h1>
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-4 w-full md:w-auto">
           <div className="relative w-full sm:w-auto">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
@@ -90,11 +90,11 @@ export default function BookingsPage() {
               placeholder="Search bookings..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="pl-10 bg-[#2a3431] border-[#3a4441] text-white w-full sm:w-64"
+              className="pl-10 bg-background-light border-accent text-white w-full sm:w-64"
             />
           </div>
           <Select value={statusFilter} onValueChange={setStatusFilter}>
-            <SelectTrigger className="w-full sm:w-40 bg-[#2a3431] border-[#3a4441] text-white">
+            <SelectTrigger className="w-full sm:w-40 bg-background-light border-accent text-white">
               <SelectValue placeholder="Filter by status" />
             </SelectTrigger>
             <SelectContent>
@@ -108,7 +108,7 @@ export default function BookingsPage() {
         </div>
       </div>
 
-      <Card className="bg-[#1a2421] border-[#3a4441]">
+      <Card className="bg-secondary border-accent">
         <div className="overflow-x-auto">
           <Table>
             <TableHeader>
@@ -168,7 +168,7 @@ export default function BookingsPage() {
                         size="sm"
                         variant="ghost"
                         onClick={() => handleMessageClick(booking.userId)}
-                        className="text-[#e3b261] hover:text-[#c49a51]"
+                        className="text-primary hover:text-primary/90"
                       >
                         <MessageSquare className="h-4 w-4" />
                       </Button>
@@ -176,7 +176,7 @@ export default function BookingsPage() {
                         <Button
                           size="sm"
                           variant="outline"
-                          className="border-[#3a4441] text-[#e3b261] hover:bg-[#2a3431]"
+                          className="border-accent text-primary hover:bg-background-light"
                         >
                           View Details
                         </Button>

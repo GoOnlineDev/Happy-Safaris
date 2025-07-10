@@ -16,7 +16,7 @@ export function useAuth() {
   // Get user profile from Convex if authenticated
   const profile = useQuery(
     api.users.getUserByClerkId, 
-    userId ? { tokenIdentifier: userId } : "skip"
+    userId ? { clerkId: userId } : "skip"
   );
 
   // Calculate loading state from both Clerk and Convex

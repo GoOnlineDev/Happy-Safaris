@@ -10,7 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Search, UserCog, Trash2, Shield, Calendar, Mail, Phone } from "lucide-react";
+import { Search, UserCog, Trash2, Shield, Calendar, Mail, Phone, Loader2 } from "lucide-react";
 import ProtectedPortal from "@/components/portal/ProtectedPortal";
 import { useUser } from "@/hooks/useUser";
 import { 
@@ -26,6 +26,14 @@ import {
 import { toast } from "sonner";
 import { formatDate } from "@/lib/utils";
 import { Id } from "@/convex/_generated/dataModel";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 export default function UsersPage() {
   const { user, isLoading } = useUser();
@@ -110,10 +118,10 @@ export default function UsersPage() {
   };
 
   // Loading state
-  if (isLoading) {
+  if (isLoading || users === undefined) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-[#1a2421]">
-        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-[#e3b261]"></div>
+      <div className="flex items-center justify-center min-h-screen bg-secondary">
+        <Loader2 className="h-8 w-8 text-primary animate-spin" />
       </div>
     );
   }
@@ -135,66 +143,58 @@ export default function UsersPage() {
 
   return (
     <ProtectedPortal>
-      <div className="space-y-8">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-        >
-          <h1 className="text-3xl font-bold text-[#e3b261] mb-2">User Management</h1>
-          <p className="text-gray-400">Manage user accounts and permissions</p>
-        </motion.div>
-
-        {/* Filters and Search */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-          <div className="flex flex-col sm:flex-row gap-4 w-full md:w-auto">
-            <div className="relative w-full md:w-64">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-              <Input
-                placeholder="Search users..."
-                className="pl-10 bg-[#2a3431] border-[#3a4441] text-white w-full"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-            </div>
-            <Select value={roleFilter} onValueChange={setRoleFilter}>
-              <SelectTrigger className="w-full sm:w-40 bg-[#2a3431] border-[#3a4441] text-white">
-                <SelectValue placeholder="Filter by role" />
-              </SelectTrigger>
-              <SelectContent className="bg-[#2a3431] border-[#3a4441] text-white">
-                <SelectItem value="all">All Roles</SelectItem>
-                <SelectItem value="super_admin">Super Admin</SelectItem>
-                <SelectItem value="admin">Admin</SelectItem>
-                <SelectItem value="tourist">Tourist</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+      <div className="max-w-6xl mx-auto p-4 md:p-8">
+        <div className="flex justify-between items-center mb-6">
+          <h1 className="text-3xl font-bold text-primary">Users</h1>
         </div>
-
-        {/* Users Table */}
-        <Card className="bg-[#1a2421] border-[#3a4441] p-6 overflow-hidden">
+        <Card className="bg-secondary border-accent p-6">
+          <h2 className="text-xl font-semibold text-white mb-4">All Users</h2>
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+            <div className="flex flex-col sm:flex-row gap-4 w-full md:w-auto">
+              <div className="relative w-full md:w-64">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                <Input
+                  placeholder="Search users..."
+                  className="pl-10 bg-background border-accent text-white w-full"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+              </div>
+              <Select value={roleFilter} onValueChange={setRoleFilter}>
+                <SelectTrigger className="w-full sm:w-40 bg-background border-accent text-white">
+                  <SelectValue placeholder="Filter by role" />
+                </SelectTrigger>
+                <SelectContent className="bg-background border-accent text-white">
+                  <SelectItem value="all">All Roles</SelectItem>
+                  <SelectItem value="super_admin">Super Admin</SelectItem>
+                  <SelectItem value="admin">Admin</SelectItem>
+                  <SelectItem value="tourist">Tourist</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
           <div className="overflow-x-auto">
-            <table className="w-full border-collapse">
-              <thead>
-                <tr className="border-b border-[#3a4441]">
-                  <th className="text-left p-4 text-[#e3b261]">User</th>
-                  <th className="text-left p-4 text-[#e3b261]">Email</th>
-                  <th className="text-left p-4 text-[#e3b261]">Role</th>
-                  <th className="text-left p-4 text-[#e3b261]">Joined</th>
-                  <th className="text-left p-4 text-[#e3b261]">Contact</th>
-                  <th className="text-left p-4 text-[#e3b261]">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
+            <Table className="w-full border-collapse">
+              <TableHeader className="bg-background-light text-gray-300">
+                <TableRow>
+                  <TableHead className="text-left p-4 text-white">User</TableHead>
+                  <TableHead className="text-left p-4 text-white">Email</TableHead>
+                  <TableHead className="text-left p-4 text-white">Role</TableHead>
+                  <TableHead className="text-left p-4 text-white">Joined</TableHead>
+                  <TableHead className="text-left p-4 text-white">Contact</TableHead>
+                  <TableHead className="text-left p-4 text-white">Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
                 {filteredUsers.map((user: UserType) => (
-                  <tr key={user._id} className="border-b border-[#3a4441] hover:bg-[#2a3431]">
-                    <td className="p-4 text-white">
+                  <TableRow key={user._id} className="border-b border-accent text-white hover:bg-background-light">
+                    <TableCell className="p-4 text-white">
                       <div className="flex items-center space-x-3">
-                        <div className="h-10 w-10 rounded-full bg-[#3a4441] flex items-center justify-center overflow-hidden">
+                        <div className="h-10 w-10 rounded-full bg-accent flex items-center justify-center overflow-hidden">
                           {user.imageUrl ? (
                             <img src={user.imageUrl} alt={user.firstName} className="h-10 w-10 object-cover" />
                           ) : (
-                            <span className="text-[#e3b261] font-semibold">
+                            <span className="text-primary font-semibold">
                               {user.firstName?.[0] || user.lastName?.[0] || "U"}
                             </span>
                           )}
@@ -204,9 +204,9 @@ export default function UsersPage() {
                           <p className="text-sm text-gray-400">ID: {user._id.substr(-5)}</p>
                         </div>
                       </div>
-                    </td>
-                    <td className="p-4 text-white">{user.email}</td>
-                    <td className="p-4">
+                    </TableCell>
+                    <TableCell className="p-4 text-white">{user.email}</TableCell>
+                    <TableCell className="p-4">
                       <Badge className={`
                         ${user.role === 'super_admin' ? 'bg-purple-500' : 
                           user.role === 'admin' ? 'bg-blue-500' : 
@@ -217,11 +217,11 @@ export default function UsersPage() {
                          user.role === 'admin' ? 'Admin' : 
                          'Tourist'}
                       </Badge>
-                    </td>
-                    <td className="p-4 text-white text-sm">
+                    </TableCell>
+                    <TableCell className="p-4 text-white text-sm">
                       {formatDate(user.createdAt)}
-                    </td>
-                    <td className="p-4 text-white text-sm">
+                    </TableCell>
+                    <TableCell className="p-4 text-white text-sm">
                       <div className="space-y-1">
                         {user.phone && (
                           <div className="flex items-center text-gray-400">
@@ -234,15 +234,15 @@ export default function UsersPage() {
                           <span>{user.email}</span>
                         </div>
                       </div>
-                    </td>
-                    <td className="p-4">
+                    </TableCell>
+                    <TableCell className="p-4">
                       <div className="flex space-x-2">
                         {/* Only super admins can modify admins, and self-modification is not allowed */}
                         {(isSuperAdmin || user.role !== 'admin') && user._id !== currentUser?._id && (
                           <Button 
                             variant="outline" 
                             size="sm"
-                            className="border-[#3a4441] text-blue-400 hover:text-blue-300"
+                            className="border-accent text-blue-400 hover:text-blue-300"
                             onClick={() => {
                               setUserToChangeRole(user);
                               setNewRole(user.role);
@@ -258,7 +258,7 @@ export default function UsersPage() {
                           <Button 
                             variant="outline" 
                             size="sm"
-                            className="border-[#3a4441] text-red-400 hover:text-red-300"
+                            className="border-accent text-red-400 hover:text-red-300"
                             onClick={() => setDeleteUserId(user._id)}
                           >
                             <Trash2 className="h-4 w-4 mr-1" />
@@ -266,28 +266,28 @@ export default function UsersPage() {
                           </Button>
                         )}
                       </div>
-                    </td>
-                  </tr>
+                    </TableCell>
+                  </TableRow>
                 ))}
                 
                 {filteredUsers.length === 0 && (
-                  <tr>
-                    <td colSpan={6} className="p-4 text-center text-gray-400">
+                  <TableRow>
+                    <TableCell colSpan={6} className="p-4 text-center text-gray-400">
                       No users found matching your criteria
-                    </td>
-                  </tr>
+                    </TableCell>
+                  </TableRow>
                 )}
-              </tbody>
-            </table>
+              </TableBody>
+            </Table>
           </div>
         </Card>
       </div>
       
       {/* Role Change Dialog */}
       <AlertDialog open={!!userToChangeRole} onOpenChange={(open) => !open && setUserToChangeRole(null)}>
-        <AlertDialogContent className="bg-[#2a3431] border-[#3a4441] text-white">
+        <AlertDialogContent className="bg-background border-accent text-white">
           <AlertDialogHeader>
-            <AlertDialogTitle className="text-[#e3b261]">Change User Role</AlertDialogTitle>
+            <AlertDialogTitle className="text-primary">Change User Role</AlertDialogTitle>
             <AlertDialogDescription className="text-gray-400">
               You are changing the role for {userToChangeRole?.firstName} {userToChangeRole?.lastName}.
               This will modify their permissions on the platform.
@@ -296,10 +296,10 @@ export default function UsersPage() {
           
           <div className="my-4">
             <Select value={newRole} onValueChange={setNewRole}>
-              <SelectTrigger className="w-full bg-[#1a2421] border-[#3a4441] text-white">
+              <SelectTrigger className="w-full bg-background border-accent text-white">
                 <SelectValue placeholder="Select new role" />
               </SelectTrigger>
-              <SelectContent className="bg-[#1a2421] border-[#3a4441] text-white">
+              <SelectContent className="bg-background border-accent text-white">
                 {/* Only super_admins can create other super_admins */}
                 {isSuperAdmin && <SelectItem value="super_admin">Super Admin</SelectItem>}
                 <SelectItem value="admin">Admin</SelectItem>
@@ -309,11 +309,11 @@ export default function UsersPage() {
           </div>
           
           <AlertDialogFooter>
-            <AlertDialogCancel className="bg-[#1a2421] border-[#3a4441] text-gray-300 hover:bg-[#2a3431] hover:text-white">
+            <AlertDialogCancel className="bg-background border-accent text-gray-300 hover:bg-background hover:text-white">
               Cancel
             </AlertDialogCancel>
             <AlertDialogAction 
-              className="bg-[#e3b261] hover:bg-[#c49a51] text-[#1a2421]"
+              className="bg-primary hover:bg-primary/90 text-background"
               onClick={handleRoleChange}
             >
               Change Role
@@ -324,7 +324,7 @@ export default function UsersPage() {
       
       {/* Delete User Dialog */}
       <AlertDialog open={!!deleteUserId} onOpenChange={(open) => !open && setDeleteUserId(null)}>
-        <AlertDialogContent className="bg-[#2a3431] border-[#3a4441] text-white">
+        <AlertDialogContent className="bg-background border-accent text-white">
           <AlertDialogHeader>
             <AlertDialogTitle className="text-red-500">Delete User</AlertDialogTitle>
             <AlertDialogDescription className="text-gray-400">
@@ -334,7 +334,7 @@ export default function UsersPage() {
           </AlertDialogHeader>
           
           <AlertDialogFooter>
-            <AlertDialogCancel className="bg-[#1a2421] border-[#3a4441] text-gray-300 hover:bg-[#2a3431] hover:text-white">
+            <AlertDialogCancel className="bg-background border-accent text-gray-300 hover:bg-background hover:text-white">
               Cancel
             </AlertDialogCancel>
             <AlertDialogAction 

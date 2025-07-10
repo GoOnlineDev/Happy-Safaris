@@ -1,0 +1,54 @@
+---
+alwaysApply: false
+---
+
+# Modern Frontend Performance Optimization
+
+## Key Optimization Techniques
+- **Optimize Images**:
+  - **Compression**: Reduce file size without significant quality loss.
+  - **Responsive Images**: Use `srcset` to serve appropriate sizes.
+  - **Lazy Loading**: Defer loading of off-screen images.
+  - **Modern Formats**: Use WebP or AVIF.
+- **Minify & Compress Assets**: Minify CSS, JS, and HTML. Use Gzip or Brotli compression on the server.
+- **Leverage Browser Caching**: Configure HTTP cache headers so browsers can store static assets locally.
+- **Reduce HTTP Requests**:
+  - **Bundling**: Combine multiple CSS or JS files.
+  - **Code Splitting**: Split code into smaller chunks loaded on demand. This is often more effective than bundling everything into one large file.
+- **Asynchronous Loading**: Use `async` or `defer` for non-critical JavaScript to avoid blocking page rendering.
+- **Optimize Critical Rendering Path**: Inline critical CSS for above-the-fold content and defer non-critical styles.
+- **Use a CDN**: Distribute assets across global servers to reduce latency for users.
+- **Minimize DOM Manipulation**: Optimize scripts to reduce expensive DOM reflows and repaints. Use debouncing and throttling for frequently firing events.
+
+## Performance Monitoring & Testing
+- **Lighthouse**: Use this automated tool in browser dev tools to audit performance, accessibility, and more.
+- **PageSpeed Insights**: Analyzes page content and provides suggestions for improvement.
+- **Web Vitals**: Focus on these user-centric metrics:
+  - **Largest Contentful Paint (LCP)**: Measures loading performance.
+  - **First Input Delay (FID)** / **Interaction to Next Paint (INP)**: Measures interactivity.
+  - **Cumulative Layout Shift (CLS)**: Measures visual stability.
+# Modern Frontend Performance Optimization
+
+## Key Optimization Techniques
+- **Optimize Images**:
+  - **Compression**: Reduce file size without significant quality loss.
+  - **Responsive Images**: Use `srcset` to serve appropriate sizes.
+  - **Lazy Loading**: Defer loading of off-screen images.
+  - **Modern Formats**: Use WebP or AVIF.
+- **Minify & Compress Assets**: Minify CSS, JS, and HTML. Use Gzip or Brotli compression on the server.
+- **Leverage Browser Caching**: Configure HTTP cache headers so browsers can store static assets locally.
+- **Reduce HTTP Requests**:
+  - **Bundling**: Combine multiple CSS or JS files.
+  - **Code Splitting**: Split code into smaller chunks loaded on demand. This is often more effective than bundling everything into one large file.
+- **Asynchronous Loading**: Use `async` or `defer` for non-critical JavaScript to avoid blocking page rendering.
+- **Optimize Critical Rendering Path**: Inline critical CSS for above-the-fold content and defer non-critical styles.
+- **Use a CDN**: Distribute assets across global servers to reduce latency for users.
+- **Minimize DOM Manipulation**: Optimize scripts to reduce expensive DOM reflows and repaints. Use debouncing and throttling for frequently firing events.
+
+## Performance Monitoring & Testing
+- **Lighthouse**: Use this automated tool in browser dev tools to audit performance, accessibility, and more.
+- **PageSpeed Insights**: Analyzes page content and provides suggestions for improvement.
+- **Web Vitals**: Focus on these user-centric metrics:
+  - **Largest Contentful Paint (LCP)**: Measures loading performance.
+  - **First Input Delay (FID)** / **Interaction to Next Paint (INP)**: Measures interactivity.
+  - **Cumulative Layout Shift (CLS)**: Measures visual stability.

@@ -19,7 +19,7 @@ export default function SignUpPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2, duration: 0.5 }}
           >
-            <h1 className="text-3xl sm:text-4xl font-bold text-[#e3b261] mb-2 sm:mb-3">Create Account</h1>
+            <h1 className="text-3xl sm:text-4xl font-bold text-primary mb-2 sm:mb-3">Create Account</h1>
             <p className="text-gray-400 text-base sm:text-lg">Join us to start your African adventure</p>
           </motion.div>
         </div>
@@ -28,21 +28,21 @@ export default function SignUpPage() {
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.3, duration: 0.5 }}
-          className="bg-[#2a3431]/90 backdrop-blur-sm rounded-xl shadow-2xl p-4 sm:p-8 border border-[#3a4441]"
+          className="bg-background-light/90 backdrop-blur-sm rounded-xl shadow-2xl p-4 sm:p-8 border border-accent"
         >
           <SignUp
             appearance={{
               baseTheme: undefined,
               elements: {
-                formButtonPrimary: "bg-[#e3b261] hover:bg-[#c49a51] text-[#1a2421] font-semibold transition-colors w-full rounded-md px-4 py-2",
-                formFieldInput: "bg-[#3a4441] border border-[#4a5451] text-white rounded-md px-3 py-2 w-full focus:outline-none focus:border-[#e3b261] transition-colors",
+                formButtonPrimary: "bg-primary hover:bg-primary/90 text-secondary font-semibold transition-colors w-full rounded-md px-4 py-2",
+                formFieldInput: "bg-accent border border-accent/80 text-white rounded-md px-3 py-2 w-full focus:outline-none focus:border-primary transition-colors",
                 formFieldLabel: "text-gray-300 font-medium block mb-1.5",
                 card: "space-y-6 bg-transparent",
                 header: "hidden",
                 footer: "hidden",
-                dividerLine: "bg-[#3a4441]",
+                dividerLine: "bg-accent",
                 dividerText: "text-gray-400",
-                socialButtonsBlockButton: "bg-[#3a4441] text-white hover:bg-[#4a5451] border border-[#4a5451] transition-colors w-full rounded-md px-4 py-2 flex items-center justify-center gap-2",
+                socialButtonsBlockButton: "bg-accent text-white hover:bg-accent/80 border border-accent/80 transition-colors w-full rounded-md px-4 py-2 flex items-center justify-center gap-2",
                 socialButtonsBlockButtonText: "text-white font-medium",
                 formFieldSuccessText: "text-green-500",
                 formFieldErrorText: "text-red-500",
@@ -70,7 +70,7 @@ export default function SignUpPage() {
         >
           <p className="text-gray-400 text-base sm:text-lg">
             Already have an account?{" "}
-            <Link href="/login" className="text-[#e3b261] hover:text-[#c49a51] font-medium transition-colors">
+            <Link href="/login" className="text-primary hover:text-primary/90 font-medium transition-colors">
               Sign in
             </Link>
           </p>

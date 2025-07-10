@@ -6,9 +6,7 @@ import { useUser } from "@/hooks/useUser";
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Card } from "@/components/ui/card";
+import { Card, CardHeader, CardContent, CardFooter } from "@/components/ui/card";
 import { format } from "date-fns";
 import {
   Select,
@@ -17,63 +15,72 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
-import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
 import { formatCurrency } from "@/lib/utils";
-import { Loader2, CalendarDays, Users, CreditCard } from "lucide-react";
+import { Loader2, Wallet, Minus, Plus } from "lucide-react";
+import { Separator } from "@/components/ui/separator";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
+import { Textarea } from "@/components/ui/textarea";
 
 interface BookingFormProps {
-  tour: any; // Replace with proper tour type
-  selectedDate?: Date;
-  onSuccess?: () => void;
+  tour: any;
 }
 
-export function BookingForm({ tour, selectedDate, onSuccess }: BookingFormProps) {
+export function BookingForm({ tour }: BookingFormProps) {
   const router = useRouter();
   const { user, isLoading: userLoading } = useUser();
   const [isSubmitting, setIsSubmitting] = useState(false);
   
-  // Form state
-  const [startDate, setStartDate] = useState<Date | undefined>(selectedDate);
-  const [guests, setGuests] = useState({
-    adults: 1,
-    children: 0,
-    infants: 0,
-  });
+  const [startDate, setStartDate] = useState<number | undefined>(tour.startDates?.[0]);
+  const [adults, setAdults] = useState(1);
+  const [children, setChildren] = useState(0);
   const [specialRequests, setSpecialRequests] = useState("");
   const [emailNotifications, setEmailNotifications] = useState(true);
   const [whatsappUpdates, setWhatsappUpdates] = useState(false);
-  
-  // Calculate total price
-  const totalPrice = tour.price * (guests.adults + (guests.children * 0.7));
+
+  const createBooking = useMutation(api.bookings.create);
+
+  const totalGuests = adults + children;
+  const pricePerAdult = tour.discountPrice || tour.price;
+  const pricePerChild = pricePerAdult * 0.7; // 70% of adult price
+  const subtotal = (adults * pricePerAdult) + (children * pricePerChild);
+  const serviceFee = subtotal * 0.05; // 5% service fee
+  const totalPrice = subtotal + serviceFee;
   const depositAmount = totalPrice * 0.3; // 30% deposit
   
-  // Create booking mutation
-  const createBooking = useMutation(api.bookings.create);
-  
+  const handleGuestChange = (type: 'adults' | 'children', operation: 'increment' | 'decrement') => {
+    const setter = type === 'adults' ? setAdults : setChildren;
+    const currentValue = type === 'adults' ? adults : children;
+
+    if (operation === 'increment' && totalGuests < tour.maxGroupSize) {
+      setter(currentValue + 1);
+    } else if (operation === 'decrement' && currentValue > (type === 'adults' ? 1 : 0)) {
+      setter(currentValue - 1);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
     if (!user) {
-      toast.error("Please sign in to book this tour");
-      router.push("/login");
+      toast.error("Please sign in to book this tour.");
+      router.push(`/login?redirectUrl=/tours/${tour.slug}`);
       return;
     }
-    
     if (!startDate) {
-      toast.error("Please select a start date");
+      toast.error("Please select a valid start date.");
       return;
     }
-    
+    if (totalGuests > tour.maxGroupSize) {
+      toast.error(`This tour has a maximum of ${tour.maxGroupSize} guests.`);
+      return;
+    }
+
+    setIsSubmitting(true);
     try {
-      setIsSubmitting(true);
-      
-      // Generate a unique booking reference
-      const bookingReference = `BK-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`.toUpperCase();
-      
-      // Create the booking
-      const bookingId = await createBooking({
+      const bookingReference = `HS-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`.toUpperCase();
+
+      await createBooking({
         userId: user.clerkId,
         userEmail: user.email,
         firstName: user.firstName || "",
@@ -81,202 +88,177 @@ export function BookingForm({ tour, selectedDate, onSuccess }: BookingFormProps)
         phone: user.phone || "",
         tourId: tour._id,
         tourName: tour.title,
-        startDate: startDate.getTime(),
-        endDate: new Date(startDate.getTime() + (tour.duration * 24 * 60 * 60 * 1000)).getTime(),
-        guests,
+        startDate,
+        endDate: new Date(startDate + (tour.duration * 24 * 60 * 60 * 1000)).getTime(),
+        guests: { adults, children, infants: 0 },
         specialRequests,
         totalPrice,
         depositAmount,
         paymentStatus: "pending",
-        bookingStatus: "draft",
+        bookingStatus: "pending",
         bookingReference,
         emailNotifications,
         whatsappUpdates,
       });
-      
-      // Redirect to thank you page
-      router.push("/thank-you");
-      
-      if (onSuccess) {
-        onSuccess();
-      }
-      
+      toast.success("Booking successful! You will be redirected shortly.");
+      router.push("/tours/thank-you");
     } catch (error: any) {
-      toast.error(error.message || "Failed to create booking");
+      toast.error(error.message || "Failed to create booking. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
   };
-  
+
   if (userLoading) {
     return (
-      <div className="flex items-center justify-center p-8">
-        <Loader2 className="h-8 w-8 animate-spin text-[#e3b261]" />
-      </div>
+      <Card className="p-6 bg-secondary border-border">
+        <div className="flex items-center justify-center h-96">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        </div>
+      </Card>
     );
   }
-  
+
   return (
-    <Card className="p-6 bg-[#1a2421] border-[#3a4441]">
-      <form onSubmit={handleSubmit} className="space-y-8">
-        {/* Date Selection */}
-        <div>
-          <Label className="text-gray-300 text-lg flex items-center gap-2">
-            <CalendarDays className="h-5 w-5 text-[#e3b261]" />
-            Tour Date
-          </Label>
-          <Select
-            value={startDate ? startDate.getTime().toString() : ""}
-            onValueChange={(value) => {
-              const date = new Date(Number(value));
-              setStartDate(date);
-            }}
-          >
-            <SelectTrigger className="w-full mt-2">
-              <SelectValue placeholder="Select tour date" />
-            </SelectTrigger>
-            <SelectContent>
-              {tour.startDates.map((ts: number) => (
-                <SelectItem key={ts} value={ts.toString()}>
-                  {format(new Date(ts), "PPP")}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          {!startDate && <p className="text-red-500 text-sm mt-2">Please select a tour date.</p>}
+    <Card className="p-6 bg-secondary border-border shadow-lg">
+      <CardHeader className="p-0 mb-4">
+        <div className="flex justify-between items-baseline">
+          <span className="text-3xl font-bold text-primary">${tour.discountPrice || tour.price}</span>
+          <span className="text-muted-foreground">/ person</span>
         </div>
+        {tour.discountPrice && (
+          <span className="text-muted-foreground line-through">
+            ${tour.price}
+          </span>
+        )}
+      </CardHeader>
 
-        {/* Guests */}
-        <div>
-          <Label className="text-gray-300 text-lg">Guests</Label>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-2">
-            <div>
-              <Label className="text-sm">Adults</Label>
-              <Select
-                value={guests.adults.toString()}
-                onValueChange={(value) => setGuests({ ...guests, adults: parseInt(value) })}
-              >
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {Array.from({ length: tour.maxGroupSize }, (_, i) => (
-                    <SelectItem key={i + 1} value={(i + 1).toString()}>
-                      {i + 1} {i === 0 ? "Adult" : "Adults"}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            <div>
-              <Label className="text-sm">Children (2-12)</Label>
-              <Select
-                value={guests.children.toString()}
-                onValueChange={(value) => setGuests({ ...guests, children: parseInt(value) })}
-              >
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {Array.from({ length: tour.maxGroupSize + 1 }, (_, i) => (
-                    <SelectItem key={i} value={i.toString()}>
-                      {i} {i === 1 ? "Child" : "Children"}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            <div>
-              <Label className="text-sm">Infants (0-2)</Label>
-              <Select
-                value={guests.infants.toString()}
-                onValueChange={(value) => setGuests({ ...guests, infants: parseInt(value) })}
-              >
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {Array.from({ length: 4 }, (_, i) => (
-                    <SelectItem key={i} value={i.toString()}>
-                      {i} {i === 1 ? "Infant" : "Infants"}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+      <form onSubmit={handleSubmit} className="space-y-6">
+        <div className="grid grid-cols-1 gap-4">
+          <div>
+            <Label htmlFor="tour-date" className="font-semibold text-white">Tour Date</Label>
+            <Select
+              value={startDate?.toString()}
+              onValueChange={(value) => setStartDate(Number(value))}
+              required
+            >
+              <SelectTrigger id="tour-date">
+                <SelectValue placeholder="Select a date" />
+              </SelectTrigger>
+              <SelectContent>
+                {tour.startDates?.map((ts: number) => (
+                  <SelectItem key={ts} value={ts.toString()}>
+                    {format(new Date(ts), "EEE, MMM d, yyyy")}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <div>
+            <Label className="font-semibold text-white">Guests</Label>
+            <Card className="bg-background-light p-4 mt-2">
+              <div className="flex justify-between items-center">
+                <div>
+                  <p className="font-semibold">Adults</p>
+                  <p className="text-sm text-muted-foreground">Age 13+</p>
+                </div>
+                <div className="flex items-center gap-4">
+                  <Button type="button" size="icon" variant="outline" onClick={() => handleGuestChange('adults', 'decrement')} disabled={adults <= 1}>
+                    <Minus className="h-4 w-4" />
+                  </Button>
+                  <span className="w-4 text-center font-bold">{adults}</span>
+                  <Button type="button" size="icon" variant="outline" onClick={() => handleGuestChange('adults', 'increment')} disabled={totalGuests >= tour.maxGroupSize}>
+                    <Plus className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
+              <Separator className="my-4" />
+              <div className="flex justify-between items-center">
+                <div>
+                  <p className="font-semibold">Children</p>
+                  <p className="text-sm text-muted-foreground">Age 2-12</p>
+                </div>
+                <div className="flex items-center gap-4">
+                  <Button type="button" size="icon" variant="outline" onClick={() => handleGuestChange('children', 'decrement')} disabled={children <= 0}>
+                    <Minus className="h-4 w-4" />
+                  </Button>
+                  <span className="w-4 text-center font-bold">{children}</span>
+                  <Button type="button" size="icon" variant="outline" onClick={() => handleGuestChange('children', 'increment')} disabled={totalGuests >= tour.maxGroupSize}>
+                    <Plus className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
+            </Card>
+          </div>
+           <div>
+            <Label htmlFor="special-requests" className="font-semibold text-white">Special Requests</Label>
+            <Textarea
+              id="special-requests"
+              value={specialRequests}
+              onChange={(e) => setSpecialRequests(e.target.value)}
+              placeholder="Any dietary requirements, accessibility needs, or other requests..."
+              className="mt-2"
+            />
+          </div>
+          <div>
+            <Label className="font-semibold text-white">Communication</Label>
+            <Card className="bg-background-light p-4 mt-2 space-y-4">
+              <div className="flex items-center justify-between">
+                <Label htmlFor="email-notifications" className="font-normal">Email Notifications</Label>
+                <Switch
+                  id="email-notifications"
+                  checked={emailNotifications}
+                  onCheckedChange={setEmailNotifications}
+                />
+              </div>
+              <div className="flex items-center justify-between">
+                <Label htmlFor="whatsapp-updates" className="font-normal">WhatsApp Updates</Label>
+                <Switch
+                  id="whatsapp-updates"
+                  checked={whatsappUpdates}
+                  onCheckedChange={setWhatsappUpdates}
+                />
+              </div>
+            </Card>
           </div>
         </div>
 
-        {/* Special Requests */}
-        <div>
-          <Label className="text-gray-300 text-lg">Special Requests</Label>
-          <Textarea
-            value={specialRequests}
-            onChange={(e) => setSpecialRequests(e.target.value)}
-            placeholder="Any dietary requirements, accessibility needs, or special requests..."
-            className="bg-[#2a3431] border-[#3a4441] text-white min-h-24 mt-2"
-          />
-        </div>
-
-        {/* Communication Preferences */}
-        <div>
-          <Label className="text-gray-300 text-lg">Communication Preferences</Label>
-          <div className="space-y-2 mt-2">
-            <div className="flex items-center justify-between">
-              <Label className="text-sm">Email Notifications</Label>
-              <Switch
-                checked={emailNotifications}
-                onCheckedChange={setEmailNotifications}
-              />
-            </div>
-            <div className="flex items-center justify-between">
-              <Label className="text-sm">WhatsApp Updates</Label>
-              <Switch
-                checked={whatsappUpdates}
-                onCheckedChange={setWhatsappUpdates}
-              />
-            </div>
-          </div>
-        </div>
-
-        {/* Booking Summary */}
-        <div className="bg-[#2a3431] rounded-lg p-4 space-y-2">
+        <Separator />
+        
+        <div className="space-y-2 text-sm">
           <div className="flex justify-between">
-            <span className="text-gray-300">Tour Date</span>
-            <span className="text-white">{startDate ? format(startDate, "PPP") : "--"}</span>
+            <span className="text-muted-foreground">${pricePerAdult.toFixed(2)} x {adults} adults</span>
+            <span className="font-semibold">${(pricePerAdult * adults).toFixed(2)}</span>
           </div>
-          <div className="flex justify-between">
-            <span className="text-gray-300">Guests</span>
-            <span className="text-white">{guests.adults} Adults, {guests.children} Children, {guests.infants} Infants</span>
-          </div>
-          <div className="flex justify-between font-medium">
-            <span className="text-gray-300">Total Price</span>
-            <span className="text-[#e3b261]">{formatCurrency(totalPrice)}</span>
-          </div>
-          <div className="flex justify-between text-sm">
-            <span className="text-gray-300">Deposit (30%)</span>
-            <span className="text-white">{formatCurrency(depositAmount)}</span>
-          </div>
-        </div>
-
-        {/* Submit Button */}
-        <Button
-          type="submit"
-          className="w-full bg-[#e3b261] hover:bg-[#c49a51] text-[#1a2421] text-lg py-4"
-          disabled={isSubmitting}
-        >
-          {isSubmitting ? (
-            <>
-              <Loader2 className="h-5 w-5 mr-2 animate-spin" />
-              Booking...
-            </>
-          ) : (
-            "Book Now"
+          {children > 0 && (
+            <div className="flex justify-between">
+              <span className="text-muted-foreground">${pricePerChild.toFixed(2)} x {children} children</span>
+              <span className="font-semibold">${(pricePerChild * children).toFixed(2)}</span>
+            </div>
           )}
+          <div className="flex justify-between">
+            <span className="text-muted-foreground">Service fee</span>
+            <span className="font-semibold">${serviceFee.toFixed(2)}</span>
+          </div>
+        </div>
+
+        <Separator />
+
+        <div className="flex justify-between items-center font-bold text-lg">
+          <span>Total</span>
+          <span>${totalPrice.toFixed(2)}</span>
+        </div>
+
+        <div className="text-center text-xs text-muted-foreground">
+          You will pay a 30% deposit of <strong>${depositAmount.toFixed(2)}</strong> to confirm your booking.
+        </div>
+
+        <Button type="submit" size="lg" className="w-full" disabled={isSubmitting}>
+          {isSubmitting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Wallet className="mr-2 h-4 w-4" />}
+          {isSubmitting ? "Processing..." : "Continue to Payment"}
         </Button>
-        <p className="text-sm text-gray-400 text-center">
-          By proceeding, you agree to our terms and conditions.
-        </p>
+
+        <p className="text-xs text-muted-foreground text-center">You won't be charged yet</p>
       </form>
     </Card>
   );

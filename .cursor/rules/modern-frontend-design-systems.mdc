@@ -1,0 +1,48 @@
+---
+alwaysApply: false
+---
+
+# Design Systems, Tokens, and Components
+
+## Design Tokens: The Single Source of Truth
+A design system should be built on **design tokens**: named variables that store fundamental UI values. This is the single source of truth for styling.
+- **What to Tokenize**: Colors, fonts, spacing units, border radii, shadows, breakpoints.
+- **Implementation**:
+  - **CSS**: Use CSS Custom Properties (`:root { --color-primary: #0065A9; }`).
+  - **Tailwind CSS**: Define tokens in the `theme` object of your `tailwind.config.js`.
+  - **CSS-in-JS**: Use a theme object with a `<ThemeProvider>`.
+- **Benefits**: Enforces consistency, simplifies theming, and reduces style-related bugs.
+
+## Component-Based Design
+Treat UIs as a library of reusable components rather than static pages. This ensures consistency and speeds up development.
+- **Atomic Design Methodology**: A hierarchical structure for components.
+  - **Atoms**: Basic building blocks (e.g., Button, Input, Label).
+  - **Molecules**: Simple groups of atoms (e.g., a search form composed of an Input and a Button).
+  - **Organisms**: Complex components made of molecules and atoms (e.g., a site header).
+- **Component Library**:
+  - **Build Once, Use Everywhere**: Create a central library for all UI components.
+  - **Storybook**: Use tools like Storybook to develop, document, and test components in isolation.
+  - **Props & Variants**: Design components to be flexible via props. Define variants for different states and styles (e.g., `<Button variant="primary" size="large">`).
+- **Documentation**: Document each component's props, variants, and usage examples. This is critical for team alignment and efficient handoff.
+# Design Systems, Tokens, and Components
+
+## Design Tokens: The Single Source of Truth
+A design system should be built on **design tokens**: named variables that store fundamental UI values. This is the single source of truth for styling.
+- **What to Tokenize**: Colors, fonts, spacing units, border radii, shadows, breakpoints.
+- **Implementation**:
+  - **CSS**: Use CSS Custom Properties (`:root { --color-primary: #0065A9; }`).
+  - **Tailwind CSS**: Define tokens in the `theme` object of your `tailwind.config.js`.
+  - **CSS-in-JS**: Use a theme object with a `<ThemeProvider>`.
+- **Benefits**: Enforces consistency, simplifies theming, and reduces style-related bugs.
+
+## Component-Based Design
+Treat UIs as a library of reusable components rather than static pages. This ensures consistency and speeds up development.
+- **Atomic Design Methodology**: A hierarchical structure for components.
+  - **Atoms**: Basic building blocks (e.g., Button, Input, Label).
+  - **Molecules**: Simple groups of atoms (e.g., a search form composed of an Input and a Button).
+  - **Organisms**: Complex components made of molecules and atoms (e.g., a site header).
+- **Component Library**:
+  - **Build Once, Use Everywhere**: Create a central library for all UI components.
+  - **Storybook**: Use tools like Storybook to develop, document, and test components in isolation.
+  - **Props & Variants**: Design components to be flexible via props. Define variants for different states and styles (e.g., `<Button variant="primary" size="large">`).
+- **Documentation**: Document each component's props, variants, and usage examples. This is critical for team alignment and efficient handoff.

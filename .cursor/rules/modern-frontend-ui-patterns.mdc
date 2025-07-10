@@ -1,0 +1,66 @@
+---
+alwaysApply: false
+---
+
+
+# Common UI Patterns
+
+Use familiar, reusable patterns to ensure your interface is intuitive. Document these in a style guide or component library.
+
+## Cards
+- **Appearance**: Use a light background, border, or subtle `box-shadow` to make cards stand out from the page background.
+- **Spacing**: Use your spacing scale for consistent internal padding.
+- **Content**: Use a consistent typographic hierarchy within cards (e.g., Title, Subtitle, Body). For grids of cards with varying content length, enforce a constrained or fixed height to maintain alignment.
+- **Interaction**: On hover, elevate the card with a shadow or scale transition to indicate it's interactive.
+
+## Modals & Dialogs
+- **Focus**: Modals must be focused and provide a clear, single task.
+- **Accessibility**:
+  - **Focus Trap**: Keyboard focus must be trapped inside the modal while it is open.
+  - **Closable**: Must be closable via an explicit button (e.g., an 'X' icon) AND the `Esc` key.
+  - **Return Focus**: After closing, return focus to the element that originally triggered the modal.
+- **Responsiveness**: On small screens, modals should often become full-screen to be usable.
+
+## Navigation
+- **Structure**: Use standard patterns: a top navigation bar for desktop (collapsing to a hamburger/drawer on mobile) or a bottom tab bar for mobile apps.
+- **Semantics**: Use the `<nav>` element and appropriate ARIA roles. Clearly indicate the user's current/active location.
+- **Interaction**: Ensure all menus and dropdowns are fully keyboard-navigable.
+
+## Forms & Inputs
+- **Structure**: Logically group related fields using `<fieldset>`. Always associate `<label>` elements with their inputs.
+- **Feedback**: Provide clear, inline validation feedback (e.g., "Email is invalid") next to the relevant field.
+- **Buttons**: Use distinct styles for primary (e.g., solid fill) and secondary (e.g., outline) actions. Ensure button states (hover, active, disabled) are visually distinct.
+
+  - **Context Menus (Right-Click)**: For context-specific actions.
+  - **Drag and Drop**: For moving items.
+
+# Common UI Patterns
+
+Use familiar, reusable patterns to ensure your interface is intuitive. Document these in a style guide or component library.
+
+## Cards
+- **Appearance**: Use a light background, border, or subtle `box-shadow` to make cards stand out from the page background.
+- **Spacing**: Use your spacing scale for consistent internal padding.
+- **Content**: Use a consistent typographic hierarchy within cards (e.g., Title, Subtitle, Body). For grids of cards with varying content length, enforce a constrained or fixed height to maintain alignment.
+- **Interaction**: On hover, elevate the card with a shadow or scale transition to indicate it's interactive.
+
+## Modals & Dialogs
+- **Focus**: Modals must be focused and provide a clear, single task.
+- **Accessibility**:
+  - **Focus Trap**: Keyboard focus must be trapped inside the modal while it is open.
+  - **Closable**: Must be closable via an explicit button (e.g., an 'X' icon) AND the `Esc` key.
+  - **Return Focus**: After closing, return focus to the element that originally triggered the modal.
+- **Responsiveness**: On small screens, modals should often become full-screen to be usable.
+
+## Navigation
+- **Structure**: Use standard patterns: a top navigation bar for desktop (collapsing to a hamburger/drawer on mobile) or a bottom tab bar for mobile apps.
+- **Semantics**: Use the `<nav>` element and appropriate ARIA roles. Clearly indicate the user's current/active location.
+- **Interaction**: Ensure all menus and dropdowns are fully keyboard-navigable.
+
+## Forms & Inputs
+- **Structure**: Logically group related fields using `<fieldset>`. Always associate `<label>` elements with their inputs.
+- **Feedback**: Provide clear, inline validation feedback (e.g., "Email is invalid") next to the relevant field.
+- **Buttons**: Use distinct styles for primary (e.g., solid fill) and secondary (e.g., outline) actions. Ensure button states (hover, active, disabled) are visually distinct.
+
+  - **Context Menus (Right-Click)**: For context-specific actions.
+  - **Drag and Drop**: For moving items.

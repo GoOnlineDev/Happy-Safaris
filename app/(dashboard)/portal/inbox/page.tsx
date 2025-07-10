@@ -12,6 +12,8 @@ import { useQuery, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { MessageSquare, Send, Plus, Search } from "lucide-react";
 import { Id } from "@/convex/_generated/dataModel";
+import Link from "next/link";
+import { Loader2 } from "lucide-react";
 
 interface Message {
   id: string;
@@ -212,117 +214,116 @@ export default function InboxPage() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-[#1a2421]">
-        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-[#e3b261]"></div>
+      <div className="p-8 text-center text-gray-400">
+        <Loader2 className="mx-auto h-8 w-8 animate-spin text-primary" />
+        <p className="mt-2">Loading messages...</p>
+      </div>
+    );
+  }
+
+  if (!user || user.role === 'tourist') {
+    return (
+      <div className="p-8 text-center">
+        <h1 className="text-2xl text-primary font-bold">Access Denied</h1>
+        <p className="text-gray-400 mt-2">You do not have permission to view this page.</p>
+        <Link href="/portal">
+          <Button className="mt-4 bg-primary text-secondary hover:bg-primary/90">
+            Go to Dashboard
+          </Button>
+        </Link>
       </div>
     );
   }
 
   return (
     <ProtectedPortal>
-      <div className="space-y-8">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-        >
-          <h1 className="text-3xl font-bold text-[#e3b261] mb-2">Inbox</h1>
-          <p className="text-gray-400">Communicate with Happy Safaris support team</p>
-        </motion.div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-          {/* Conversations List */}
-          <Card className="lg:col-span-1 bg-[#1a2421] border-[#3a4441] p-4">
-            <div className="space-y-4">
-              <div className="flex justify-between items-center">
-                <h2 className="text-lg font-semibold text-white">Conversations</h2>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => setShowNewConversation(true)}
-                  className="text-[#e3b261] hover:text-[#c49a51]"
-                >
-                  <Plus className="h-5 w-5" />
-                </Button>
-              </div>
-
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-                <Input
-                  placeholder="Search conversations..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10 bg-transparent border-[#3a4441] text-white"
-                />
-              </div>
-
-              <div className="space-y-2">
-                {conversations
-                  .filter(conv => conv.title.toLowerCase().includes(searchTerm.toLowerCase()))
-                  .map((conversation) => (
-                    <div
-                      key={conversation.id}
-                      onClick={() => setActiveConversation(conversation.id)}
-                      className={`p-3 rounded-lg cursor-pointer transition-colors ${
-                        activeConversation === conversation.id
-                          ? "bg-[#e3b261] text-[#1a2421]"
-                          : "hover:bg-[#3a4441] text-gray-400"
-                      }`}
-                    >
-                      <div className="flex items-center space-x-3">
-                        {conversation.imageUrl ? (
-                          <div className="relative">
-                            <img 
-                              src={conversation.imageUrl} 
-                              alt={conversation.title}
-                              className="h-10 w-10 rounded-full object-cover"
-                            />
-                            {conversation.unreadCount > 0 && (
-                              <div className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                                {conversation.unreadCount}
-                              </div>
-                            )}
+      <div className="h-full flex flex-col max-w-7xl mx-auto">
+        <h1 className="text-3xl font-bold text-primary p-4 md:p-6">Inbox</h1>
+        <div className="flex-grow flex border border-accent rounded-lg bg-secondary shadow-lg overflow-hidden">
+          {/* Users List */}
+          <aside className="w-1/3 md:w-1/4 border-r border-accent overflow-y-auto">
+            <div className="p-4 border-b border-accent">
+              <h2 className="text-xl font-semibold text-white">Conversations</h2>
+            </div>
+            <ul className="divide-y divide-accent">
+              {conversations
+                .filter(conv => conv.title.toLowerCase().includes(searchTerm.toLowerCase()))
+                .map((conversation) => (
+                  <li
+                    key={conversation.id}
+                    onClick={() => setActiveConversation(conversation.id)}
+                    className={`p-4 cursor-pointer hover:bg-background-light ${
+                      activeConversation === conversation.id
+                        ? "bg-background-light"
+                        : ""
+                    }`}
+                  >
+                    <div className="flex items-center space-x-3">
+                      {conversation.imageUrl ? (
+                        <div className="relative">
+                          <img 
+                            src={conversation.imageUrl} 
+                            alt={conversation.title}
+                            className="h-10 w-10 rounded-full object-cover"
+                          />
+                          {conversation.unreadCount > 0 && (
+                            <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-secondary text-xs font-bold">
+                              {conversation.unreadCount}
+                            </span>
+                          )}
+                        </div>
+                      ) : (
+                        <div className="relative">
+                          <div className="h-10 w-10 rounded-full bg-[#3a4441] flex items-center justify-center">
+                            <span className="text-[#e3b261] text-lg">
+                              {conversation.title[0]?.toUpperCase()}
+                            </span>
                           </div>
-                        ) : (
-                          <div className="relative">
-                            <div className="h-10 w-10 rounded-full bg-[#3a4441] flex items-center justify-center">
-                              <span className="text-[#e3b261] text-lg">
-                                {conversation.title[0]?.toUpperCase()}
-                              </span>
-                            </div>
-                            {conversation.unreadCount > 0 && (
-                              <div className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                                {conversation.unreadCount}
-                              </div>
-                            )}
-                          </div>
-                        )}
-                        <div className="flex-1 min-w-0">
-                          <div className="font-medium truncate">
-                            {conversation.title}
-                          </div>
-                          <div className={`text-sm truncate ${conversation.unreadCount > 0 ? 'font-semibold' : 'opacity-70'}`}>
-                            {conversation.lastMessage?.length > 50
-                              ? `${conversation.lastMessage.substring(0, 50)}...`
-                              : conversation.lastMessage}
-                          </div>
-                          <div className="text-xs mt-1 opacity-50">
-                            {new Date(conversation.timestamp).toLocaleString()}
-                          </div>
+                          {conversation.unreadCount > 0 && (
+                            <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-secondary text-xs font-bold">
+                              {conversation.unreadCount}
+                            </span>
+                          )}
+                        </div>
+                      )}
+                      <div className="flex-1 min-w-0">
+                        <div className="font-medium truncate">
+                          {conversation.title}
+                        </div>
+                        <div className={`text-sm truncate ${conversation.unreadCount > 0 ? 'font-semibold' : 'opacity-70'}`}>
+                          {conversation.lastMessage?.length > 50
+                            ? `${conversation.lastMessage.substring(0, 50)}...`
+                            : conversation.lastMessage}
+                        </div>
+                        <div className="text-xs mt-1 opacity-50">
+                          {new Date(conversation.timestamp).toLocaleString()}
                         </div>
                       </div>
                     </div>
-                  ))}
-              </div>
-            </div>
-          </Card>
+                  </li>
+                ))}
+            </ul>
+          </aside>
 
-          {/* Messages Area */}
-          <Card className="lg:col-span-3 bg-[#1a2421] border-[#3a4441] p-4 flex flex-col h-[calc(100vh-16rem)]">
+          {/* Message View */}
+          <main className="flex-grow flex flex-col bg-background-light">
             {activeConversation ? (
               <>
+                {/* Header */}
+                <header className="p-4 border-b border-accent flex items-center space-x-4 bg-secondary">
+                  <img
+                    src={conversations.find(conv => conv.id === activeConversation)?.imageUrl || `https://ui-avatars.com/api/?name=${conversations.find(conv => conv.id === activeConversation)?.title.split(' ').map(n => n[0]).join('')}&background=random`}
+                    alt={conversations.find(conv => conv.id === activeConversation)?.title}
+                    className="h-12 w-12 rounded-full object-cover"
+                  />
+                  <div>
+                    <p className="text-lg font-semibold text-white">{conversations.find(conv => conv.id === activeConversation)?.title}</p>
+                    <p className="text-sm text-gray-400">Communicate with support team</p>
+                  </div>
+                </header>
+
                 {/* Messages */}
-                <div className="flex-1 overflow-y-auto space-y-4 mb-4 p-4">
+                <div ref={messagesEndRef} className="flex-grow p-4 space-y-4 overflow-y-auto">
                   {messages.length === 0 ? (
                     <div className="flex items-center justify-center h-full text-gray-400">
                       <p>No messages yet. Start the conversation!</p>
@@ -366,35 +367,34 @@ export default function InboxPage() {
                       </div>
                     ))
                   )}
-                  <div ref={messagesEndRef} />
                 </div>
 
                 {/* Message Input */}
-                <form onSubmit={handleSendMessage} className="flex space-x-2 p-4 border-t border-[#3a4441]">
-                  <Input
-                    value={newMessage}
-                    onChange={(e) => setNewMessage(e.target.value)}
-                    placeholder="Type your message..."
-                    className="bg-transparent border-[#3a4441] text-white"
-                  />
-                  <Button
-                    type="submit"
-                    className="bg-[#e3b261] hover:bg-[#c49a51] text-[#1a2421]"
-                    disabled={!newMessage.trim()}
-                  >
-                    <Send className="h-4 w-4" />
-                  </Button>
+                <form onSubmit={handleSendMessage} className="p-4 border-t border-accent bg-secondary">
+                  <div className="flex items-center space-x-3">
+                    <Input
+                      value={newMessage}
+                      onChange={(e) => setNewMessage(e.target.value)}
+                      placeholder="Type your message..."
+                      className="flex-grow bg-background-light border-accent text-white"
+                    />
+                    <Button
+                      type="submit"
+                      className="bg-primary text-secondary hover:bg-primary/90"
+                      disabled={!newMessage.trim()}
+                    >
+                      {/* <Send className="h-4 w-4" /> */}
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    </Button>
+                  </div>
                 </form>
               </>
             ) : (
-              <div className="flex-1 flex items-center justify-center text-gray-400">
-                <div className="text-center">
-                  <MessageSquare className="h-12 w-12 mx-auto mb-4 text-[#e3b261]" />
-                  <p>Select a conversation or start a new one</p>
-                </div>
+              <div className="flex-grow flex items-center justify-center text-gray-500">
+                <p>Select a conversation to view messages</p>
               </div>
             )}
-          </Card>
+          </main>
         </div>
 
         {/* New Conversation Modal */}
