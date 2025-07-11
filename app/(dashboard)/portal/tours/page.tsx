@@ -143,6 +143,12 @@ export default function ToursPage() {
           </Button>
         </div>
 
+        <CreateTourModal
+          isOpen={isCreateModalOpen}
+          onClose={() => setIsCreateModalOpen(false)}
+          onSave={handleModalSave}
+        />
+
         {/* Analytics Summary */}
         {analytics && (
           <Card className="bg-[#1a2421] border-[#3a4441] p-6">
@@ -331,12 +337,6 @@ export default function ToursPage() {
       </AlertDialog>
 
       {/* Modals */}
-      <CreateTourModal 
-        isOpen={isCreateModalOpen}
-        onClose={() => setIsCreateModalOpen(false)}
-        onSave={handleModalSave}
-      />
-
       <EditTourModal 
         isOpen={isEditModalOpen}
         onClose={() => {

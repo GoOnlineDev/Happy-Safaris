@@ -38,7 +38,7 @@ export function useAuth() {
     profile,
     userId,
     sessionId,
-    loading,
+    isLoaded: !loading,
     isAuthenticated,
     isAdmin: hasRole("admin"),
     isSuperAdmin: hasRole("superadmin"),

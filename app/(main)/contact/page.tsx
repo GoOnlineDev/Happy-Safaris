@@ -143,44 +143,44 @@ export default function ContactPage() {
       {/* Contact Section */}
       <Section className="bg-gradient-to-b from-background to-secondary">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 md:gap-12">
-          {/* Contact Form */}
+            {/* Contact Form */}
           <div className="lg:col-span-2">
             <Card className="p-6 sm:p-8 bg-secondary border-border">
               <h2 className="text-2xl sm:text-3xl font-bold mb-6 text-primary font-serif">Send Us a Message</h2>
               <form onSubmit={handleSubmit} className="space-y-6" noValidate>
-                <div className="space-y-2">
+                  <div className="space-y-2">
                   <label htmlFor="name" className="text-sm font-medium text-primary">Name</label>
                   <Input
                     id="name"
-                    type="text"
+                      type="text"
                     name="name"
                     value={formData.name}
                     onChange={handleChange}
                     onBlur={handleBlur}
-                    isInvalid={!!errors.name}
-                    placeholder="Your name"
+                    className={errors.name ? 'ring-2 ring-destructive' : ''}
+                      placeholder="Your name"
                     disabled={loading}
                     required
-                  />
+                    />
                   {errors.name && <p className="text-sm text-destructive mt-1">{errors.name}</p>}
-                </div>
-                <div className="space-y-2">
+                  </div>
+                  <div className="space-y-2">
                   <label htmlFor="email" className="text-sm font-medium text-primary">Email</label>
                   <Input
                     id="email"
-                    type="email"
+                      type="email"
                     name="email"
                     value={formData.email}
                     onChange={handleChange}
                     onBlur={handleBlur}
-                    isInvalid={!!errors.email}
-                    placeholder="your@email.com"
+                    className={errors.email ? 'ring-2 ring-destructive' : ''}
+                      placeholder="your@email.com"
                     disabled={loading}
                     required
-                  />
+                    />
                   {errors.email && <p className="text-sm text-destructive mt-1">{errors.email}</p>}
-                </div>
-                <div className="space-y-2">
+                  </div>
+                  <div className="space-y-2">
                   <label htmlFor="message" className="text-sm font-medium text-primary">Message</label>
                   <Textarea
                     id="message"
@@ -189,20 +189,20 @@ export default function ContactPage() {
                     value={formData.message}
                     onChange={handleChange}
                     onBlur={handleBlur}
-                    isInvalid={!!errors.message}
+                    className={errors.message ? 'ring-2 ring-destructive' : ''}
                     placeholder="Tell us about your dream safari..."
                     disabled={loading}
                     required
                   />
                   {errors.message && <p className="text-sm text-destructive mt-1">{errors.message}</p>}
-                </div>
+                  </div>
                 <Button type="submit" className="w-full sm:w-auto" disabled={loading}>
                   {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                   {loading ? "Sending..." : "Send Message"}
                   {!loading && <Send className="ml-2 h-4 w-4" />}
-                </Button>
-              </form>
-            </Card>
+                  </Button>
+                </form>
+              </Card>
           </div>
 
           {/* Contact Info */}
@@ -229,10 +229,10 @@ export default function ContactPage() {
                       <span>{contactInfo.email}</span>
                     </li>
                   }
-                  {contactInfo?.address &&
+                  {contactInfo?.location &&
                     <li className="flex items-start">
                       <MapPin className="h-5 w-5 mr-3 text-primary mt-1" />
-                      <span>{contactInfo.address}</span>
+                      <span>{contactInfo.location}</span>
                     </li>
                   }
                 </ul>
@@ -244,13 +244,13 @@ export default function ContactPage() {
                 <div className="space-y-4">
                   <Skeleton className="h-5 w-full" />
                   <Skeleton className="h-5 w-2/3" />
-                </div>
+                    </div>
               ) : (
                 <ul className="space-y-2 text-muted-foreground">
-                  {contactInfo?.workingHours?.map((item, index) => (
+                  {contactInfo?.businessHours?.split(',').map((item, index) => (
                     <li key={index} className="flex items-center">
                       <Clock className="h-5 w-5 mr-3 text-primary" />
-                      <span><strong>{item.days}:</strong> {item.hours}</span>
+                      <span>{item.trim()}</span>
                     </li>
                   ))}
                 </ul>

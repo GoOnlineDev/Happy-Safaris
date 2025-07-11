@@ -22,6 +22,7 @@ import type * as destinations from "../destinations.js";
 import type * as hero from "../hero.js";
 import type * as http from "../http.js";
 import type * as messages from "../messages.js";
+import type * as support from "../support.js";
 import type * as tours from "../tours.js";
 import type * as users from "../users.js";
 
@@ -43,6 +44,7 @@ declare const fullApi: ApiFromModules<{
   hero: typeof hero;
   http: typeof http;
   messages: typeof messages;
+  support: typeof support;
   tours: typeof tours;
   users: typeof users;
 }>;

@@ -26,6 +26,52 @@ export const getFeatured = query({
 // Get tour by slug
 export const getBySlug = query({
   args: { slug: v.string() },
+  returns: v.union(
+    v.null(),
+    v.object({
+      reviews: v.array(v.object({
+        _id: v.id("reviews"),
+        _creationTime: v.number(),
+        userId: v.string(),
+        tourId: v.id("tours"),
+        rating: v.number(),
+        comment: v.string(),
+        images: v.optional(v.array(v.string())),
+        createdAt: v.number(),
+        updatedAt: v.number(),
+      })),
+      averageRating: v.number(),
+      _id: v.id("tours"),
+      _creationTime: v.number(),
+      title: v.string(),
+      slug: v.string(),
+      description: v.string(),
+      duration: v.number(),
+      price: v.number(),
+      discountPrice: v.optional(v.number()),
+      location: v.string(),
+      country: v.string(),
+      imageUrl: v.array(v.string()),
+      featured: v.boolean(),
+      destinationId: v.id("destinations"),
+      maxGroupSize: v.number(),
+      difficulty: v.string(),
+      startDates: v.array(v.number()),
+      itinerary: v.array(v.object({
+        day: v.number(),
+        title: v.string(),
+        description: v.string(),
+        accommodation: v.string(),
+        meals: v.string(),
+      })),
+      included: v.array(v.string()),
+      excluded: v.array(v.string()),
+      viewCount: v.number(),
+      createdBy: v.string(),
+      createdAt: v.number(),
+      updatedAt: v.number(),
+    })
+  ),
   handler: async (ctx, args) => {
     const tour = await ctx.db
       .query("tours")
@@ -36,7 +82,34 @@ export const getBySlug = query({
       throw new ConvexError("Tour not found");
     }
 
-    return tour;
+    // The .withIndex query is more efficient but seems to be causing a type error
+    // in your environment, possibly due to stale type generation.
+    // Using .filter instead is a workaround.
+    const reviews = await ctx.db
+      .query("reviews")
+      .filter((q) => q.eq(q.field("tourId"), tour._id))
+      .collect();
+
+    const averageRating =
+      reviews.length > 0
+        ? reviews.reduce((acc, r) => acc + r.rating, 0) / reviews.length
+        : 0;
+
+    return {
+      ...tour,
+      reviews,
+      averageRating,
+    };
+  },
+});
+
+export const getByDestinationId = query({
+  args: { destinationId: v.id("destinations") },
+  handler: async (ctx, args) => {
+    return await ctx.db
+      .query("tours")
+      .withIndex("by_destinationId", (q) => q.eq("destinationId", args.destinationId))
+      .collect();
   },
 });
 
@@ -116,6 +189,7 @@ export const create = mutation({
     })),
     included: v.array(v.string()),
     excluded: v.array(v.string()),
+    destinationId: v.id("destinations"),
     clerkId: v.string(),
   },
   handler: async (ctx, args) => {
@@ -162,6 +236,7 @@ export const create = mutation({
       itinerary: args.itinerary,
       included: args.included,
       excluded: args.excluded,
+      destinationId: args.destinationId,
       createdBy: args.clerkId,
       createdAt: Date.now(),
       updatedAt: Date.now(),
@@ -198,6 +273,7 @@ export const update = mutation({
     }))),
     included: v.optional(v.array(v.string())),
     excluded: v.optional(v.array(v.string())),
+    destinationId: v.optional(v.id("destinations")),
   },
   handler: async (ctx, args) => {
     // Get identity from token

@@ -56,6 +56,7 @@ export default defineSchema({
     country: v.string(),
     imageUrl: v.array(v.string()),
     featured: v.boolean(),
+    destinationId: v.id("destinations"),
     maxGroupSize: v.number(),
     difficulty: v.string(), // "easy", "moderate", "challenging"
     startDates: v.array(v.number()), // timestamps
@@ -72,7 +73,8 @@ export default defineSchema({
     createdBy: v.string(), // clerkId of creator
     createdAt: v.number(),
     updatedAt: v.number(),
-  }),
+  })
+    .index("by_destinationId", ["destinationId"]),
   
   // Bookings table to track tour reservations
   bookings: defineTable({
@@ -119,7 +121,7 @@ export default defineSchema({
     images: v.optional(v.array(v.string())),
     createdAt: v.number(),
     updatedAt: v.number(),
-  }),
+  }).index("by_tour", ["tourId"]),
   
   // Destinations for travel
   destinations: defineTable({
@@ -199,5 +201,19 @@ export default defineSchema({
     email: v.string(),
     location: v.string(),
     businessHours: v.string(),
-  })
+  }),
+
+  supportTickets: defineTable({
+    bookingId: v.id("bookings"),
+    userId: v.id("users"),
+    subject: v.string(),
+    status: v.union(v.literal("open"), v.literal("closed")),
+  }).index("by_bookingId", ["bookingId"]),
+
+  supportMessages: defineTable({
+    ticketId: v.id("supportTickets"),
+    senderId: v.id("users"),
+    content: v.string(),
+    isRead: v.boolean(),
+  }).index("by_ticketId", ["ticketId"])
 }); 

@@ -79,11 +79,23 @@ export const list = query({
       throw new Error("Unauthorized");
     }
     
-    return await ctx.db
+    const bookings = await ctx.db
       .query("bookings")
       .filter((q) => q.eq(q.field("userId"), args.userId))
       .order("desc")
       .collect();
+
+    const bookingsWithTourDetails = await Promise.all(
+      bookings.map(async (booking) => {
+        const tour = await ctx.db.get(booking.tourId);
+        return {
+          ...booking,
+          tourDetails: tour ? { imageUrl: tour.imageUrl, slug: tour.slug } : null,
+        };
+      })
+    );
+
+    return bookingsWithTourDetails;
   },
 });
 

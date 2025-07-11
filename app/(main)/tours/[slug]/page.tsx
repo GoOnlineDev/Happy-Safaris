@@ -168,7 +168,7 @@ export default function TourPage({ params }: { params: Promise<{ slug: string }>
                     <div>
                       <h4 className="text-lg font-semibold text-white mb-2 flex items-center"><X className="h-5 w-5 mr-2 text-destructive"/>Not Included</h4>
                       <ul className="space-y-2 list-disc list-inside">
-                        {tour.notIncluded.map((item: string, i: number) => <li key={i} className="text-muted-foreground">{item}</li>)}
+                        {tour.excluded.map((item: string, i: number) => <li key={i} className="text-muted-foreground">{item}</li>)}
                       </ul>
                     </div>
                 </div>

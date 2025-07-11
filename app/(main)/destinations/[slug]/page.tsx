@@ -60,7 +60,10 @@ export default function DestinationDetailPage({ params }: { params: Promise<{ sl
   const { slug } = use(params);
   const router = useRouter();
   const destination = useQuery(api.destinations.getBySlug, { slug });
-  const relatedTours = useQuery(api.tours.getToursByDestination, destination ? { destinationId: destination._id } : "skip");
+  const relatedTours = useQuery(
+    api.tours.getByDestinationId,
+    destination ? { destinationId: destination._id } : "skip"
+  );
   
   const [mainImage, setMainImage] = useState<string | null>(null);
 
@@ -155,15 +158,6 @@ export default function DestinationDetailPage({ params }: { params: Promise<{ sl
                     <h4 className="font-semibold text-white">Key Attractions</h4>
                     <ul className="list-disc list-inside text-muted-foreground">
                       {destination.attractions.map((item, i) => <li key={i}>{item}</li>)}
-                    </ul>
-                  </div>
-                </li>
-                <li className="flex items-start">
-                  <Package className="h-6 w-6 mr-3 text-primary/80 mt-1" />
-                  <div>
-                    <h4 className="font-semibold text-white">What to Bring</h4>
-                    <ul className="list-disc list-inside text-muted-foreground">
-                      {destination.whatToBring.map((item, i) => <li key={i}>{item}</li>)}
                     </ul>
                   </div>
                 </li>

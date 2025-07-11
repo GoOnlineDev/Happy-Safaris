@@ -20,6 +20,9 @@ import { format } from "date-fns";
 import { Calendar } from "@/components/ui/calendar";
 import { Badge } from "@/components/ui/badge";
 import { useUser } from "@/hooks/useUser";
+import { useQuery } from "convex/react";
+import { Id } from "@/convex/_generated/dataModel";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 interface CreateTourModalProps {
   isOpen: boolean;
@@ -51,6 +54,7 @@ const DEFAULT_FORM_STATE = {
   included: [""], // Default included
   excluded: [""], // Default excluded
   images: [] as string[],
+  destinationId: null as Id<"destinations"> | null,
 };
 
 export default function CreateTourModal({
@@ -59,6 +63,7 @@ export default function CreateTourModal({
   onSave,
 }: CreateTourModalProps) {
   const createTour = useMutation(api.tours.create);
+  const destinations = useQuery(api.destinations.getAll);
   const [form, setForm] = useState(DEFAULT_FORM_STATE);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -159,8 +164,8 @@ export default function CreateTourModal({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!form.title || !form.location || !form.country || form.images.length === 0) {
-      setError("Please fill in all required fields (Title, Location, Country) and upload at least one image.");
+    if (!form.title || !form.location || !form.country || form.images.length === 0 || !form.destinationId) {
+      setError("Please fill in all required fields (Title, Location, Country, Destination) and upload at least one image.");
       return;
     }
 
@@ -172,7 +177,7 @@ export default function CreateTourModal({
       const filteredIncluded = form.included.filter(item => item.trim() !== "");
       const filteredExcluded = form.excluded.filter(item => item.trim() !== "");
 
-      if (!user || !user._id) {
+      if (!user || !user.clerkId) {
         setError("User not authenticated. Please log in.");
         toast.error("User not authenticated.");
         setIsSubmitting(false);
@@ -180,7 +185,7 @@ export default function CreateTourModal({
       }
 
       await createTour({
-        clerkId: user._id,
+        clerkId: user.clerkId,
         title: form.title,
         slug,
         description: form.description,
@@ -197,6 +202,7 @@ export default function CreateTourModal({
         included: filteredIncluded,
         excluded: filteredExcluded,
         imageUrl: form.images,
+        destinationId: form.destinationId,
       });
 
       toast.success("Tour created successfully!");
@@ -243,6 +249,24 @@ export default function CreateTourModal({
               <div className="space-y-2">
                 <Label htmlFor="country" className="text-white">Country *</Label>
                 <Input id="country" value={form.country} onChange={e => handleChange("country", e.target.value)} className="bg-[#2a3431] border-[#3a4441] text-white" required />
+              </div>
+               <div className="space-y-2">
+                <Label htmlFor="destination" className="text-white">Destination *</Label>
+                <Select
+                  onValueChange={(value) => handleChange("destinationId", value as Id<"destinations">)}
+                  value={form.destinationId ?? undefined}
+                >
+                  <SelectTrigger id="destination" className="bg-[#2a3431] border-[#3a4441] text-white">
+                    <SelectValue placeholder="Select a destination" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-[#2a3431] border-[#3a4441] text-white">
+                    {destinations?.map((dest) => (
+                      <SelectItem key={dest._id} value={dest._id}>
+                        {dest.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
                <div className="space-y-2">
                 <Label htmlFor="duration" className="text-white">Duration (days)</Label>
