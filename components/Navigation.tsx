@@ -227,16 +227,12 @@ export default function Navigation() {
                     </>
                   ) : (
                     <div className="space-y-4">
-                      <Link href="/login" onClick={() => setIsOpen(false)}>
-                        <Button variant="ghost" className="w-full text-gray-300 hover:text-primary text-lg">
-                          Sign In
-                        </Button>
-                      </Link>
-                      <Link href="/signup" onClick={() => setIsOpen(false)}>
-                        <Button className="w-full bg-primary hover:bg-primary/90 text-secondary text-lg">
-                          Sign Up
-                        </Button>
-                      </Link>
+                      <SignInButton mode="modal" fallbackRedirectUrl="/">
+                      <Button>Sign In</Button>
+                        </SignInButton>
+                        <SignUpButton mode="modal" fallbackRedirectUrl="/">
+                      <Button>Sign Up</Button>
+                      </SignUpButton>
                     </div>
                   )}
                 </div>
