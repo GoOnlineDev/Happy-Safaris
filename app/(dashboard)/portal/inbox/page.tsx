@@ -10,10 +10,9 @@ import ProtectedPortal from "@/components/portal/ProtectedPortal";
 import { useUser } from "@/hooks/useUser";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
-import { MessageSquare, Send, Plus, Search } from "lucide-react";
+import { MessageSquare, Send, Plus, Search, Loader2 } from "lucide-react";
 import { Id } from "@/convex/_generated/dataModel";
 import Link from "next/link";
-import { Loader2 } from "lucide-react";
 
 interface Message {
   id: string;
@@ -42,6 +41,7 @@ export default function InboxPage() {
   const [activeConversation, setActiveConversation] = useState<Id<"conversations"> | undefined>(undefined);
   const [showNewConversation, setShowNewConversation] = useState(false);
   const [newConversationTitle, setNewConversationTitle] = useState("");
+  const [isSending, setIsSending] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Convex queries & mutations
@@ -180,19 +180,37 @@ export default function InboxPage() {
 
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newMessage.trim() || !user || !activeConversation) return;
+    if (!newMessage.trim() || !user || !activeConversation || isSending) return;
+
+    setIsSending(true);
+    const messageContent = newMessage.trim();
+    setNewMessage("");
+
+    const optimisticMessage: Message = {
+      id: `temp-${Date.now()}`,
+      content: messageContent,
+      sender: user._id,
+      senderName: `${user.firstName || ""} ${user.lastName || ""}`.trim() || user.email || "You",
+      timestamp: Date.now(),
+      isStaff: user.role === "admin",
+    };
+
+    setMessages((prev) => [...prev, optimisticMessage]);
 
     try {
       await sendMessageMutation({
         conversationId: activeConversation,
         senderId: user._id,
-        content: newMessage.trim()
+        content: messageContent,
       });
-      setNewMessage("");
-      scrollToBottom();
     } catch (error) {
       console.error("Error sending message:", error);
-      // TODO: Show error toast
+      // Revert optimistic update
+      setMessages((prev) => prev.filter((msg) => msg.id !== optimisticMessage.id));
+      setNewMessage(messageContent);
+      // TODO: show toast
+    } finally {
+      setIsSending(false);
     }
   };
 
@@ -221,7 +239,7 @@ export default function InboxPage() {
     );
   }
 
-  if (!user || user.role === 'tourist') {
+  if (!user) {
     return (
       <div className="p-8 text-center">
         <h1 className="text-2xl text-primary font-bold">Access Denied</h1>
@@ -237,13 +255,21 @@ export default function InboxPage() {
 
   return (
     <ProtectedPortal>
-      <div className="h-full flex flex-col max-w-7xl mx-auto">
-        <h1 className="text-3xl font-bold text-primary p-4 md:p-6">Inbox</h1>
-        <div className="flex-grow flex border border-accent rounded-lg bg-secondary shadow-lg overflow-hidden">
+      <div className="h-full flex flex-col max-w-7xl mx-auto px-2 sm:px-4 md:px-6 py-2 md:py-4">
+        <h1 className="text-2xl sm:text-3xl font-bold text-primary p-2 sm:p-4 md:p-6">Inbox</h1>
+        <div className="flex flex-col md:flex-row flex-grow border border-accent rounded-lg bg-secondary shadow-lg overflow-hidden min-h-[70vh]">
           {/* Users List */}
-          <aside className="w-1/3 md:w-1/4 border-r border-accent overflow-y-auto">
-            <div className="p-4 border-b border-accent">
-              <h2 className="text-xl font-semibold text-white">Conversations</h2>
+          <aside className="w-full md:w-1/3 lg:w-1/4 border-b md:border-b-0 md:border-r border-accent overflow-y-auto max-h-72 md:max-h-none">
+            <div className="p-3 sm:p-4 border-b border-accent flex items-center justify-between">
+              <h2 className="text-lg sm:text-xl font-semibold text-white">Conversations</h2>
+              <Button
+                size="icon"
+                className="ml-2 bg-primary text-secondary hover:bg-primary/90"
+                onClick={() => setShowNewConversation(true)}
+                title="Start Conversation"
+              >
+                <Plus className="h-5 w-5" />
+              </Button>
             </div>
             <ul className="divide-y divide-accent">
               {conversations
@@ -252,7 +278,7 @@ export default function InboxPage() {
                   <li
                     key={conversation.id}
                     onClick={() => setActiveConversation(conversation.id)}
-                    className={`p-4 cursor-pointer hover:bg-background-light ${
+                    className={`p-3 sm:p-4 cursor-pointer hover:bg-background-light transition-colors duration-150 rounded-md ${
                       activeConversation === conversation.id
                         ? "bg-background-light"
                         : ""
@@ -306,24 +332,24 @@ export default function InboxPage() {
           </aside>
 
           {/* Message View */}
-          <main className="flex-grow flex flex-col bg-background-light">
+          <main className="flex-grow flex flex-col bg-background-light min-h-[300px]">
             {activeConversation ? (
               <>
                 {/* Header */}
-                <header className="p-4 border-b border-accent flex items-center space-x-4 bg-secondary">
+                <header className="p-3 sm:p-4 border-b border-accent flex items-center space-x-3 sm:space-x-4 bg-secondary">
                   <img
                     src={conversations.find(conv => conv.id === activeConversation)?.imageUrl || `https://ui-avatars.com/api/?name=${conversations.find(conv => conv.id === activeConversation)?.title.split(' ').map(n => n[0]).join('')}&background=random`}
                     alt={conversations.find(conv => conv.id === activeConversation)?.title}
-                    className="h-12 w-12 rounded-full object-cover"
+                    className="h-10 w-10 sm:h-12 sm:w-12 rounded-full object-cover"
                   />
                   <div>
-                    <p className="text-lg font-semibold text-white">{conversations.find(conv => conv.id === activeConversation)?.title}</p>
-                    <p className="text-sm text-gray-400">Communicate with support team</p>
+                    <p className="text-base sm:text-lg font-semibold text-white">{conversations.find(conv => conv.id === activeConversation)?.title}</p>
+                    <p className="text-xs sm:text-sm text-gray-400">Communicate with support team</p>
                   </div>
                 </header>
 
                 {/* Messages */}
-                <div ref={messagesEndRef} className="flex-grow p-4 space-y-4 overflow-y-auto">
+                <div ref={messagesEndRef} className="flex-grow p-2 sm:p-4 space-y-3 sm:space-y-4 overflow-y-auto">
                   {messages.length === 0 ? (
                     <div className="flex items-center justify-center h-full text-gray-400">
                       <p>No messages yet. Start the conversation!</p>
@@ -334,7 +360,7 @@ export default function InboxPage() {
                         key={message.id}
                         className={`flex ${message.sender === user?._id ? 'justify-end' : 'justify-start'}`}
                       >
-                        <div className="flex items-end max-w-[70%] space-x-2">
+                        <div className="flex items-end max-w-[85vw] sm:max-w-[70%] space-x-2">
                           {message.sender !== user?._id && (
                             <div className="flex-shrink-0">
                               <div className={`h-8 w-8 rounded-full ${
@@ -349,17 +375,17 @@ export default function InboxPage() {
                             </div>
                           )}
                           <div
-                            className={`rounded-lg p-3 ${
+                            className={`rounded-lg p-2 sm:p-3 ${
                               message.sender === user?._id
                                 ? "bg-[#e3b261] text-[#1a2421]"
                                 : "bg-[#3a4441] text-white"
                             }`}
                           >
-                            <div className="text-sm font-medium mb-1">
+                            <div className="text-xs sm:text-sm font-medium mb-0.5 sm:mb-1">
                               {message.senderName}
                             </div>
-                            <div className="break-words">{message.content}</div>
-                            <div className="text-xs mt-1 opacity-70">
+                            <div className="break-words text-sm">{message.content}</div>
+                            <div className="text-[10px] sm:text-xs mt-0.5 sm:mt-1 opacity-70">
                               {new Date(message.timestamp).toLocaleString()}
                             </div>
                           </div>
@@ -370,21 +396,24 @@ export default function InboxPage() {
                 </div>
 
                 {/* Message Input */}
-                <form onSubmit={handleSendMessage} className="p-4 border-t border-accent bg-secondary">
-                  <div className="flex items-center space-x-3">
+                <form onSubmit={handleSendMessage} className="p-2 sm:p-4 border-t border-accent bg-secondary">
+                  <div className="flex items-center space-x-2 sm:space-x-3">
                     <Input
                       value={newMessage}
                       onChange={(e) => setNewMessage(e.target.value)}
                       placeholder="Type your message..."
-                      className="flex-grow bg-background-light border-accent text-white"
+                      className="flex-grow bg-background-light border-accent text-white text-sm sm:text-base py-2"
                     />
                     <Button
                       type="submit"
-                      className="bg-primary text-secondary hover:bg-primary/90"
-                      disabled={!newMessage.trim()}
+                      className="bg-primary text-secondary hover:bg-primary/90 px-3 sm:px-4 py-2"
+                      disabled={!newMessage.trim() || isSending}
                     >
-                      {/* <Send className="h-4 w-4" /> */}
-                      <Loader2 className="h-4 w-4 animate-spin" />
+                      {isSending ? (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      ) : (
+                        <Send className="h-4 w-4" />
+                      )}
                     </Button>
                   </div>
                 </form>
@@ -399,14 +428,14 @@ export default function InboxPage() {
 
         {/* New Conversation Modal */}
         {showNewConversation && (
-          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-            <Card className="w-full max-w-md bg-[#1a2421] border-[#3a4441] p-6">
-              <h3 className="text-xl font-semibold text-white mb-4">New Conversation</h3>
-              <div className="space-y-4">
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 px-2 sm:px-0">
+            <Card className="w-full max-w-md bg-[#1a2421] border-[#3a4441] p-4 sm:p-6 rounded-lg">
+              <h3 className="text-lg sm:text-xl font-semibold text-white mb-3 sm:mb-4">New Conversation</h3>
+              <div className="space-y-3 sm:space-y-4">
                 <select
                   value={newConversationTitle}
                   onChange={(e) => setNewConversationTitle(e.target.value)}
-                  className="w-full p-2 rounded bg-[#2a3431] border border-[#3a4441] text-white"
+                  className="w-full p-2 rounded bg-[#2a3431] border border-[#3a4441] text-white text-sm sm:text-base"
                 >
                   <option value="" disabled>Select a user to chat with...</option>
                   {allUsers && allUsers
@@ -421,13 +450,13 @@ export default function InboxPage() {
                   <Button
                     variant="outline"
                     onClick={() => setShowNewConversation(false)}
-                    className="border-[#3a4441] text-gray-400 hover:text-white"
+                    className="border-[#3a4441] text-gray-400 hover:text-white px-3 py-2 text-sm"
                   >
                     Cancel
                   </Button>
                   <Button
                     onClick={handleNewConversation}
-                    className="bg-[#e3b261] hover:bg-[#c49a51] text-[#1a2421]"
+                    className="bg-[#e3b261] hover:bg-[#c49a51] text-[#1a2421] px-3 py-2 text-sm"
                     disabled={!newConversationTitle}
                   >
                     Start Chat

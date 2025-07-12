@@ -158,33 +158,50 @@ export const getLastMessages = query({
       throw new Error("Not authenticated");
     }
 
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_clerk_id", (q) => q.eq("clerkId", identity.subject))
+      .unique();
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
     const lastMessages = [];
     for (const conversationId of args.conversationIds) {
       const message = await ctx.db
         .query("messages")
-        .withIndex("by_conversation", q => q.eq("conversationId", conversationId))
+        .withIndex("by_conversation", (q) =>
+          q.eq("conversationId", conversationId)
+        )
         .order("desc")
         .first();
 
       if (message) {
         const sender = await ctx.db.get(message.senderId);
-        
+
         // Get unread count for this conversation
-        const unreadCount = await ctx.db
+        const unreadMessages = await ctx.db
           .query("messages")
-          .withIndex("by_conversation", q => q.eq("conversationId", conversationId))
-          .filter(q => 
+          .withIndex("by_conversation", (q) =>
+            q.eq("conversationId", conversationId)
+          )
+          .filter((q) =>
             q.and(
               q.eq(q.field("isRead"), false),
-              q.neq(q.field("senderId"), sender?._id)
+              q.neq(q.field("senderId"), user._id)
             )
           )
           .collect();
 
         lastMessages.push({
           ...message,
-          senderName: sender ? `${sender.firstName || ''} ${sender.lastName || ''}`.trim() || sender.email : "Unknown User",
-          unreadCount: unreadCount.length
+          senderName:
+            sender
+              ? `${sender.firstName || ""} ${sender.lastName || ""}`.trim() ||
+                sender.email
+              : "Unknown User",
+          unreadCount: unreadMessages.length,
         });
       }
     }
