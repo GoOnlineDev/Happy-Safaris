@@ -9,6 +9,7 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 
+
 interface PortalHeaderProps {
   onMenuClick: () => void;
 }

@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
+import { SignInButton, SignUpButton } from "@clerk/nextjs";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -147,16 +148,12 @@ export default function Navigation() {
               </DropdownMenu>
             ) : (
               <>
-                <Link href="/login">
-                  <Button variant="ghost" className="text-gray-300 hover:text-primary">
-                    Sign In
-                  </Button>
-                </Link>
-                <Link href="/signup">
-                  <Button className="bg-primary hover:bg-primary/90 text-secondary">
-                    Sign Up
-                  </Button>
-                </Link>
+                <SignInButton mode="modal" fallbackRedirectUrl="/">
+                  <Button>Sign In</Button>
+                </SignInButton>
+                <SignUpButton mode="modal" fallbackRedirectUrl="/">
+                  <Button>Sign Up</Button>
+                </SignUpButton>
               </>
             )}
           </div>
