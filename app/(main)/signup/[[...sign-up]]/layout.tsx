@@ -18,3 +18,9 @@ export default function SignUpLayout({
 }) {
   return <>{children}</>;
 } 
+
+export const metadata = {
+  title: 'Create Account – Happy African Safaris',
+  description: 'Sign up to plan and manage your Uganda safari trips.',
+  robots: { index: false, follow: false },
+};
