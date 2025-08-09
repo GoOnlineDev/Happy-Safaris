@@ -1,18 +1,19 @@
 import type { Metadata } from 'next';
 
-type Props = { params: { slug: string } };
+type ParamsPromise = { params: Promise<{ slug: string }> };
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const title = `${formatTitle(params.slug)} – Uganda Safari Destination`;
-  const description = `${formatTitle(params.slug)} travel guide: wildlife, attractions, best time to visit, and tours in Uganda.`;
+export async function generateMetadata({ params }: ParamsPromise): Promise<Metadata> {
+  const { slug } = await params;
+  const title = `${formatTitle(slug)} – Uganda Safari Destination`;
+  const description = `${formatTitle(slug)} travel guide: wildlife, attractions, best time to visit, and tours in Uganda.`;
   return {
     title,
     description,
-    alternates: { canonical: `/destinations/${params.slug}` },
+    alternates: { canonical: `/destinations/${slug}` },
     openGraph: {
       title,
       description,
-      url: `/destinations/${params.slug}`,
+      url: `/destinations/${slug}`,
     },
   };
 }
