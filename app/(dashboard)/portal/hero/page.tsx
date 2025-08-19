@@ -11,6 +11,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { UploadDropzone } from "@/components/uploadthing";
 import { Card } from "@/components/ui/card";
 import { Loader2 } from "lucide-react";
+import TipTapEditorWrapper from "@/components/TipTapEditorWrapper";
 
 export default function AdminHeroPage() {
   const { user } = useUser();
@@ -154,14 +155,11 @@ export default function AdminHeroPage() {
             </div>
             <div className="space-y-2 col-span-1 md:col-span-2">
               <label htmlFor="subheading" className="text-sm font-medium text-gray-300">Subheading</label>
-              <Textarea
-                id="subheading"
-                name="subheading"
-                value={form.subheading}
-                onChange={handleChange}
-                className="w-full bg-background-light border-accent text-white"
+              <TipTapEditorWrapper 
+                content={form.subheading} 
+                onChange={(content) => setForm({ ...form, subheading: content })}
                 placeholder="e.g., Experience the wild like never before"
-                required
+                className="bg-background-light border-accent rounded-md"
               />
             </div>
             <div className="space-y-2">

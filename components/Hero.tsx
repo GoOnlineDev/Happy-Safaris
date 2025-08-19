@@ -26,8 +26,8 @@ export default function Hero() {
   const [searchError, setSearchError] = useState<string | null>(null);
   const [showResults, setShowResults] = useState(false);
 
-  // Fallbacks if not set in DB
-  const backgroundImageUrl = heroContent?.backgroundImageUrl || "https://images.unsplash.com/photo-1501785888041-af3ef285b470?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80";
+  // Content from Convex (no fallback images)
+  const backgroundImageUrl = heroContent?.backgroundImageUrl;
   const mainHeading = heroContent?.mainHeading || "Experience the Magic of";
   const highlightedText = heroContent?.highlightedText || "African Safaris";
   const subheading = heroContent?.subheading || "Discover breathtaking landscapes, encounter majestic wildlife, and create unforgettable memories";
@@ -67,15 +67,17 @@ export default function Hero() {
   };
 
   return (
-    <div className="relative h-screen flex items-center justify-center overflow-hidden">
-      <Image
-        src={backgroundImageUrl}
-        alt="Hero background"
-        fill
-        className="object-cover"
-        priority
-        quality={80}
-      />
+    <div className="relative min-h-screen md:h-[90vh] flex items-center justify-center overflow-hidden bg-gradient-to-br from-secondary via-background to-secondary">
+      {backgroundImageUrl && (
+        <Image
+          src={backgroundImageUrl}
+          alt="Hero background"
+          fill
+          className="object-cover"
+          priority
+          quality={80}
+        />
+      )}
       <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black/70" />
 
       <div className="relative z-10 container mx-auto px-4 text-center">
@@ -83,7 +85,7 @@ export default function Hero() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
-          className="max-w-5xl mx-auto pt-28 md:pt-40 px-2"
+          className="max-w-5xl mx-auto pt-24 md:pt-32 px-2 pb-8 md:pb-16"
         >
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -105,9 +107,9 @@ export default function Hero() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
             onSubmit={handleSearch}
-            className="bg-white/10 backdrop-blur-md rounded-xl p-4 sm:p-6 shadow-xl border border-white/20 mb-12 relative"
+            className="bg-white/15 backdrop-blur-md rounded-xl p-4 sm:p-6 shadow-xl border border-white/30 mb-8 md:mb-12 relative"
           >
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 items-end">
               <div className="space-y-2 text-left">
                 <label className="text-sm font-medium text-primary">Destination</label>
                 <div className="relative">
@@ -161,7 +163,7 @@ export default function Hero() {
               </Button>
             </div>
             {showResults && (
-              <div className="absolute left-0 right-0 mt-2 bg-secondary border-border rounded-lg shadow-lg z-20 max-h-80 overflow-y-auto">
+              <div className="absolute left-0 right-0 mt-2 bg-secondary/95 backdrop-blur-md border border-white/20 rounded-lg shadow-xl z-20 max-h-80 overflow-y-auto">
                 {searchError && (
                   <div className="p-4 text-destructive text-center">{searchError}</div>
                 )}
@@ -173,13 +175,15 @@ export default function Hero() {
                       className="flex items-center gap-4 p-4 hover:bg-accent transition-colors border-b border-border last:border-b-0"
                       onClick={() => setShowResults(false)}
                     >
-                      <div className="w-14 h-14 relative flex-shrink-0">
-                        <Image
-                          src={item.imageUrl?.[0] || "https://images.unsplash.com/photo-1516426122078-c23e76319801"}
-                          alt={item.title || item.name}
-                          fill
-                          className="object-cover rounded-md"
-                        />
+                      <div className="w-14 h-14 relative flex-shrink-0 bg-gradient-to-br from-primary/20 to-primary/10 rounded-md">
+                        {item.imageUrl?.[0] && (
+                          <Image
+                            src={item.imageUrl[0]}
+                            alt={item.title || item.name}
+                            fill
+                            className="object-cover rounded-md"
+                          />
+                        )}
                       </div>
                       <div className="flex-1 text-left">
                         <div className="text-white font-semibold">{item.title || item.name}</div>
@@ -199,16 +203,16 @@ export default function Hero() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.6 }}
-            className="flex items-center justify-center space-x-4"
+            className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4"
           >
             <Link href={ctaLink}>
-              <Button size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground">
+              <Button size="lg" className="w-full sm:w-auto bg-primary hover:bg-primary/90 text-primary-foreground">
                 {ctaText}
                 <ChevronRight className="ml-2 h-4 w-4" />
               </Button>
             </Link>
             <Link href="/about">
-              <Button size="lg" variant="outline" className="text-white border-white hover:bg-white hover:text-secondary">
+              <Button size="lg" variant="outline" className="w-full sm:w-auto text-white border-white hover:bg-white hover:text-secondary">
                 Learn More
               </Button>
             </Link>

@@ -111,16 +111,18 @@ export default function Home() {
               <motion.div key={destination._id} variants={fadeIn}>
                 <Link href={`/destinations/${destination.slug}`}>
                   <Card className="overflow-hidden bg-secondary border-border hover:border-primary transition-all duration-300 group h-full">
-                    <div className="relative h-64">
-                      <Image
-                        src={destination.imageUrl[0] || "https://images.unsplash.com/photo-1516426122078-c23e76319801"}
-                        alt={destination.name}
-                        fill
-                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                        priority={index < 2}
-                        className="object-cover group-hover:scale-105 transition-transform duration-300"
-                        quality={75}
-                      />
+                    <div className="relative h-64 bg-gradient-to-br from-secondary via-background to-secondary">
+                      {destination.imageUrl[0] && (
+                        <Image
+                          src={destination.imageUrl[0]}
+                          alt={destination.name}
+                          fill
+                          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                          priority={index < 2}
+                          className="object-cover group-hover:scale-105 transition-transform duration-300"
+                          quality={75}
+                        />
+                      )}
                       <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
                       <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-6">
                         <h3 className="text-lg sm:text-xl font-semibold text-white mb-1 sm:mb-2">{destination.name}</h3>
@@ -165,16 +167,18 @@ export default function Home() {
             toursToDisplay.map((tour, index) => (
               <motion.div key={tour._id} variants={fadeIn}>
                 <Card className="overflow-hidden bg-secondary border-border hover:border-primary transition-all duration-300 group h-full flex flex-col">
-                  <div className="relative h-48 sm:h-56 md:h-64">
-                    <Image
-                      src={tour.imageUrl[0] || "https://images.unsplash.com/photo-1516426122078-c23e76319801"}
-                      alt={tour.title}
-                      fill
-                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                      priority={index < 2}
-                      className="object-cover group-hover:scale-105 transition-transform duration-300"
-                      quality={75}
-                    />
+                  <div className="relative h-48 sm:h-56 md:h-64 bg-gradient-to-br from-secondary via-background to-secondary">
+                    {tour.imageUrl[0] && (
+                      <Image
+                        src={tour.imageUrl[0]}
+                        alt={tour.title}
+                        fill
+                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                        priority={index < 2}
+                        className="object-cover group-hover:scale-105 transition-transform duration-300"
+                        quality={75}
+                      />
+                    )}
                   </div>
                   <div className="p-6 flex flex-col flex-grow">
                     <div className="flex justify-between items-start mb-4">

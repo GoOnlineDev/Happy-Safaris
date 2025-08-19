@@ -6,6 +6,7 @@ import { ConvexError } from "convex/values";
 // Get all destinations
 export const getAll = query({
   args: {},
+  returns: v.array(v.any()),
   handler: async (ctx) => {
     return await ctx.db.query("destinations").collect();
   },
@@ -14,6 +15,7 @@ export const getAll = query({
 // Get featured destinations
 export const getFeatured = query({
   args: {},
+  returns: v.array(v.any()),
   handler: async (ctx) => {
     return await ctx.db
       .query("destinations")
@@ -25,13 +27,14 @@ export const getFeatured = query({
 // Get a single destination by slug without click tracking
 export const getBySlug = query({
   args: { slug: v.string() },
+  returns: v.union(v.null(), v.any()),
   handler: async (ctx, args) => {
     const destination = await ctx.db
       .query("destinations")
       .filter((q) => q.eq(q.field("slug"), args.slug))
       .first();
     
-    return destination;
+    return destination || null;
   },
 });
 
@@ -40,6 +43,7 @@ export const trackDestinationClick = mutation({
   args: { 
     destinationId: v.id("destinations")
   },
+  returns: v.number(),
   handler: async (ctx, args) => {
     // Get the current destination
     const destination = await ctx.db.get(args.destinationId);
@@ -66,6 +70,7 @@ const incrementClickCount = internalMutation({
     destinationId: v.id("destinations"), 
     newCount: v.number() 
   },
+  returns: v.number(),
   handler: async (ctx, args) => {
     // Update the destination's click count
     await ctx.db.patch(args.destinationId, { 
@@ -111,6 +116,7 @@ export const create = mutation({
     attractions: v.array(v.string()),
     bestTimeToVisit: v.string(),
   },
+  returns: v.id("destinations"),
   handler: async (ctx, args) => {
     // Check if user is authenticated and is an admin
     if (!(await isAdmin(ctx))) {
@@ -187,6 +193,7 @@ export const update = mutation({
     attractions: v.optional(v.array(v.string())),
     bestTimeToVisit: v.optional(v.string()),
   },
+  returns: v.id("destinations"),
   handler: async (ctx, args) => {
     // Check if user is authenticated and is an admin
     if (!(await isAdmin(ctx))) {
@@ -238,6 +245,7 @@ export const deleteDestination = mutation({
   args: {
     id: v.id("destinations"),
   },
+  returns: v.object({ success: v.boolean() }),
   handler: async (ctx, args) => {
     // Check if user is authenticated and is an admin
     if (!(await isAdmin(ctx))) {
@@ -261,6 +269,11 @@ export const deleteDestination = mutation({
 // Get destination analytics (admin only)
 export const getAnalytics = query({
   args: {},
+  returns: v.array(v.object({
+    id: v.id("destinations"),
+    name: v.string(),
+    clicks: v.number(),
+  })),
   handler: async (ctx) => {
     // Check if user is authenticated and is an admin
     if (!(await isAdmin(ctx))) {
@@ -281,6 +294,7 @@ export const getAnalytics = query({
 // Get a single destination by ID
 export const getById = query({
   args: { id: v.id("destinations") },
+  returns: v.any(),
   handler: async (ctx, args) => {
     const destination = await ctx.db.get(args.id);
     
@@ -295,6 +309,7 @@ export const getById = query({
 // Search destinations by name, country, attractions, or description
 export const searchDestinations = query({
   args: { query: v.string() },
+  returns: v.array(v.any()),
   handler: async (ctx, args) => {
     const q = args.query.trim().toLowerCase();
     if (!q) return [];

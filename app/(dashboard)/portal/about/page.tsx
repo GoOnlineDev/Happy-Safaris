@@ -12,6 +12,7 @@ import { Card } from "@/components/ui/card";
 import { toast } from "sonner";
 import Image from "next/image";
 import { UploadDropzone } from "@/components/uploadthing";
+import TipTapEditorWrapper from "@/components/TipTapEditorWrapper";
 
 const ICON_OPTIONS = [
   { value: "Binoculars", label: "Binoculars" },
@@ -189,7 +190,12 @@ export default function AboutAdminPage() {
               <label className="block text-gray-300">Story Heading</label>
               <Input value={form.storyHeading} onChange={e => handleChange("storyHeading", e.target.value)} className="bg-background-light border-accent" />
               <label className="block text-gray-300">Story Content</label>
-              <Textarea value={form.storyContent} onChange={e => handleChange("storyContent", e.target.value)} className="bg-background-light border-accent" />
+              <TipTapEditorWrapper 
+                content={form.storyContent} 
+                onChange={(content) => handleChange("storyContent", content)}
+                placeholder="Write your story content here..."
+                className="bg-background-light border-accent rounded-md"
+              />
             </div>
           </div>
         </Card>
@@ -217,7 +223,12 @@ export default function AboutAdminPage() {
               </div>
               <div className="w-full md:w-1/2">
                 <label className="block text-gray-300">Description</label>
-                <Textarea value={adv.description} onChange={e => handleAdvantageChange(idx, "description", e.target.value)} className="bg-secondary border-accent" />
+                <TipTapEditorWrapper 
+                  content={adv.description} 
+                  onChange={(content) => handleAdvantageChange(idx, "description", content)}
+                  placeholder="Describe this advantage..."
+                  className="bg-secondary border-accent rounded-md"
+                />
               </div>
               <Button type="button" variant="destructive" className="mt-2 md:mt-6" onClick={() => removeAdvantage(idx)}>Remove</Button>
             </div>
@@ -236,7 +247,12 @@ export default function AboutAdminPage() {
               </div>
               <div className="w-full md:w-2/3">
                 <label className="block text-gray-300">Description</label>
-                <Textarea value={val.description} onChange={e => handleValueChange(idx, "description", e.target.value)} className="bg-secondary border-accent" />
+                <TipTapEditorWrapper 
+                  content={val.description} 
+                  onChange={(content) => handleValueChange(idx, "description", content)}
+                  placeholder="Describe this value..."
+                  className="bg-secondary border-accent rounded-md"
+                />
               </div>
               <Button type="button" variant="destructive" className="mt-2 md:mt-6" onClick={() => removeValue(idx)}>Remove</Button>
             </div>

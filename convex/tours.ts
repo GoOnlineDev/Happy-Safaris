@@ -5,6 +5,8 @@ import { ConvexError } from "convex/values";
 
 // Get all tours
 export const getAll = query({
+  args: {},
+  returns: v.array(v.any()),
   handler: async (ctx) => {
     return await ctx.db.query("tours").collect();
   },
@@ -12,6 +14,8 @@ export const getAll = query({
 
 // Get featured tours
 export const getFeatured = query({
+  args: {},
+  returns: v.array(v.any()),
   handler: async (ctx) => {
     const featured = await ctx.db
       .query("tours")
@@ -105,6 +109,7 @@ export const getBySlug = query({
 
 export const getByDestinationId = query({
   args: { destinationId: v.id("destinations") },
+  returns: v.array(v.any()),
   handler: async (ctx, args) => {
     return await ctx.db
       .query("tours")
@@ -118,6 +123,7 @@ export const incrementViewCount = mutation({
   args: {
     id: v.id("tours"),
   },
+  returns: v.boolean(),
   handler: async (ctx, args) => {
     const tour = await ctx.db.get(args.id);
     if (!tour) {
@@ -136,6 +142,7 @@ export const incrementViewCount = mutation({
 // Get tour by ID
 export const getById = query({
   args: { id: v.id("tours") },
+  returns: v.any(),
   handler: async (ctx, args) => {
     const tour = await ctx.db.get(args.id);
     
@@ -149,6 +156,16 @@ export const getById = query({
 
 // Get tour analytics
 export const getAnalytics = query({
+  args: {},
+  returns: v.array(v.object({
+    id: v.id("tours"),
+    title: v.string(),
+    country: v.string(),
+    duration: v.number(),
+    price: v.number(),
+    views: v.number(),
+    featured: v.boolean(),
+  })),
   handler: async (ctx) => {
     const tours = await ctx.db.query("tours").collect();
     
@@ -192,6 +209,7 @@ export const create = mutation({
     destinationId: v.id("destinations"),
     clerkId: v.string(),
   },
+  returns: v.id("tours"),
   handler: async (ctx, args) => {
     // Get identity from token
     const identity = await ctx.auth.getUserIdentity();
@@ -275,6 +293,7 @@ export const update = mutation({
     excluded: v.optional(v.array(v.string())),
     destinationId: v.optional(v.id("destinations")),
   },
+  returns: v.id("tours"),
   handler: async (ctx, args) => {
     // Get identity from token
     const identity = await ctx.auth.getUserIdentity();
@@ -314,18 +333,19 @@ export const update = mutation({
     const { id, ...updatedFields } = args;
     
     // Update tour
-    const updatedTourId = await ctx.db.patch(args.id, {
+    await ctx.db.patch(args.id, {
       ...updatedFields,
       updatedAt: Date.now(),
     });
     
-    return updatedTourId;
+    return args.id;
   },
 });
 
 // Delete a tour
 export const deleteTour = mutation({
   args: { id: v.id("tours") },
+  returns: v.boolean(),
   handler: async (ctx, args) => {
     // Get identity from token
     const identity = await ctx.auth.getUserIdentity();
@@ -359,6 +379,7 @@ export const deleteTour = mutation({
 // Search tours by title, country, location, or description
 export const searchTours = query({
   args: { query: v.string() },
+  returns: v.array(v.any()),
   handler: async (ctx, args) => {
     const q = args.query.trim().toLowerCase();
     if (!q) return [];

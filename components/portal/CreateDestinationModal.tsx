@@ -15,6 +15,7 @@ import { UploadButton } from "@/components/uploadthing";
 import type { OurFileRouter } from "@/app/api/uploadthing/core";
 import { toast } from "sonner";
 import Image from "next/image";
+import TipTapEditorWrapper from "@/components/TipTapEditorWrapper";
 
 interface CreateDestinationModalProps {
   isOpen: boolean;
@@ -172,7 +173,12 @@ export default function CreateDestinationModal({
               </div>
               <div className="space-y-2 md:col-span-2">
                 <Label htmlFor="description" className="text-white">Short Description *</Label>
-                <Textarea id="description" value={form.description} onChange={e => handleChange("description", e.target.value)} className="bg-[#2a3431] border-[#3a4441] text-white h-20" required />
+                <TipTapEditorWrapper 
+                  content={form.description} 
+                  onChange={(content) => handleChange("description", content)}
+                  placeholder="Enter a short description of this destination..."
+                  className="bg-[#2a3431] border-[#3a4441] rounded-md"
+                />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="bestTimeToVisit" className="text-white">Best Time to Visit</Label>
@@ -253,7 +259,12 @@ export default function CreateDestinationModal({
                   </div>
 
                   {block.type === "paragraph" && (
-                    <Textarea value={block.value} onChange={e => handleContentBlockChange(index, e.target.value)} placeholder="Enter paragraph text" className="bg-[#2a3431] border-[#3a4441] text-white h-20" />
+                    <TipTapEditorWrapper 
+                      content={block.value} 
+                      onChange={(content) => handleContentBlockChange(index, content)}
+                      placeholder="Enter paragraph text"
+                      className="bg-[#2a3431] border-[#3a4441] rounded-md"
+                    />
                   )}
                   {block.type === "heading" && (
                     <Input value={block.value} onChange={e => handleContentBlockChange(index, e.target.value)} placeholder="Enter heading text" className="bg-[#2a3431] border-[#3a4441] text-white font-bold" />

@@ -23,6 +23,7 @@ import { useUser } from "@/hooks/useUser";
 import { useQuery } from "convex/react";
 import { Id } from "@/convex/_generated/dataModel";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import TipTapEditorWrapper from "@/components/TipTapEditorWrapper";
 
 interface CreateTourModalProps {
   isOpen: boolean;
@@ -299,7 +300,12 @@ export default function CreateTourModal({
               </div>
                <div className="space-y-2 md:col-span-2">
                 <Label htmlFor="description" className="text-white">Short Description</Label>
-                <Textarea id="description" value={form.description} onChange={e => handleChange("description", e.target.value)} className="bg-[#2a3431] border-[#3a4441] text-white h-20" />
+                <TipTapEditorWrapper 
+                  content={form.description} 
+                  onChange={(content) => handleChange("description", content)}
+                  placeholder="Enter tour description..."
+                  className="bg-[#2a3431] border-[#3a4441] rounded-md"
+                />
               </div>
               <div className="flex items-center space-x-2 pt-2 md:col-span-2">
                 <Switch id="featured" checked={form.featured} onCheckedChange={value => handleChange("featured", value)} />
@@ -362,7 +368,12 @@ export default function CreateTourModal({
                    </div>
                     <div className="space-y-2">
                        <Label htmlFor={`day-description-${index}`} className="text-gray-300">Description</Label>
-                       <Textarea id={`day-description-${index}`} value={day.description} onChange={e => handleItineraryChange(index, "description", e.target.value)} className="bg-[#2a3431] border-[#3a4441] text-white h-16" />
+                       <TipTapEditorWrapper 
+                         content={day.description} 
+                         onChange={(content) => handleItineraryChange(index, "description", content)}
+                         placeholder="Enter day description..."
+                         className="bg-[#2a3431] border-[#3a4441] rounded-md"
+                       />
                    </div>
                     <div className="space-y-2">
                        <Label htmlFor={`day-accommodation-${index}`} className="text-gray-300">Accommodation</Label>

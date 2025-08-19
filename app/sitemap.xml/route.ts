@@ -1,36 +1,75 @@
-export async function GET() {
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.happyafricansafaris.com';
-  const now = new Date();
+import { NextResponse } from 'next/server';
+import { ConvexHttpClient } from 'convex/browser';
+import { api } from '@/convex/_generated/api';
 
-  const routes: Array<{ path: string; changefreq: string; priority: string }> = [
-    { path: '', changefreq: 'weekly', priority: '1.0' },
-    { path: '/about', changefreq: 'monthly', priority: '0.7' },
-    { path: '/contact', changefreq: 'monthly', priority: '0.6' },
-    { path: '/destinations', changefreq: 'weekly', priority: '0.8' },
-    { path: '/tours', changefreq: 'weekly', priority: '0.9' },
-    { path: '/terms', changefreq: 'yearly', priority: '0.3' },
-    { path: '/tours/thank-you', changefreq: 'yearly', priority: '0.1' },
+export async function GET() {
+  // In a real app, fetch slugs/IDs for dynamic pages from your DB
+  const staticPages = [
+    '',
+    'about',
+    'contact',
+    'destinations',
+    'tours',
+    'terms',
+    'tours/thank-you',
   ];
 
-  const urls = routes
-    .map(({ path, changefreq, priority }) => `
-  <url>
-    <loc>${siteUrl}${path}</loc>
-    <lastmod>${now.toISOString()}</lastmod>
-    <changefreq>${changefreq}</changefreq>
-    <priority>${priority}</priority>
-  </url>`)
-    .join('\n');
+  try {
+    // Fetch dynamic pages from Convex
+    const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
+    
+    const [destinations, tours] = await Promise.all([
+      convex.query(api.destinations.getAll),
+      convex.query(api.tours.getAll),
+    ]);
 
-  const xml = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${urls}
-</urlset>`;
+    // Example dynamic pages (replace with real slugs/IDs)
+    const destinationPages = destinations?.map((dest: any) => `destinations/${dest.slug}`) || [];
+    const tourPages = tours?.map((tour: any) => `tours/${tour.slug}`) || [];
 
-  return new Response(xml, {
-    headers: {
-      'Content-Type': 'application/xml; charset=utf-8',
-      'Cache-Control': 'public, s-maxage=3600, stale-while-revalidate=86400',
-    },
-  });
+    const allPages = [
+      ...staticPages,
+      ...destinationPages,
+      ...tourPages,
+    ];
+
+    const baseUrl = 'https://www.happyafricansafaris.com';
+    const urls = allPages.map(
+      (path) =>
+        `<url><loc>${baseUrl}/${path}</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>`
+    ).join('');
+
+    const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
+      <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+        ${urls}
+      </urlset>`;
+
+    return new NextResponse(sitemap, {
+      headers: {
+        'Content-Type': 'application/xml',
+        'Cache-Control': 'public, s-maxage=3600, stale-while-revalidate=86400',
+      },
+    });
+  } catch (error) {
+    console.error('Error generating sitemap:', error);
+    
+    // Fallback to static pages only if Convex query fails
+    const baseUrl =  'https://www.happyafricansafaris.com';
+    const urls = staticPages.map(
+      (path) =>
+        `<url><loc>${baseUrl}/${path}</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>`
+    ).join('');
+
+    const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
+      <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+        ${urls}
+      </urlset>`;
+
+    return new NextResponse(sitemap, {
+      headers: {
+        'Content-Type': 'application/xml',
+      },
+    });
+  }
 }
 

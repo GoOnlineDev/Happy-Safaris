@@ -1,15 +1,15 @@
-export function GET() {
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.happyafricansafaris.com';
+import { NextResponse } from 'next/server';
+
+export async function GET() {
   const content = `User-agent: *
 Allow: /
-Sitemap: ${siteUrl}/sitemap.xml
-Host: ${siteUrl}
+Disallow: /dashboard
+Disallow: /api
+Sitemap: https://www.happyafricansafaris.com/sitemap.xml
 `;
-  return new Response(content, {
+  return new NextResponse(content, {
     headers: {
-      'Content-Type': 'text/plain; charset=utf-8',
-      'Cache-Control': 'public, s-maxage=3600, stale-while-revalidate=86400',
+      'Content-Type': 'text/plain',
     },
   });
-}
-
+} 

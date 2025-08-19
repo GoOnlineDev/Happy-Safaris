@@ -30,14 +30,16 @@ export function TourCard({ tour }: TourCardProps) {
   return (
     <Link href={`/tours/${tour.slug}`} className="group block h-full">
       <Card className="overflow-hidden bg-secondary border-border group-hover:border-primary transition-colors h-full flex flex-col">
-        <div className="relative h-56">
-          <Image
-            src={tour.imageUrl[0] || "/placeholder.svg"}
-            alt={tour.title}
-            fill
-            className="object-cover transition-transform duration-300 group-hover:scale-105"
-            sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
-          />
+        <div className="relative h-56 bg-gradient-to-br from-secondary via-background to-secondary">
+          {tour.imageUrl[0] && (
+            <Image
+              src={tour.imageUrl[0]}
+              alt={tour.title}
+              fill
+              className="object-cover transition-transform duration-300 group-hover:scale-105"
+              sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            />
+          )}
           <div className="absolute top-0 left-0 w-full p-2 flex justify-between">
             {tour.featured && <Badge>Featured</Badge>}
             {tour.averageRating && tour.averageRating > 0 ? (
