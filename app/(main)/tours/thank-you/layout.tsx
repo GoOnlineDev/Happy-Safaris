@@ -4,7 +4,7 @@ export const metadata: Metadata = {
   title: 'Booking Received – Thank You | Happy African Safaris',
   description:
     'Thanks for booking with Happy African Safaris. Our team will contact you with confirmation and next steps.',
-  robots: { index: false, follow: false },
+  robots: { index: true, follow: false },
   alternates: { canonical: '/tours/thank-you' },
 };
 

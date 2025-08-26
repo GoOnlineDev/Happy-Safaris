@@ -23,5 +23,5 @@ export default function SignInLayout({
 export const metadata = {
   title: 'Sign In – Happy African Safaris',
   description: 'Access your Happy African Safaris account to manage bookings.',
-  robots: { index: false, follow: false },
+  robots: { index: false, follow: true },
 };

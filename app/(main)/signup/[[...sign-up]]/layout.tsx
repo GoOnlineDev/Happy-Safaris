@@ -3,7 +3,6 @@ export function generateStaticParams() {
     // Base path (empty params)
     { "sign-up": [] },
     // Common Clerk auth paths
-    { "sign-up": ["sso-callback"] },
     { "sign-up": ["factor-one"] },
     { "sign-up": ["continue"] },
     { "sign-up": ["verify"] },
@@ -22,5 +21,5 @@ export default function SignUpLayout({
 export const metadata = {
   title: 'Create Account – Happy African Safaris',
   description: 'Sign up to plan and manage your Uganda safari trips.',
-  robots: { index: false, follow: false },
+  robots: { index: false, follow: true },
 };
