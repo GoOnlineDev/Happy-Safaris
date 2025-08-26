@@ -25,7 +25,9 @@ export const viewport: Viewport = {
   interactiveWidget: 'resizes-visual',
 };
 
+// Handle both www and non-www versions
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.happyafricansafaris.com';
+const canonicalUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.happyafricansafaris.com';
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -67,7 +69,7 @@ export const metadata: Metadata = {
     },
   },
   alternates: {
-    canonical: '/',
+    canonical: canonicalUrl,
   },
   openGraph: {
     type: 'website',
