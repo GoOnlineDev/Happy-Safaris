@@ -1,10 +1,9 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Happy African Safaris | Uganda Safari Tours & Gorilla Trekking Packages',
+    title: 'Our Tours',
   description:
     'Browse top Uganda safari tours: gorilla trekking, wildlife game drives, Nile cruises, and tailor‑made itineraries. Small group and private tours.',
-  alternates: { canonical: '/tours' },
   keywords: [
     'Happy African Safaris',
     'Uganda safari tours',

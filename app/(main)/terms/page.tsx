@@ -2,6 +2,8 @@
 
 import { Section } from "@/components/Section";
 
+
+
 export default function TermsPage() {
   return (
     <main className="min-h-screen bg-background text-foreground pt-24">

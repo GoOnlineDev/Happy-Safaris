@@ -25,18 +25,14 @@ export const viewport: Viewport = {
   interactiveWidget: 'resizes-visual',
 };
 
-// Handle both www and non-www versions
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.happyafricansafaris.com';
-const canonicalUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.happyafricansafaris.com';
 
 export const metadata: Metadata = {
-  metadataBase: new URL(siteUrl),
   title: {
-    default: 'Happy African Safaris | Uganda Gorilla Trekking & East Africa Tours',
-    template: '%s | Happy African Safaris',
+    default: 'Happy African Safaris ',
+    template: '%s | Happy African Safaris - Uganda Safari Tours',
   },
   description:
-    'Top-rated Uganda safaris: gorilla trekking in Bwindi, Big Five game drives, Murchison Falls, Kibale chimps, tailor‑made tours across Uganda, Rwanda, Kenya & Tanzania.',
+    'Happy African Safaris - Top-rated Uganda safaris: gorilla trekking in Bwindi, Big Five game drives, Murchison Falls, Kibale chimps, tailor‑made tours across Uganda, Rwanda, Kenya & Tanzania.',
   keywords: [
     'Happy African Safaris',
     'Uganda safaris',
@@ -68,43 +64,7 @@ export const metadata: Metadata = {
       'max-snippet': -1,
     },
   },
-  alternates: {
-    canonical: canonicalUrl,
-  },
-  openGraph: {
-    type: 'website',
-    url: siteUrl,
-    title: 'Happy African Safaris | Uganda Gorilla Trekking & East Africa Tours',
-    description:
-      'Plan your Uganda safari with local experts. Gorilla trekking, Big Five, Nile cruises, and custom East Africa itineraries.',
-    siteName: 'Happy African Safaris',
-    images: [
-      {
-        url: `${siteUrl}/og.jpg`,
-        width: 1200,
-        height: 630,
-        alt: 'Happy African Safaris – Uganda & East Africa Tours',
-      },
-    ],
-    locale: 'en_US',
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'Happy African Safaris | Uganda Gorilla Trekking & East Africa Tours',
-    description:
-      'Top‑rated Uganda and East Africa safaris. Private and small‑group itineraries planned by local experts.',
-    images: [`${siteUrl}/og.jpg`],
-  },
-  icons: {
-    icon: [
-      { url: '/favicon.ico' },
-      { url: '/icon-192.png', sizes: '192x192', type: 'image/png' },
-      { url: '/icon-512.png', sizes: '512x512', type: 'image/png' },
-    ],
-    apple: [
-      { url: '/apple-touch-icon.png', sizes: '180x180', type: 'image/png' },
-    ],
-  },
+
   category: 'travel',
 };
 
@@ -120,38 +80,6 @@ export default function RootLayout({
         playfair.variable,
         lora.variable
       )}>
-        {/* Organization JSON-LD */}
-        <Script id="org-jsonld" type="application/ld+json" strategy="afterInteractive">
-          {JSON.stringify({
-            '@context': 'https://schema.org',
-            '@type': 'TravelAgency',
-            name: 'Happy African Safaris',
-            url: siteUrl,
-            logo: `${siteUrl}/logo.png`,
-            image: `${siteUrl}/og.jpg`,
-            description:
-              'Uganda safari experts offering gorilla trekking, wildlife tours, and tailor‑made East Africa itineraries.',
-            address: {
-              '@type': 'PostalAddress',
-              addressCountry: 'UG',
-              addressLocality: 'Kampala',
-            },
-            sameAs: [
-              'https://www.facebook.com/',
-              'https://www.instagram.com/',
-              'https://www.youtube.com/',
-              'https://x.com/',
-            ],
-            contactPoint: {
-              '@type': 'ContactPoint',
-              contactType: 'customer service',
-              email: 'info@happyafricansafaris.com',
-              telephone: '+256-000-000000',
-              areaServed: ['UG', 'RW', 'KE', 'TZ'],
-              availableLanguage: ['en'],
-            },
-          })}
-        </Script>
         <Providers>
 
           <main >

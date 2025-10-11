@@ -11,6 +11,7 @@ import Link from "next/link";
 import { Section } from "@/components/Section";
 import { Skeleton } from "@/components/ui/skeleton";
 
+
 const fadeIn = {
   hidden: { opacity: 0, y: 20 },
   visible: { opacity: 1, y: 0 }
