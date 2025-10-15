@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { siteConfig } from '@/lib/config';
 
 export const metadata: Metadata = {
     title: 'Our Tours',
@@ -24,6 +25,22 @@ export const metadata: Metadata = {
     'Kampala tour operator',
     'Tailor made safaris',
   ],
+  alternates: { canonical: '/tours' },
+  openGraph: {
+    title: 'Uganda Safari Tours',
+    description:
+      'Gorilla trekking, wildlife game drives, Nile cruises, and tailor‑made safaris.',
+    url: '/tours',
+    type: 'website',
+    images: siteConfig.ogImage ? [{ url: siteConfig.ogImage }] : undefined,
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Uganda Safari Tours',
+    description:
+      'Gorilla trekking, wildlife game drives, Nile cruises, tailor‑made safaris.',
+    images: siteConfig.ogImage ? [siteConfig.ogImage] : undefined,
+  },
 };
 
 export default function ToursLayout({ children }: { children: React.ReactNode }) {

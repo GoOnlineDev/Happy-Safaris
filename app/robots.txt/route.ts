@@ -1,11 +1,15 @@
 import { NextResponse } from 'next/server';
+import { siteConfig } from '@/lib/config';
 
 export async function GET() {
+  const baseUrl = siteConfig.url ?? 'https://www.happyafricansafaris.com';
   const content = `User-agent: *
 Allow: /
-Disallow: /dashboard
+Disallow: /portal
+Disallow: /profile
+Disallow: /inbox
 Disallow: /api
-Sitemap: https://www.happyafricansafaris.com/sitemap.xml
+Sitemap: ${baseUrl}/sitemap.xml
 `;
   return new NextResponse(content, {
     headers: {

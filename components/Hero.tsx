@@ -85,7 +85,7 @@ export default function Hero() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
-          className="max-w-5xl mx-auto pt-24 md:pt-32 px-2 pb-8 md:pb-16"
+          className="max-w-5xl mx-auto pt-28 md:pt-36 px-2 pb-8 md:pb-16"
         >
           <motion.div
             initial={{ opacity: 0, y: 20 }}

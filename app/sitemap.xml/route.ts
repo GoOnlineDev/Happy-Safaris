@@ -1,31 +1,25 @@
 import { NextResponse } from 'next/server';
+import { siteConfig } from '@/lib/config';
 
 export async function GET() {
-  // In a real app, fetch slugs/IDs for dynamic pages from your DB
+  // Static routes only; dynamic entries should be added once real slugs are available
   const staticPages = [
-    '',
-    'about',
-    'contact',
-    'destinations',
-    'tours',
-    'terms',
-    'tours/thank-you',
-  ];
-  // Example dynamic pages (replace with real slugs/IDs)
-  const destinationPages = ['destinations/mt-elgon', 'destinations/2'];
-  const tourPages = ['tours/1', 'tours/2'];
-
-  const allPages = [
-    ...staticPages,
-    ...destinationPages,
-    ...tourPages,
+    '/',
+    '/about',
+    '/contact',
+    '/destinations',
+    '/tours',
+    '/terms',
+    '/tours/thank-you',
   ];
 
-  const baseUrl = 'https://www.happyafricansafaris.com';
-  const urls = allPages.map(
-    (path) =>
-      `<url><loc>${baseUrl}/${path}</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>`
-  ).join('');
+  const baseUrl = siteConfig.url ?? 'https://www.happyafricansafaris.com';
+  const urls = staticPages
+    .map((path) => {
+      const loc = path === '/' ? baseUrl : `${baseUrl}${path}`;
+      return `<url><loc>${loc}</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>`;
+    })
+    .join('');
 
   const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
     <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
@@ -37,4 +31,4 @@ export async function GET() {
       'Content-Type': 'application/xml',
     },
   });
-} 
+}

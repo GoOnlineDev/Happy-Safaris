@@ -4,6 +4,7 @@ import { Playfair_Display, Lora, Inter } from 'next/font/google';
 import { Providers } from '@/components/providers/Providers';
 import { cn } from "@/lib/utils";
 import Script from 'next/script';
+import { siteConfig } from '@/lib/config';
 
 const playfair = Playfair_Display({
   subsets: ['latin'],
@@ -27,6 +28,7 @@ export const viewport: Viewport = {
 
 
 export const metadata: Metadata = {
+  metadataBase: new URL(siteConfig.url ?? 'https://www.happyafricansafaris.com'),
   title: {
     default: 'Happy African Safaris ',
     template: '%s | Happy African Safaris - Uganda Safari Tours',
@@ -64,7 +66,37 @@ export const metadata: Metadata = {
       'max-snippet': -1,
     },
   },
-
+  alternates: {
+    canonical: '/',
+  },
+  openGraph: {
+    type: 'website',
+    siteName: siteConfig.name,
+    title: 'Happy African Safaris – Uganda Safari Tours',
+    description:
+      'Top-rated Uganda safaris: gorilla trekking, Big Five, tailor‑made tours across Uganda, Rwanda, Kenya & Tanzania.',
+    url: '/',
+    images: siteConfig.ogImage ? [{ url: siteConfig.ogImage }]: undefined,
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Happy African Safaris – Uganda Safari Tours',
+    description:
+      'Top-rated Uganda safaris: gorilla trekking, Big Five, tailor‑made tours across Uganda, Rwanda, Kenya & Tanzania.',
+    images: siteConfig.ogImage ? [siteConfig.ogImage] : undefined,
+    creator: '@happyafricansafaris',
+  },
+  icons: {
+    icon: [
+      { url: '/favicon.ico' },
+      { url: '/favicon-96x96.png', sizes: '96x96', type: 'image/png' },
+      { url: '/favicon.svg', type: 'image/svg+xml' },
+    ],
+    apple: [{ url: '/apple-touch-icon.png', sizes: '180x180' }],
+    other: [
+      { rel: 'manifest', url: '/site.webmanifest' },
+    ],
+  },
   category: 'travel',
 };
 
@@ -81,6 +113,35 @@ export default function RootLayout({
         lora.variable
       )}>
         <Providers>
+          {/* JSON-LD: Organization and Website */}
+          <Script id="ld-org" type="application/ld+json" strategy="afterInteractive">
+            {JSON.stringify({
+              '@context': 'https://schema.org',
+              '@type': 'Organization',
+              name: siteConfig.name,
+              url: siteConfig.url ?? 'https://www.happyafricansafaris.com',
+              logo: siteConfig.url ? siteConfig.url + '/logo.png' : 'https://www.happyafricansafaris.com/logo.png',
+              sameAs: [siteConfig.links.twitter, siteConfig.links.github].filter(Boolean),
+              contactPoint: [{
+                '@type': 'ContactPoint',
+                contactType: 'customer support',
+                availableLanguage: ['en'],
+              }],
+            })}
+          </Script>
+          <Script id="ld-website" type="application/ld+json" strategy="afterInteractive">
+            {JSON.stringify({
+              '@context': 'https://schema.org',
+              '@type': 'WebSite',
+              name: siteConfig.name,
+              url: siteConfig.url ?? 'https://www.happyafricansafaris.com',
+              potentialAction: {
+                '@type': 'SearchAction',
+                target: `${siteConfig.url ?? 'https://www.happyafricansafaris.com'}/search?q={search_term_string}`,
+                'query-input': 'required name=search_term_string',
+              },
+            })}
+          </Script>
 
           <main >
             {children}
