@@ -5,6 +5,7 @@ import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import Script from "next/script";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, MapPin, Sun, Trees, AlertTriangle, CalendarDays } from "lucide-react";
 import { Section } from "@/components/Section";
@@ -12,6 +13,7 @@ import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
+import { siteConfig } from "@/lib/config";
 
 export default function DestinationDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = use(params);
@@ -72,8 +74,52 @@ export default function DestinationDetailPage({ params }: { params: Promise<{ sl
   const images = destination.imageUrl || [];
   const displayMainImage = mainImage || images[0];
 
+  // Build JSON-LD schema for TouristDestination/Place
+  const baseUrl = siteConfig.url ?? 'https://www.happyafricansafaris.com';
+  const destinationUrl = `${baseUrl}/destinations/${destination.slug}`;
+  const destinationImages = images.length > 0 
+    ? images.map(img => img.startsWith('http') ? img : `${baseUrl}${img}`)
+    : [];
+
+  const destinationSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'TouristDestination',
+    name: destination.name,
+    description: destination.description || `${destination.name} - ${destination.country} travel destination`,
+    url: destinationUrl,
+    image: destinationImages.length > 0 ? destinationImages : undefined,
+    address: {
+      '@type': 'PostalAddress',
+      addressLocality: destination.name,
+      addressCountry: destination.country,
+    },
+    ...(destination.attractions && destination.attractions.length > 0
+      ? {
+          containsPlace: destination.attractions.map((attraction: string) => ({
+            '@type': 'TouristAttraction',
+            name: attraction,
+          })),
+        }
+      : {}),
+    ...(destination.bestTimeToVisit
+      ? {
+          additionalProperty: {
+            '@type': 'PropertyValue',
+            name: 'Best Time to Visit',
+            value: destination.bestTimeToVisit,
+          },
+        }
+      : {}),
+  };
+
   return (
     <main className="min-h-screen bg-background text-foreground pt-20 md:pt-24">
+      <Script
+        id="destination-schema"
+        type="application/ld+json"
+        strategy="afterInteractive"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(destinationSchema) }}
+      />
       <Section className="py-8">
         {/* Back Button */}
         <Button

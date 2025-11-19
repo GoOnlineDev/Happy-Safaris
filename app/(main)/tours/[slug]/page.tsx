@@ -5,6 +5,7 @@ import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import Script from "next/script";
 import { Button } from "@/components/ui/button";
 import { 
   ChevronLeft, 
@@ -25,6 +26,7 @@ import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { BookingForm } from "@/components/booking/BookingForm";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { siteConfig } from "@/lib/config";
 
 export default function TourDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = use(params);
@@ -82,8 +84,72 @@ export default function TourDetailPage({ params }: { params: Promise<{ slug: str
   const images = tour.imageUrl || [];
   const displayMainImage = mainImage || images[0];
 
+  // Build JSON-LD schema for TouristTrip
+  const baseUrl = siteConfig.url ?? 'https://www.happyafricansafaris.com';
+  const tourUrl = `${baseUrl}/tours/${tour.slug}`;
+  const tourImages = images.length > 0 
+    ? images.map(img => img.startsWith('http') ? img : `${baseUrl}${img}`)
+    : [];
+
+  const tourSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'TouristTrip',
+    name: tour.title,
+    description: tour.description || `${tour.title} - ${tour.duration} day safari in ${tour.location}, ${tour.country}`,
+    url: tourUrl,
+    image: tourImages.length > 0 ? tourImages : undefined,
+    duration: `P${tour.duration}D`,
+    tourBookingPage: tourUrl,
+    provider: {
+      '@type': 'Organization',
+      name: siteConfig.name,
+      url: baseUrl,
+    },
+    offers: {
+      '@type': 'Offer',
+      price: tour.discountPrice || tour.price,
+      priceCurrency: 'USD',
+      availability: 'https://schema.org/InStock',
+      url: tourUrl,
+      validFrom: new Date().toISOString(),
+    },
+    itinerary: tour.itinerary && tour.itinerary.length > 0
+      ? tour.itinerary.map((day: any) => ({
+          '@type': 'TouristAttraction',
+          name: day.title,
+          description: day.description,
+        }))
+      : undefined,
+    location: {
+      '@type': 'Place',
+      name: tour.location,
+      address: {
+        '@type': 'PostalAddress',
+        addressLocality: tour.location,
+        addressCountry: tour.country,
+      },
+    },
+    ...(tour.averageRating && tour.averageRating > 0 && tour.reviews && tour.reviews.length > 0
+      ? {
+          aggregateRating: {
+            '@type': 'AggregateRating',
+            ratingValue: tour.averageRating,
+            reviewCount: tour.reviews.length,
+            bestRating: 5,
+            worstRating: 1,
+          },
+        }
+      : {}),
+  };
+
   return (
     <main className="min-h-screen bg-background text-foreground pt-20 md:pt-24">
+      <Script
+        id="tour-schema"
+        type="application/ld+json"
+        strategy="afterInteractive"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(tourSchema) }}
+      />
       <Section className="py-8">
         {/* Back Button */}
         <Button

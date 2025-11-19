@@ -74,7 +74,9 @@ export default defineSchema({
     createdAt: v.number(),
     updatedAt: v.number(),
   })
-    .index("by_destinationId", ["destinationId"]),
+    .index("by_destinationId", ["destinationId"])
+    .index("by_slug", ["slug"])
+    .index("by_featured", ["featured"]),
   
   // Bookings table to track tour reservations
   bookings: defineTable({
@@ -142,7 +144,9 @@ export default defineSchema({
     lastUpdatedBy: v.id("users"), // Link to the admin who last updated this
     createdAt: v.number(),
     updatedAt: v.number(),
-  }),
+  })
+    .index("by_slug", ["slug"])
+    .index("by_featured", ["featured"]),
 
   // FAQ entries
   faqs: defineTable({

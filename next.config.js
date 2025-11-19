@@ -1,4 +1,8 @@
 /** @type {import('next').NextConfig} */
+// Fix for Node.js 17+ IPv6 resolution issues that can cause fetch failures
+const dns = require('dns');
+dns.setDefaultResultOrder('ipv4first');
+
 const nextConfig = {
   // Temporarily disable static export to allow Clerk auth to work properly
   // output: 'export',

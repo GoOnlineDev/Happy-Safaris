@@ -19,7 +19,7 @@ export const getFeatured = query({
   handler: async (ctx) => {
     return await ctx.db
       .query("destinations")
-      .filter((q) => q.eq(q.field("featured"), true))
+      .withIndex("by_featured", (q) => q.eq("featured", true))
       .collect();
   },
 });
@@ -31,7 +31,7 @@ export const getBySlug = query({
   handler: async (ctx, args) => {
     const destination = await ctx.db
       .query("destinations")
-      .filter((q) => q.eq(q.field("slug"), args.slug))
+      .withIndex("by_slug", (q) => q.eq("slug", args.slug))
       .first();
     
     return destination || null;
@@ -142,7 +142,7 @@ export const create = mutation({
     // Check if slug is unique
     const existingDestination = await ctx.db
       .query("destinations")
-      .filter((q: any) => q.eq(q.field("slug"), args.slug))
+      .withIndex("by_slug", (q) => q.eq("slug", args.slug))
       .first();
     
     if (existingDestination) {

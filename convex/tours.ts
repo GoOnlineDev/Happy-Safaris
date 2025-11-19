@@ -19,7 +19,8 @@ export const getFeatured = query({
   handler: async (ctx) => {
     const featured = await ctx.db
       .query("tours")
-      .filter((q) => q.eq(q.field("featured"), true))
+      .withIndex("by_featured", (q) => q.eq("featured", true))
+      .order("desc")
       .collect();
     return featured
       .sort((a, b) => b.createdAt - a.createdAt)
@@ -79,19 +80,17 @@ export const getBySlug = query({
   handler: async (ctx, args) => {
     const tour = await ctx.db
       .query("tours")
-      .filter((q) => q.eq(q.field("slug"), args.slug))
+      .withIndex("by_slug", (q) => q.eq("slug", args.slug))
       .first();
 
     if (!tour) {
-      throw new ConvexError("Tour not found");
+      return null;
     }
 
-    // The .withIndex query is more efficient but seems to be causing a type error
-    // in your environment, possibly due to stale type generation.
-    // Using .filter instead is a workaround.
+    // Use index for reviews query
     const reviews = await ctx.db
       .query("reviews")
-      .filter((q) => q.eq(q.field("tourId"), tour._id))
+      .withIndex("by_tour", (q) => q.eq("tourId", tour._id))
       .collect();
 
     const averageRating =
@@ -230,7 +229,7 @@ export const create = mutation({
     // Check if tour with slug already exists
     const existingTour = await ctx.db
       .query("tours")
-      .filter((q) => q.eq(q.field("slug"), args.slug))
+      .withIndex("by_slug", (q) => q.eq("slug", args.slug))
       .first();
     
     if (existingTour) {
@@ -321,7 +320,7 @@ export const update = mutation({
     if (args.slug && args.slug !== tour.slug) {
       const existingTour = await ctx.db
         .query("tours")
-        .filter((q) => q.eq(q.field("slug"), args.slug))
+        .withIndex("by_slug", (q) => q.eq("slug", args.slug))
         .first();
       
       if (existingTour) {
