@@ -84,9 +84,9 @@ export default function Home() {
       <Hero />
       
       <Section id="destinations" className="bg-gradient-to-b from-secondary to-background-light">
-        <div className="text-center mb-12 md:mb-16">
-          <h2 className="text-3xl sm:text-4xl font-bold text-primary mb-4">Popular Destinations</h2>
-          <p className="text-muted-foreground max-w-2xl mx-auto">
+        <div className="text-center mb-10 md:mb-14">
+          <h2 className="text-3xl sm:text-4xl font-bold text-primary mb-3 font-serif section-title shimmer-text inline-block">Popular Destinations</h2>
+          <p className="text-muted-foreground max-w-2xl mx-auto mt-6 text-sm sm:text-base">
             Discover the most sought-after safari destinations in Uganda, each offering unique wildlife experiences and breathtaking landscapes.
           </p>
         </div>
@@ -138,9 +138,9 @@ export default function Home() {
       </Section>
 
       <Section id="tours" className="bg-gradient-to-b from-background-light to-secondary">
-        <div className="text-center mb-12 md:mb-16">
-          <h2 className="text-3xl sm:text-4xl font-bold text-primary mb-4">Featured Tours</h2>
-          <p className="text-muted-foreground max-w-2xl mx-auto">
+        <div className="text-center mb-10 md:mb-14">
+          <h2 className="text-3xl sm:text-4xl font-bold mb-3 font-serif section-title shimmer-text inline-block">Featured Tours</h2>
+          <p className="text-muted-foreground max-w-2xl mx-auto mt-6 text-sm sm:text-base">
             Explore our most popular safari packages, designed to give you the ultimate African experience
           </p>
         </div>
@@ -209,12 +209,15 @@ export default function Home() {
       <Testimonials />
 
       <Section id="newsletter" className="bg-secondary">
-        <div className="max-w-4xl mx-auto text-center px-2">
-          <h2 className="text-3xl sm:text-4xl font-bold text-primary mb-4">Stay Updated</h2>
-          <p className="text-muted-foreground mb-8">
+        <div className="max-w-2xl mx-auto text-center px-2">
+          <div className="mb-2 flex justify-center">
+            <span className="text-2xl">✦</span>
+          </div>
+          <h2 className="text-3xl sm:text-4xl font-bold mb-3 font-serif section-title shimmer-text inline-block">Stay Updated</h2>
+          <p className="text-muted-foreground mb-8 mt-6 text-sm sm:text-base">
             Subscribe to our newsletter for exclusive safari deals and wildlife updates
           </p>
-          <form onSubmit={handleSubscribe} className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+          <form onSubmit={handleSubscribe} className="flex flex-col sm:flex-row gap-3 justify-center items-stretch">
             <label htmlFor="email-subscribe" className="sr-only">Email address</label>
             <input
               id="email-subscribe"
@@ -222,11 +225,11 @@ export default function Home() {
               placeholder="Enter your email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="px-6 py-3 bg-background-light border-border rounded-lg text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary h-12 flex-1 w-full sm:w-auto max-w-md"
+              className="px-5 py-3 bg-background-light border border-border rounded-xl text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary h-12 flex-1 w-full text-base"
               required
               aria-label="Email for newsletter"
             />
-            <Button type="submit" className="bg-primary hover:bg-primary/90 text-secondary px-8 h-12 w-full sm:w-auto" disabled={isSubscribing}>
+            <Button type="submit" className="bg-primary hover:bg-primary/90 text-secondary px-7 h-12 w-full sm:w-auto font-semibold glow-primary active:scale-95 transition-all" disabled={isSubscribing}>
               {isSubscribing ? "Subscribing..." : "Subscribe"}
               <Send className="ml-2 h-4 w-4" />
             </Button>

@@ -57,7 +57,7 @@ export default function SignUpPage() {
                 termsPageUrl: "/terms"
               },
             }}
-            redirectUrl="/"
+            fallbackRedirectUrl="/"
             signInUrl="/login"
           />
         </motion.div>

@@ -57,7 +57,7 @@ export default function LoginPage() {
                 showOptionalFields: false
               },
             }}
-            redirectUrl="/"
+            fallbackRedirectUrl="/"
             signUpUrl="/signup"
           />
         </motion.div>
