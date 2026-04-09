@@ -67,7 +67,14 @@ export default function AboutPage() {
             {loading ? <Skeleton className="h-14 w-2/3 mx-auto" /> : about?.heroHeading || "Wild at Heart"}
           </h1>
           <p className="text-lg sm:text-xl text-white/90 max-w-3xl mx-auto">
-            {loading ? <Skeleton className="h-7 w-1/2 mx-auto" /> : about?.heroSubheading || "Connecting adventurers with Uganda's untamed wilderness and majestic wildlife through responsible safari experiences."}
+            {loading ? (
+              <span className="inline-block w-1/2">
+                <Skeleton className="h-7 w-full mx-auto" />
+              </span>
+            ) : (
+              about?.heroSubheading ||
+              "Connecting adventurers with Uganda's untamed wilderness and majestic wildlife through responsible safari experiences."
+            )}
           </p>
         </motion.div>
       </div>

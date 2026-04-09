@@ -37,7 +37,7 @@ export default function ToursPage() {
       {/* Hero Section */}
       <div className="relative h-[50vh] flex items-center justify-center text-center overflow-hidden">
         <Image
-          src="https://images.unsplash.com/photo-1521401410292-3a1f8c16f73a"
+          src="https://images.unsplash.com/photo-1469474968028-56623f02e42e"
           alt="Giraffes on a safari tour"
           fill
           className="object-cover brightness-50"

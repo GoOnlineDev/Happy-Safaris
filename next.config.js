@@ -15,6 +15,7 @@ const nextConfig = {
         hostname: 'utfs.io',
       },
     ],
+    qualities: [75, 80],
     minimumCacheTTL: 14400,
   },
   async redirects() {
