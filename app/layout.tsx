@@ -28,7 +28,7 @@ export const viewport: Viewport = {
 
 
 export const metadata: Metadata = {
-  metadataBase: new URL(siteConfig.url ?? 'https://www.happyafricansafaris.com'),
+  metadataBase: new URL(siteConfig.url ?? 'https://happyafricansafaris.com'),
   title: {
     default: 'Happy African Safaris ',
     template: '%s | Happy African Safaris - Uganda Safari Tours',
@@ -118,7 +118,7 @@ export default function RootLayout({
               '@context': 'https://schema.org',
               '@type': 'Organization',
               name: siteConfig.name,
-              url: siteConfig.url ?? 'https://www.happyafricansafaris.com',
+              url: siteConfig.url ?? 'https://happyafricansafaris.com',
               logo: siteConfig.url ? siteConfig.url + '/logo.png' : 'https://www.happyafricansafaris.com/logo.png',
               sameAs: [siteConfig.links.twitter, siteConfig.links.github].filter(Boolean),
               contactPoint: [{
@@ -133,10 +133,10 @@ export default function RootLayout({
               '@context': 'https://schema.org',
               '@type': 'WebSite',
               name: siteConfig.name,
-              url: siteConfig.url ?? 'https://www.happyafricansafaris.com',
+              url: siteConfig.url ?? 'https://happyafricansafaris.com',
               potentialAction: {
                 '@type': 'SearchAction',
-                target: `${siteConfig.url ?? 'https://www.happyafricansafaris.com'}/search?q={search_term_string}`,
+                target: `${siteConfig.url ?? 'https://happyafricansafaris.com'}/search?q={search_term_string}`,
                 'query-input': 'required name=search_term_string',
               },
             })}
